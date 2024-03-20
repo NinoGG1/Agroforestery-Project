@@ -1,0 +1,49 @@
+{
+  "etat_membre": "FRANCE",
+  "numero_certificat_ce": "F__-__R___",
+  "materiaux_forestiers": {
+    "nom_botanique": "",
+    "nom_commun": "",
+    "nature_du_materiel_reproducteur": {
+      "graines": false,
+      "parties_de_plantes": false,
+      "plants": false
+    },
+    "categorie_du_materiel_reproducteur": {
+      "identifie": false,
+      "selectionnée": false,
+      "testée": false
+    },
+    "type_de_materiel_de_base": {
+      "source_de_graines": false,
+      "population": false
+    },
+    "fins": "fins forestières",
+    "reference_du_materiel_de_base_dans_le_registre_national": "",
+    "origine": {
+      "indigène": false,
+      "non_indigène": false,
+      "inconnu": false
+    },
+    "origine_du_materiel_de_base": "",
+    "pays_et_region_de_provenance_du_materiel_de_base": "",
+    "altitude_ou_zone_altimetrique_du_site_du_materiel_de_base": "",
+    "annee_de_maturite_pour_les_graines": "",
+    "quantite_de_materiel_reproducteur": {
+      "en_lettres": "",
+      "en_chiffres": ""
+    },
+    "nature_de_la_graine": {
+      "graines_recoltees_brutes": false,
+      "graines_nettoyees_et_triees": false
+    },
+    "modification_genetique": {
+      "oui": false,
+      "non": false
+    },
+    "nombre_et_nature_des_colis": "",
+    "autres_informations_utiles": "",
+    "nom_et_adresse_du_collecteur": "",
+    "le_cas_echeant_au_nom_de": ""
+  }
+}

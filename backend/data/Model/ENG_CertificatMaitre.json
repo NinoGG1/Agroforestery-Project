@@ -1,0 +1,49 @@
+{
+  "state_member": "FRANCE",
+  "ce_certificate_number": "F__-__R___",
+  "forestry_materials": {
+    "botanical_name": "",
+    "common_name": "",
+    "nature_of_reproductive_material": {
+      "seeds": false,
+      "plant_parts": false,
+      "plants": false
+    },
+    "category_of_reproductive_material": {
+      "identified": false,
+      "selected": false,
+      "tested": false
+    },
+    "type_of_basic_material": {
+      "seed_source": false,
+      "population": false
+    },
+    "purposes": "forest purpose",
+    "reference_of_basic_material_in_national_register": "",
+    "origin": {
+      "indigenous": false,
+      "non_indigenous": false,
+      "unknown": false
+    },
+    "origin_of_basic_material": "",
+    "country_and_region_of_provenance_of_basic_material": "",
+    "altitude_or_altimetric_zone_of_basic_material_site": "",
+    "maturity_year_for_seeds": "",
+    "quantity_of_reproductive_material": {
+      "in_words": "",
+      "in_figures": ""
+    },
+    "nature_of_seed": {
+      "raw_harvest_seeds": false,
+      "cleaned_and_sorted_seeds": false
+    },
+    "genetic_modification": {
+      "yes": false,
+      "no": false
+    },
+    "number_and_nature_of_packages": "",
+    "other_useful_information": "",
+    "collector_name_and_address": "",
+    "if_applicable_on_behalf_of": ""
+  }
+}
