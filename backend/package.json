@@ -14,7 +14,28 @@
     "solidity-coverage": "^0.8.0",
     "typechain": "^8.3.0"
   },
-    "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2"
-  }
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.1",
+    "form-data": "^4.0.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "name": "backend",
+  "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.",
+  "version": "1.0.0",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "server": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -1,0 +1,23 @@
+{
+  "name": "Semences Chêne sessile #1",
+  "description": "Semence de Chêne sessil, catégorie identifiée, origine France.",
+  "image": "",
+  "attributes": [
+    {
+      "trait_type": "nom_commun",
+      "value": "Chêne sessile"
+    },
+    {
+      "trait_type": "categorie_du_materiel_reproducteur",
+      "value": "Selectionnée"
+    },
+    {
+      "trait_type": "Certificat-maitre",
+      "value": "ipfs://bafybeic32i5jxslnosacbpr2zk6hnjzki6v6w262sdzzhsu6trfrx7nxiq/CM_20R047-QPE205_006.jpg"
+    },
+        {
+      "trait_type": "DF1",
+      "value": "0x123...abc"
+    }
+  ]
+}
