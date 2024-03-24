@@ -1,14 +1,11 @@
 const hre = require("hardhat");
 
 async function main() {
+  const SeedNFT = await hre.ethers.deployContract("SeedNFT");
 
-  const SimpleStorage = await hre.ethers.deployContract("SimpleStorage");
+  await SeedNFT.waitForDeployment();
 
-  await SimpleStorage.waitForDeployment();
-
-  console.log(
-    `SimpleStorage deployed to ${SimpleStorage.target}`
-  );
+  console.log(`SeedNFT deployed to ${SeedNFT.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
