@@ -1,3 +1,5 @@
+// Description: Ce script permet de hasher le contenu d'un fichier JSON.
+
 const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");

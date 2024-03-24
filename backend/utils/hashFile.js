@@ -1,3 +1,5 @@
+// fonction qui prend le chemin d'un fichier et renvoie le hachage SHA-256 de son contenu
+
 const fs = require("fs");
 const crypto = require("crypto");
 

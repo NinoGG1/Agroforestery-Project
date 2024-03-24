@@ -1,6 +1,7 @@
+// Fonction pour générer l'objet JSON de métadonnées
+
 const fs = require("fs").promises;
 
-// Fonction pour générer l'objet JSON de métadonnées
 async function generateMetadata(filePath) {
   try {
     const fileContent = await fs.readFile(filePath, "utf8");

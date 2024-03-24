@@ -1,3 +1,5 @@
+// Description: Configuration de Multer pour le téléchargement de fichiers
+
 const multer = require("multer");
 const path = require("path");
 

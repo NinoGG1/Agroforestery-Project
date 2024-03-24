@@ -1,9 +1,10 @@
+// Description: Fonction utilitaire pour téléverser un fichier sur IPFS via Pinata.
+
 const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
 require("dotenv").config();
 
-// Modifiez la fonction pour accepter des paramètres pour le chemin du fichier, le nom et les métadonnées supplémentaires
 const pinFileToIPFS = async (filePath, fileName, pinataMetadata = {}) => {
   try {
     let data = new FormData();
