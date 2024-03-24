@@ -41,7 +41,4 @@ const pinFileToIPFS = async (filePath, fileName, pinataMetadata = {}) => {
   }
 };
 
-// Exemple d'utilisation
-// pinFileToIPFS('./path/to/yourfile.pdf', 'Your File Name');
-
 module.exports = { pinFileToIPFS };

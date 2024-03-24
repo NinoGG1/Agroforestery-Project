@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" }); // Stocke les fichiers téléversés temporairement
 const { pinFileToIPFS } = require("../utils/ipfsUpload");
-const upload = require("../utils/multerConfig");
 const fs = require("fs");
+const upload = multer({ dest: "uploads/" }); // Stocke les fichiers téléversés temporairement dans le dossier uploads
 
 router.post("/uploadToIPFS", upload.single("file"), async (req, res) => {
   if (!req.file) {
@@ -14,11 +13,6 @@ router.post("/uploadToIPFS", upload.single("file"), async (req, res) => {
   try {
     // Appeler pinFileToIPFS pour téléverser le fichier sur IPFS via Pinata
     const ipfsHash = await pinFileToIPFS(req.file.path, req.file.originalname);
-
-    // Supprimer le fichier temporaire
-    // fs.unlink(req.file.path, (err) => {
-    //   if (err) console.error("Erreur lors de la suppression du fichier :", err);
-    // });
 
     // Répondre avec le hash IPFS et l'URL du fichier téléversé
     res.send({
@@ -45,38 +39,33 @@ router.post("/getMetadatas", upload.single("file"), async (req, res) => {
     // Exemple d'extraction de données spécifiques du JSON
     const nomCommuun = jsonData.materiaux_forestiers.nom_commun;
     const numCertificat = jsonData.numero_certificat_ce;
-    const categorieDuMateriel = jsonData.materiaux_forestiers
-      .categorie_du_materiel_reproducteur.selectionnée
-      ? "Sélectionnée"
-      : "Identifiée";
     const natureDuMaterielReproducteur = jsonData.materiaux_forestiers
       .nature_du_materiel_reproducteur.graines
       ? "Graines"
-      : "Plants";
+      : jsonData.materiaux_forestiers.nature_du_materiel_reproducteur.plants
+      ? "Plants"
+      : "parties_de_plantes";
 
     // Ici, construisez votre objet de métadonnées en utilisant les données extraites
     const metadataObject = {
       name: `${natureDuMaterielReproducteur} ${nomCommuun} #${numCertificat}`,
       description: `Semence de ${nomCommuun}, catégorie ${categorieDuMateriel}, origine France.`,
       attributes: [
-        // A compléter avec les attributs nécessaires
-        // { trait_type: "nom_commun", value: autresInfos.nom_commun },
-        // {
-        //   trait_type: "categorie_du_materiel_reproducteur",
-        //   value: autresInfos.categorie_du_materiel_reproducteur,
-        // },
-        // { trait_type: "Certificat-maitre", value: certificatMaitreLink },
-        // {
-        //   trait_type: "Document du fournisseur",
-        //   value: documentFournisseurLink,
-        // },
-        // Ajoutez d'autres attributs ici selon vos besoins
+        { trait_type: "nom_commun", value: nomCommuun },
+        {
+          trait_type: "nature_du_materiel_reproducteur",
+          value: natureDuMaterielReproducteur,
+        },
+        { trait_type: "Certificat-maitre", value: certificatMaitreLink },
+        {
+          trait_type: "Document du fournisseur",
+          value: documentFournisseurLink,
+        },
       ],
-      // Complétez avec les autres champs nécessaires
     };
 
     // Vous pouvez ensuite convertir metadataObject en string et le téléverser sur IPFS
-    // const metadataUri = await pinJSONToIPFS(metadataObject);
+    const metadataUri = await pinFileToIPFS(metadataObject);
 
     res.send({ message: "Certificat traité avec succès.", metadataObject });
   } catch (error) {

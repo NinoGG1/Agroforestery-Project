@@ -13,11 +13,11 @@
     },
     {
       "trait_type": "Certificat-maitre",
-      "value": "ipfs://bafybeic32i5jxslnosacbpr2zk6hnjzki6v6w262sdzzhsu6trfrx7nxiq/CM_20R047-QPE205_006.jpg"
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg"
     },
         {
-      "trait_type": "DF1",
-      "value": "0x123...abc"
+      "trait_type": "Certificat-maitre",
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg"
     }
   ]
 }
