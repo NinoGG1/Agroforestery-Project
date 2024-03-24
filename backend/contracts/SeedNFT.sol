@@ -1,49 +1,53 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.23;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract SeedNFT is ERC1155, Ownable {
-    uint256 private _currentTokenID = 0;
+contract SeedSFT is ERC1155, Ownable {
+    using Strings for uint256;
 
-    // Structure pour stocker les informations des tokens
-    struct TokenData {
-        string masterCertificateHash; // Hash du certificat maître
-        string df1Hash; // Hash DF1
+    // Structure pour stocker les données Seed  
+    struct Seed {
+        uint CmHash;
+        uint Df1Hash;
     }
 
-    // Mapping de l'ID du token à ses données
-    mapping(uint256 => TokenData) public tokenData;
+    // Mapping pour suivre les données Seed par ID de token
+    mapping(uint256 => Seed) public seedData;
+    // Mapping pour suivre si l'URI d'un token a déjà été défini
+    mapping(uint256 => bool) private _uriHasBeenSet;
 
-    constructor() ERC1155("https://ipfs://bafkreib36xiiiot35oxpoidw6yjzghkwy2ob33sow6bubn2ft5o43uerdu/{id}.json") {}
+    constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
 
-    // Fonction pour créer un nouveau token
-    function mint(
-        address to, 
-        uint256 amount, 
-        string memory masterCertificateHash, 
-        string memory df1Hash
-    ) public onlyOwner {
-        uint256 newTokenID = _currentTokenID++;
-        _mint(to, newTokenID, amount, "");
+    // Evénement pour suivre les données Seed
+    event SeedData(uint256 indexed tokenId, uint cmHash, uint df1Hash);
+
+    // Modifier la fonction mint pour inclure les données Seed
+    function mint(address account, uint256 id, uint256 amount, string memory tokenURI, uint cmHash, uint df1Hash) public onlyOwner {
+        require(!_uriHasBeenSet[id], "MyERC1155: URI already set for this token");
         
-        tokenData[newTokenID] = TokenData(masterCertificateHash, df1Hash);
-    }
-
-    // Fonction pour récupérer les données du token
-    function getTokenData(uint256 tokenId) public view returns (TokenData memory) {
-        require(bytes(tokenData[tokenId].masterCertificateHash).length > 0, "Token does not exist");
-        return tokenData[tokenId];
-    }
-
-    // Override de uri pour retourner les métadonnées du NFT
-    function uri(uint256 tokenId) public view override returns (string memory) {
-        require(bytes(tokenData[tokenId].masterCertificateHash).length > 0, "Token does not exist");
+        // Mint le token
+        _mint(account, id, amount, "");
         
-        TokenData memory data = tokenData[tokenId];
-        // Vous pouvez ici construire dynamiquement l'URI de métadonnées ou pointer vers un emplacement spécifique
-        // Cette URL peut pointer vers un service qui retourne les métadonnées JSON du token
+        // Associer les données Seed avec l'ID de token
+        seedData[id] = Seed(cmHash, df1Hash);
+
+        // Définir l'URI pour ce token
+        _setURI(tokenURI);
+
+        // Marquer l'URI comme défini
+        _uriHasBeenSet[id] = true;
+
+        // Émettre l'événement avec les données Seed
+        emit SeedData(id, cmHash, df1Hash);
+    }
+    
+    // Surcharge de la fonction uri pour inclure la logique de récupération de l'URI spécifique
+    function uri(uint256 tokenId) override public view returns (string memory) {
+        require(_uriHasBeenSet[tokenId], "MyERC1155: URI not set yet.");
+
         return string(abi.encodePacked(super.uri(tokenId), tokenId.toString()));
     }
 }
