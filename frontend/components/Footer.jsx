@@ -1,16 +1,17 @@
-"use client"
-import { Flex, Text } from '@chakra-ui/react'
+"use client";
+import { Flex, Text } from "@chakra-ui/react";
 
 const Footer = () => {
   return (
     <Flex
-        p="2rem"
-        justifyContent="center"
-        alignItems="center"
+      p="0.8rem"
+      justifyContent="center"
+      alignItems="center"
+      backgroundColor="color1"
     >
-        <Text>All rights reserved &copy; Alyra {new Date().getFullYear()}</Text>
+      <Text color="white">xxx</Text>
     </Flex>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

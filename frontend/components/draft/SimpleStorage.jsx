@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 // Données du contrat
 import { contractAddress, contractAbi } from "@/constants";
 // On importe le publicClient créé (voir ce fichier pour avoir les commentaires sur ce que fait réellement ce publicClient)
-import { publicClient } from "../utils/client";
+import { publicClient } from "../../utils/client";
 // ChakraUI
 import {
   Flex,

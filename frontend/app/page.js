@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { useAccount } from "wagmi";
 
 import NotConnected from "@/components/NotConnected";
-import SimpleStorage from "@/components/SimpleStorage";
+import SimpleStorage from "@/components/draft/SimpleStorage";
 
 import { Flex } from "@chakra-ui/react";
 import FileUploadForm from "@/components/FileUploadForm";
@@ -15,16 +15,15 @@ export default function Home() {
 
   return (
     <>
-      <FileUploadForm />
-      {/* {isConnected ? (
+      {isConnected ? (
         <>
-          <SimpleStorage />
+          <FileUploadForm />
         </>
       ) : (
         <>
           <NotConnected />
         </>
-      )} */}
+      )}
     </>
   );
 }
