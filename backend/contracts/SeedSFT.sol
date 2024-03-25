@@ -5,8 +5,13 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
+//Errors
+error UriAlreadyUsed();
+
 contract SeedSFT is ERC1155, Ownable {
     using Strings for uint256;
+
+    string private _uri;
 
     // Structure pour stocker les données Seed  
     struct Seed {
@@ -16,17 +21,15 @@ contract SeedSFT is ERC1155, Ownable {
 
     // Mapping pour suivre les données Seed par ID de token
     mapping(uint256 => Seed) public seedData;
-    // Mapping pour suivre si l'URI d'un token a déjà été défini
-    mapping(uint256 => bool) private _uriHasBeenSet;
 
-    constructor(address initialOwner) ERC1155("") Ownable(initialOwner) {}
+    constructor() ERC1155("") Ownable(msg.sender) {}
 
     // Evénement pour suivre les données Seed
     event SeedData(uint256 indexed tokenId, uint cmHash, uint df1Hash);
 
-    // Modifier la fonction mint pour inclure les données Seed
+// ************************ Mint ************************
+
     function mint(address account, uint256 id, uint256 amount, string memory tokenURI, uint cmHash, uint df1Hash) public onlyOwner {
-        require(!_uriHasBeenSet[id], "MyERC1155: URI already set for this token");
         
         // Mint le token
         _mint(account, id, amount, "");
@@ -37,17 +40,13 @@ contract SeedSFT is ERC1155, Ownable {
         // Définir l'URI pour ce token
         _setURI(tokenURI);
 
-        // Marquer l'URI comme défini
-        _uriHasBeenSet[id] = true;
-
         // Émettre l'événement avec les données Seed
         emit SeedData(id, cmHash, df1Hash);
     }
-    
-    // Surcharge de la fonction uri pour inclure la logique de récupération de l'URI spécifique
-    function uri(uint256 tokenId) override public view returns (string memory) {
-        require(_uriHasBeenSet[tokenId], "MyERC1155: URI not set yet.");
 
-        return string(abi.encodePacked(super.uri(tokenId), tokenId.toString()));
+// ************************ Getters ************************
+
+    function getSeedData(uint256 tokenId) public view returns (Seed memory) {
+        return seedData[tokenId];
     }
 }
