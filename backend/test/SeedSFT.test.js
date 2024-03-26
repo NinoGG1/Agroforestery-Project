@@ -8,8 +8,8 @@ describe("Test SeedSFT Contract", function () {
   const tokenId = 1;
   const amount = 100;
   const tokenURI = "https://example.com/token/1";
-  const cmHash = "123";
-  const df1Hash = "456";
+  const cmHash = "123abc";
+  const df1Hash = "456def";
   const addressZero = "0x0000000000000000000000000000000000000000";
 
   beforeEach(async function () {
@@ -72,8 +72,8 @@ describe("Test SeedSFT Contract", function () {
       const seed = await seedSFT.getSeedData(tokenId);
 
       // Vérification des informations
-      expect(seed.CmHash.toString()).to.equal("123");
-      expect(seed.Df1Hash.toString()).to.equal("456");
+      expect(seed.CmHash.toString()).to.equal("123abc");
+      expect(seed.Df1Hash.toString()).to.equal("456def");
     });
   });
 

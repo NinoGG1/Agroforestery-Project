@@ -9,7 +9,7 @@ describe("Test PlantSFT Contract", function () {
   const amount = 100;
   const tokenURI = "https://example.com/plant/1";
   const seedSFT_Uri = "https://example.com/seed/1";
-  const df2Hash = "123";
+  const df2Hash = "123abc";
   const addressZero = "0x0000000000000000000000000000000000000000";
 
   beforeEach(async function () {
@@ -65,7 +65,7 @@ describe("Test PlantSFT Contract", function () {
       expect(plant.seedSFT_Uri.toString()).to.equal(
         "https://example.com/seed/1"
       );
-      expect(plant.df2Hash.toString()).to.equal("123");
+      expect(plant.df2Hash.toString()).to.equal("123abc");
     });
   });
 });
