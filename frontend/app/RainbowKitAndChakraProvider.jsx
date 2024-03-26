@@ -1,7 +1,7 @@
 "use client";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, theme } from "@chakra-ui/react";
+import customTheme from "./customTheme";
 import "@rainbow-me/rainbowkit/styles.css";
-
 import {
   getDefaultConfig,
   RainbowKitProvider,
@@ -24,8 +24,8 @@ const RainbowKitAndChakraProvider = ({ children }) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme()}>
-          <ChakraProvider>{children}</ChakraProvider>
+        <RainbowKitProvider>
+          <ChakraProvider theme={customTheme}>{children}</ChakraProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
