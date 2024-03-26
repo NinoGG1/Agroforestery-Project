@@ -6,18 +6,20 @@ import NotConnected from "@/components/NotConnected";
 import SimpleStorage from "@/components/draft/SimpleStorage";
 
 import { Flex } from "@chakra-ui/react";
-import FileUploadForm from "@/components/FileUploadForm";
+import Dashboard from "@/components/Dashboard";
+import { useReadFunctions } from "@/context/ReadFunctions";
 
 export default function Home() {
   // On récupère l'adresse du compte qui est connecté à la DApp
   // On récupère aussi s'il y a qqn connecté ou pas
   const { address, isConnected } = useAccount();
+  const { ownerAddress } = useReadFunctions();
 
   return (
     <>
-      {isConnected ? (
+      {(address === ownerAddress) & isConnected ? (
         <>
-          <FileUploadForm />
+          <Dashboard />
         </>
       ) : (
         <>

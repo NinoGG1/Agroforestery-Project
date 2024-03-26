@@ -3,47 +3,41 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { contractAddress, contractAbi } from "@/constants";
+import { SeedSFTAddress, SeedSFTAbi } from "@/constants";
 
 const ReadFunctionsContext = createContext();
 
 export const ReadFunctionsProvider = ({ children }) => {
   const { address } = useAccount();
+  const [tokenId, setTokenId] = useState(null);
 
   // Read the owner of the contract
   const { data: ownerAddress } = useReadContract({
-    address: contractAddress,
-    abi: contractAbi,
+    address: SeedSFTAddress,
+    abi: SeedSFTAbi,
     functionName: "owner",
   });
 
-  // Read the workflow status
+  // Read seed data
   const {
-    data: workflowStatus,
-    error: getWorkflowStatusError,
-    isPending: getWorflowStatusIsPending,
-    refetch: refetchWorkflowStatus,
+    data: seedData,
+    error: getSeedDataError,
+    isPending: getSeedDataIsPending,
+    refetch: refetchSeedData,
   } = useReadContract({
-    address: contractAddress,
-    abi: contractAbi,
-    functionName: "workflowStatus",
-  });
-
-  // Read the winner of the vote
-  const { data: winner, refetch: refetchWinningProposalId } = useReadContract({
-    address: contractAddress,
-    abi: contractAbi,
-    functionName: "winningProposalID",
+    address: SeedSFTAddress,
+    abi: SeedSFTAbi,
+    functionName: "getSeedData",
+    args: [tokenId],
   });
 
   return (
     <ReadFunctionsContext.Provider
       value={{
         ownerAddress,
-        workflowStatus,
-        refetchWorkflowStatus,
-        refetchWinningProposalId,
-        winner,
+        seedData,
+        refetchSeedData: (newTokenId) =>
+          refetchSeedData({ args: [newTokenId] }),
       }}
     >
       {children}

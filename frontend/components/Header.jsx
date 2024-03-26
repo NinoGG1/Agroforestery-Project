@@ -36,7 +36,7 @@ const Header = () => {
       pt="0.5rem"
       pb="0.5rem"
     >
-      <Heading size="lg">Voting DApp</Heading>
+      <Heading size="lg">Agroforest Project</Heading>
       <Flex align-items="center">
         <ConnectButton
           accountStatus="avatar"
