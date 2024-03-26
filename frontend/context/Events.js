@@ -11,7 +11,7 @@ export const EventsProvider = ({ children }) => {
   const { address } = useAccount();
 
   // Function for fetching events
-  const fetchEvents = async (eventSignature) => {
+  const fetchSeedEvents = async (eventSignature) => {
     return await publicClient.getLogs({
       address: SeedSFTAddress,
       event: parseAbiItem(eventSignature),
@@ -21,10 +21,43 @@ export const EventsProvider = ({ children }) => {
     });
   };
 
+  // TransferSingle Event
+  const [transferSingleSeedEvent, setTransferSingleSeedEvent] = useState([]);
+  const getTransferSingleSeedEvent = async () => {
+    const transferSingleSeedEvent = await fetchSeedEvents(
+      "event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value)"
+    );
+
+    setTransferSingleSeedEvent(
+      transferSingleSeedEvent.map((log) => ({
+        operator: log.args.operator,
+        from: log.args.from,
+        to: log.args.to,
+        id: log.args.id.toString(),
+        value: log.args.value.toString(),
+      }))
+    );
+  };
+
+  // URI Event
+  const [uriSeedEvent, setUriSeedEvent] = useState([]);
+  const getUriSeedEvent = async () => {
+    const uriSeedEvent = await fetchSeedEvents(
+      "event URI(string value, uint256 indexed id)"
+    );
+
+    setUriSeedEvent(
+      uriSeedEvent.map((log) => ({
+        value: log.args.value.toString(),
+        id: log.args.id,
+      }))
+    );
+  };
+
   // SeedData Event
   const [seedDataEvent, setseedDataEvent] = useState([]);
   const getSeedDataEvent = async () => {
-    const seedDataEvent = await fetchEvents(
+    const seedDataEvent = await fetchSeedEvents(
       "event SeedData(uint256 indexed tokenId, uint cmHash, uint df1Hash)"
     );
 
@@ -41,6 +74,8 @@ export const EventsProvider = ({ children }) => {
   useEffect(() => {
     const getAllEvents = async () => {
       if (address !== "undefined") {
+        await getTransferSingleSeedEvent();
+        await getUriSeedEvent();
         await getSeedDataEvent();
       }
     };
@@ -50,7 +85,11 @@ export const EventsProvider = ({ children }) => {
   return (
     <EventsContext.Provider
       value={{
+        transferSingleSeedEvent,
+        uriSeedEvent,
         seedDataEvent,
+        getTransferSingleSeedEvent,
+        getUriSeedEvent,
         getSeedDataEvent,
       }}
     >
