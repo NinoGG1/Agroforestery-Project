@@ -16,7 +16,7 @@ contract PlantSFT is ERC1155, Ownable {
     // Structure pour stocker les données Seed  
     struct plant {
         string seedSFT_Uri;
-        uint df2Hash;
+        string df2Hash;
     }
 
     // Mapping pour suivre les données Plant par ID de token
@@ -25,23 +25,23 @@ contract PlantSFT is ERC1155, Ownable {
     constructor() ERC1155("") Ownable(msg.sender) {}
 
     // Evénement pour suivre les données Seed
-    event PlantData(uint256 indexed tokenId, string seedSFT_Uri, uint df2Hash);
+    event PlantData(uint256 indexed tokenId, string seedSFT_Uri, string df2Hash);
 
 // ************************ Mint ************************
 
-    function mint(address account, uint256 id, uint256 amount, string memory tokenURI, string memory seedSFT_Uri, uint df2Hash) public onlyOwner {
+    function mint(address account, uint256 tokenId, uint256 amount, string memory tokenURI, string memory seedSFT_Uri, string memory df2Hash) public onlyOwner {
         
         // Mint le token
-        _mint(account, id, amount, "");
+        _mint(account, tokenId, amount, "");
         
         // Associer les données Seed avec l'ID de token
-        plantData[id] = plant(seedSFT_Uri, df2Hash);
+        plantData[tokenId] = plant(seedSFT_Uri, df2Hash);
 
         // Définir l'URI pour ce token
         _setURI(tokenURI);
 
         // Émettre l'événement avec les données Seed
-        emit PlantData(id, seedSFT_Uri, df2Hash);
+        emit PlantData(tokenId, seedSFT_Uri, df2Hash);
     }
 
 // ************************ Getters ************************

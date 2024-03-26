@@ -14,39 +14,39 @@ contract SeedSFT is ERC1155, Ownable {
     string private _uri;
 
     // Structure pour stocker les données Seed  
-    struct Seed {
-        uint CmHash;
-        uint Df1Hash;
+    struct seed {
+        string CmHash;
+        string Df1Hash;
     }
 
     // Mapping pour suivre les données Seed par ID de token
-    mapping(uint256 => Seed) public seedData;
+    mapping(uint => seed) public seedData;
 
     constructor() ERC1155("") Ownable(msg.sender) {}
 
     // Evénement pour suivre les données Seed
-    event SeedData(uint256 indexed tokenId, uint cmHash, uint df1Hash);
+    event SeedData(uint256 indexed tokenId, string cmHash, string df1Hash);
 
 // ************************ Mint ************************
 
-    function mint(address account, uint256 id, uint256 amount, string memory tokenURI, uint cmHash, uint df1Hash) public onlyOwner {
+    function mint(address account, uint tokenId, uint256 amount, string memory tokenURI,string memory cmHash, string memory df1Hash) public onlyOwner {
         
         // Mint le token
-        _mint(account, id, amount, "");
+        _mint(account, tokenId, amount, "");
         
         // Associer les données Seed avec l'ID de token
-        seedData[id] = Seed(cmHash, df1Hash);
+        seedData[tokenId] = seed(cmHash, df1Hash);
 
         // Définir l'URI pour ce token
         _setURI(tokenURI);
 
         // Émettre l'événement avec les données Seed
-        emit SeedData(id, cmHash, df1Hash);
+        emit SeedData(tokenId, cmHash, df1Hash);
     }
 
 // ************************ Getters ************************
 
-    function getSeedData(uint256 tokenId) public view returns (Seed memory) {
+    function getSeedData(uint tokenId) public view returns (seed memory) {
         return seedData[tokenId];
     }
 }
