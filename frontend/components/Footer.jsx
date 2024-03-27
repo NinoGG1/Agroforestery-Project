@@ -4,12 +4,12 @@ import { Flex, Text } from "@chakra-ui/react";
 const Footer = () => {
   return (
     <Flex
-      p="0.8rem"
+      p="2rem"
       justifyContent="center"
       alignItems="center"
       backgroundColor="color1"
     >
-      <Text color="white">xxx</Text>
+      <Text color="white">Tous droits réservés - AgriForest Project</Text>
     </Flex>
   );
 };

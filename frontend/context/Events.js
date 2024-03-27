@@ -116,6 +116,7 @@ export const EventsProvider = ({ children }) => {
         mergedSeedEvents,
         getTransferSingleSeedEvent,
         getSeedDataEvent,
+        mergeSeedEvents,
       }}
     >
       {children}

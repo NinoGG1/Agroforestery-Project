@@ -20,6 +20,8 @@ import {
   Tbody,
   Td,
   Link,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import {
@@ -59,6 +61,7 @@ const SeedSFTMint = () => {
     getUriSeedEvent,
     getTransferSingleSeedEvent,
     mergedSeedEvents,
+    mergeSeedEvents,
   } = useContext(EventsContext);
 
   // Mint SFT
@@ -84,6 +87,7 @@ const SeedSFTMint = () => {
         setTokenUri("");
         getSeedDataEvent();
         getTransferSingleSeedEvent();
+        mergeSeedEvents();
       },
       onError: (error) => {
         toast({
@@ -111,78 +115,99 @@ const SeedSFTMint = () => {
 
   return (
     <div>
-      <Box p={4} maxWidth="500px" mx="auto">
-        <form onSubmit={mintSeedSft}>
-          <FormControl id="owner-address" isRequired>
-            <FormLabel>Adresse du propriétaire</FormLabel>
-            <Input
-              type="text"
-              value={ownerAddress}
-              onChange={(e) => setOwnerAddress(e.target.value)}
-              placeholder="Ajouter l'adresse du propriétaire"
-            />
-          </FormControl>
+      <Box mx="auto">
+        <Grid
+          bg={"gray.900"}
+          borderRadius={"10px"}
+          mt={"2rem"}
+          templateColumns="repeat(2, 1fr)"
+          gap={"1rem"}
+          p={"2rem"}
+        >
+          <GridItem colSpan={2}>
+            <FormControl id="owner-address" isRequired>
+              <FormLabel>Adresse du pépiniériste</FormLabel>
+              <Input
+                type="text"
+                value={ownerAddress}
+                onChange={(e) => setOwnerAddress(e.target.value)}
+                placeholder="Ajouter l'adresse du pépiniériste"
+              />
+            </FormControl>
+          </GridItem>
 
-          <FormControl id="token-id" mt={4} isRequired>
-            <FormLabel>ID du Token</FormLabel>
-            <Input
-              type="text"
-              value={tokenId}
-              onChange={(e) => setTokenId(e.target.value)}
-              placeholder="Ajouter l'ID du token"
-            />
-          </FormControl>
+          <GridItem>
+            <FormControl id="token-id" isRequired>
+              <FormLabel>ID du Token</FormLabel>
+              <Input
+                type="text"
+                value={tokenId}
+                onChange={(e) => setTokenId(e.target.value)}
+                placeholder="Ajouter l'ID du token"
+              />
+            </FormControl>
+          </GridItem>
 
-          <FormControl id="token-quantity" mt={4} isRequired>
-            <FormLabel>Quantité de Token</FormLabel>
-            <Input
-              type="number"
-              value={tokenQuantity}
-              onChange={(e) => setTokenQuantity(e.target.value)}
-              placeholder="Ajouter la quantité de token"
-              min={1}
-            />
-          </FormControl>
+          <GridItem>
+            <FormControl id="token-uri" isRequired>
+              <FormLabel>Uri des metadatas du token</FormLabel>
+              <Input
+                type="text"
+                value={tokenUri}
+                onChange={(e) => setTokenUri(e.target.value)}
+                placeholder="Ajouter l'Uri du token"
+              />
+            </FormControl>
+          </GridItem>
 
-          <FormControl id="token-uri" mt={4} isRequired>
-            <FormLabel>Uri des metadatas du token</FormLabel>
-            <Input
-              type="text"
-              value={tokenUri}
-              onChange={(e) => setTokenUri(e.target.value)}
-              placeholder="Ajouter l'Uri du token"
-            />
-          </FormControl>
+          <GridItem>
+            <FormControl id="token-quantity" isRequired>
+              <FormLabel>Quantité de Token</FormLabel>
+              <Input
+                type="number"
+                value={tokenQuantity}
+                onChange={(e) => setTokenQuantity(e.target.value)}
+                placeholder="Ajouter la quantité de token"
+                min={1}
+              />
+            </FormControl>
+          </GridItem>
 
-          <FormControl id="master-cert-hash" mt={4} isRequired>
-            <FormLabel>Hash du Certificat Maître</FormLabel>
-            <Input
-              type="text"
-              value={CM1Hash}
-              onChange={(e) => setCM1Hash(e.target.value)}
-              placeholder="Ajouter le hash du Certificat Maître"
-            />
-          </FormControl>
+          <GridItem>
+            <FormControl id="master-cert-hash" isRequired>
+              <FormLabel>Hash du Certificat Maître</FormLabel>
+              <Input
+                type="text"
+                value={CM1Hash}
+                onChange={(e) => setCM1Hash(e.target.value)}
+                placeholder="Ajouter le hash du Certificat Maître"
+              />
+            </FormControl>
+          </GridItem>
 
-          <FormControl id="supplier-doc-hash" mt={4} isRequired>
-            <FormLabel>Hash du Document du Fournisseur 1</FormLabel>
-            <Input
-              type="text"
-              value={DF1Hash}
-              onChange={(e) => setDF1Hash(e.target.value)}
-              placeholder="Ajouter le hash du Document du Fournisseur 1"
-            />
-          </FormControl>
+          <GridItem>
+            <FormControl id="supplier-doc-hash" isRequired>
+              <FormLabel>Hash du Document du Fournisseur 1</FormLabel>
+              <Input
+                type="text"
+                value={DF1Hash}
+                onChange={(e) => setDF1Hash(e.target.value)}
+                placeholder="Ajouter le hash du Document du Fournisseur 1"
+              />
+            </FormControl>
+          </GridItem>
 
-          <Button
-            disabled={mintSeedSftPending}
-            mt={6}
-            colorScheme="green"
-            onClick={mintSeedSft}
-          >
-            {mintSeedSftPending ? "Confirming..." : "Minter le SFT"}
-          </Button>
-        </form>
+          <GridItem colSpan={2} mt={"1rem"}>
+            <Button
+              disabled={mintSeedSftPending}
+              bgColor={"#2E4039"}
+              onClick={mintSeedSft}
+              width="full" // Assure que le bouton s'étend sur toute la largeur disponible
+            >
+              {mintSeedSftPending ? "Confirming..." : "Minter le SFT"}
+            </Button>
+          </GridItem>
+        </Grid>
         <Flex direction="column">
           {hash && (
             <Alert status="success" mt="1rem" mb="1rem">
@@ -210,41 +235,6 @@ const SeedSFTMint = () => {
             </Alert>
           )}
         </Flex>
-        <Table variant="striped" mt={"2rem"}>
-          <Thead>
-            <Tr>
-              <Th>Id</Th>
-              <Th>To</Th>
-              <Th>Value</Th>
-              <Th>CM1Hash</Th>
-              <Th>DF1Hash</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {mergedSeedEvents.map((seed, index) => (
-              <Tr key={crypto.randomUUID()}>
-                <Td p={"1rem"}>
-                  <Link href={seed.tokenURI} isExternal>
-                    {seed.id}
-                  </Link>
-                </Td>
-                <Td p={"1rem"}>
-                  {seed.to.substring(0, 6)}...
-                  {seed.to.substring(seed.to.length - 3)}
-                </Td>
-                <Td p={"1rem"}>{seed.value}</Td>
-                <Td p={"1rem"}>
-                  {seed.cmHash?.substring(0, 6) || "N/A"}...
-                  {seed.cmHash?.substring(seed.cmHash.length - 3) || "N/A"}
-                </Td>
-                <Td p={"1rem"}>
-                  {seed.df1Hash?.substring(0, 6) || "N/A"}...
-                  {seed.df1Hash?.substring(seed.cmHash.length - 3) || "N/A"}
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
       </Box>
 
       {/* ************* Upload de fichiers ************* */}
