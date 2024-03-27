@@ -25,7 +25,7 @@ contract SeedSFT is ERC1155, Ownable {
     constructor() ERC1155("") Ownable(msg.sender) {}
 
     // Evénement pour suivre les données Seed
-    event SeedData(uint256 indexed tokenId, string cmHash, string df1Hash);
+    event SeedData(uint256 indexed tokenId, string tokenURI, string cmHash, string df1Hash);
 
 // ************************ Mint ************************
 
@@ -41,7 +41,7 @@ contract SeedSFT is ERC1155, Ownable {
         _setURI(tokenURI);
 
         // Émettre l'événement avec les données Seed
-        emit SeedData(tokenId, cmHash, df1Hash);
+        emit SeedData(tokenId, tokenURI, cmHash, df1Hash);
     }
 
 // ************************ Getters ************************

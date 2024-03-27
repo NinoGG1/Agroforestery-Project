@@ -25,7 +25,7 @@ contract PlantSFT is ERC1155, Ownable {
     constructor() ERC1155("") Ownable(msg.sender) {}
 
     // Evénement pour suivre les données Seed
-    event PlantData(uint256 indexed tokenId, string seedSFT_Uri, string df2Hash);
+    event PlantData(uint256 indexed tokenId, string tokenURI, string seedSFT_Uri, string df2Hash);
 
 // ************************ Mint ************************
 
@@ -41,7 +41,7 @@ contract PlantSFT is ERC1155, Ownable {
         _setURI(tokenURI);
 
         // Émettre l'événement avec les données Seed
-        emit PlantData(tokenId, seedSFT_Uri, df2Hash);
+        emit PlantData(tokenId, tokenURI, seedSFT_Uri, df2Hash);
     }
 
 // ************************ Getters ************************

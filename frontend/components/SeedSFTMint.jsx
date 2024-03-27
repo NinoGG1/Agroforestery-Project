@@ -58,6 +58,7 @@ const SeedSFTMint = () => {
     getSeedDataEvent,
     getUriSeedEvent,
     getTransferSingleSeedEvent,
+    mergedSeedEvents,
   } = useContext(EventsContext);
 
   // Mint SFT
@@ -83,7 +84,6 @@ const SeedSFTMint = () => {
         setTokenUri("");
         getSeedDataEvent();
         getTransferSingleSeedEvent();
-        getUriSeedEvent();
       },
       onError: (error) => {
         toast({
@@ -221,16 +221,26 @@ const SeedSFTMint = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {transferSingleSeedEvent.map((seed, index) => (
+            {mergedSeedEvents.map((seed, index) => (
               <Tr key={crypto.randomUUID()}>
-                <Td p={"1rem"}> {seed.id}</Td>
+                <Td p={"1rem"}>
+                  <Link href={seed.tokenURI} isExternal>
+                    {seed.id}
+                  </Link>
+                </Td>
                 <Td p={"1rem"}>
                   {seed.to.substring(0, 6)}...
                   {seed.to.substring(seed.to.length - 3)}
                 </Td>
                 <Td p={"1rem"}>{seed.value}</Td>
-                <Td p={"1rem"}>0</Td>
-                <Td p={"1rem"}>0</Td>
+                <Td p={"1rem"}>
+                  {seed.cmHash?.substring(0, 6) || "N/A"}...
+                  {seed.cmHash?.substring(seed.cmHash.length - 3) || "N/A"}
+                </Td>
+                <Td p={"1rem"}>
+                  {seed.df1Hash?.substring(0, 6) || "N/A"}...
+                  {seed.df1Hash?.substring(seed.cmHash.length - 3) || "N/A"}
+                </Td>
               </Tr>
             ))}
           </Tbody>
