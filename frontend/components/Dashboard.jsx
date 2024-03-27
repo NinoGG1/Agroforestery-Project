@@ -15,13 +15,16 @@ import {
   Heading,
   Flex,
   Divider,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useReadFunctions } from "@/context/ReadFunctions";
 import SeedSFTMint from "./SeedSFTMint";
+import SFTCard from "./SFTCard"; // Assurez-vous d'importer votre composant SFTCard
 
-const Voting = () => {
+const Dashboard = ({ sfts }) => {
   const { address, isConnected } = useAccount();
   const { ownerAddress } = useReadFunctions();
+  const { colorMode } = useColorMode();
 
   return (
     <Grid w="100%" templateColumns="repeat(2, 1fr)" gap={"1rem"}>
@@ -38,9 +41,21 @@ const Voting = () => {
             p={"0"}
           >
             <TabList gap={"1rem"}>
-              <Tab>1.Mint SFT Seed</Tab>
-              <Tab>2.Mint SFT Plant</Tab>
-              <Tab>3.Mint NFT Tree</Tab>
+              {colorMode === "dark" ? (
+                <Tab textColor={"#A5D6A7"}>1.Mint SFT Seed</Tab>
+              ) : (
+                <Tab>1.Mint SFT Seed</Tab>
+              )}
+              {colorMode === "dark" ? (
+                <Tab textColor={"#A5D6A7"}>2.Mint SFT Plant</Tab>
+              ) : (
+                <Tab>2.Mint SFT Plant</Tab>
+              )}
+              {colorMode === "dark" ? (
+                <Tab textColor={"#A5D6A7"}>3.Mint NFT Tree</Tab>
+              ) : (
+                <Tab>3.Mint NFT Tree</Tab>
+              )}
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -61,11 +76,17 @@ const Voting = () => {
           <Heading as="h2" size="lg" mb={"2rem"}>
             Lecture des datas
           </Heading>
-          <p>Lire datas</p>
+          {/* <Grid templateColumns="repeat(auto-fill, minmax(250px, 1fr))" gap={6}>
+            {sfts.map((sft) => (
+              <GridItem key={sft.id}>
+                <SFTCard sft={sft} />
+              </GridItem>
+            ))}
+          </Grid> */}
         </Flex>
       </GridItem>
     </Grid>
   );
 };
 
-export default Voting;
+export default Dashboard;

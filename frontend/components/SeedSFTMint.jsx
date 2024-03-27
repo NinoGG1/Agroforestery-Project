@@ -12,6 +12,14 @@ import {
   Flex,
   Alert,
   AlertIcon,
+  Heading,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  Link,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import {
@@ -43,7 +51,14 @@ const SeedSFTMint = () => {
 
   const toast = useToast();
   const { address, isConnected } = useAccount();
-  const { seedDataEvent, getSeedDataEvent } = useContext(EventsContext);
+  const {
+    seedDataEvent,
+    transferSingleSeedEvent,
+    uriSeedEvent,
+    getSeedDataEvent,
+    getUriSeedEvent,
+    getTransferSingleSeedEvent,
+  } = useContext(EventsContext);
 
   // Mint SFT
   const {
@@ -67,6 +82,8 @@ const SeedSFTMint = () => {
         setDF1Hash("");
         setTokenUri("");
         getSeedDataEvent();
+        getTransferSingleSeedEvent();
+        getUriSeedEvent();
       },
       onError: (error) => {
         toast({
@@ -193,6 +210,31 @@ const SeedSFTMint = () => {
             </Alert>
           )}
         </Flex>
+        <Table variant="striped" mt={"2rem"}>
+          <Thead>
+            <Tr>
+              <Th>Id</Th>
+              <Th>To</Th>
+              <Th>Value</Th>
+              <Th>CM1Hash</Th>
+              <Th>DF1Hash</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {transferSingleSeedEvent.map((seed, index) => (
+              <Tr key={crypto.randomUUID()}>
+                <Td p={"1rem"}> {seed.id}</Td>
+                <Td p={"1rem"}>
+                  {seed.to.substring(0, 6)}...
+                  {seed.to.substring(seed.to.length - 3)}
+                </Td>
+                <Td p={"1rem"}>{seed.value}</Td>
+                <Td p={"1rem"}>0</Td>
+                <Td p={"1rem"}>0</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       </Box>
 
       {/* ************* Upload de fichiers ************* */}
