@@ -25,11 +25,11 @@ contract SeedSFT is ERC1155, Ownable {
     constructor() ERC1155("") Ownable(msg.sender) {}
 
     // Evénement pour suivre les données Seed
-    event SeedData(uint256 indexed tokenId, string tokenURI, string cmHash, string df1Hash);
+    event SeedData(uint256 indexed tokenId, string cid, string cmHash, string df1Hash);
 
 // ************************ Mint ************************
 
-    function mint(address account, uint tokenId, uint256 amount, string memory tokenURI,string memory cmHash, string memory df1Hash) public onlyOwner {
+    function mint(address account, uint tokenId, uint256 amount, string memory cid,string memory cmHash, string memory df1Hash) public onlyOwner {
         
         // Mint le token
         _mint(account, tokenId, amount, "");
@@ -38,10 +38,10 @@ contract SeedSFT is ERC1155, Ownable {
         seedData[tokenId] = seed(cmHash, df1Hash);
 
         // Définir l'URI pour ce token
-        _setURI(tokenURI);
+        _setURI(cid);
 
         // Émettre l'événement avec les données Seed
-        emit SeedData(tokenId, tokenURI, cmHash, df1Hash);
+        emit SeedData(tokenId, cid, cmHash, df1Hash);
     }
 
 // ************************ Getters ************************

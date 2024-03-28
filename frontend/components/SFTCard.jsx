@@ -45,14 +45,17 @@ const SFTCard = ({ sft }) => {
         >
           {/* Superposez votre contenu ici */}
           <Text fontSize="md" color={titleColor} fontWeight="bold">
-            Seed SFT
-            <Link href={sft.tokenURI} isExternal>
+            {sft.name}
+            <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
               #{sft.id}
             </Link>
           </Text>
           <VStack mt={"0.5rem"} align="start" gap={"0.5rem"}>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Propriétaire : {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
+              Grainier : {sft.operator.slice(0, 6)}...{sft.operator.slice(-4)}
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Pépiniériste : {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
             </Text>
             <Text fontSize="sm">Qté : {sft.value} sacs</Text>
             <Text fontSize="sm">

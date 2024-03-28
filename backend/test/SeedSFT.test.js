@@ -7,7 +7,7 @@ describe("Test SeedSFT Contract", function () {
 
   const tokenId = 1;
   const amount = 100;
-  const tokenURI = "https://example.com/token/1";
+  const cid = "QmRbU5hfL8UCP9LFNqQzGMgUrYG7WL58HNDMBVpcy5ZEZy";
   const cmHash = "123abc";
   const df1Hash = "456def";
   const addressZero = "0x0000000000000000000000000000000000000000";
@@ -33,7 +33,7 @@ describe("Test SeedSFT Contract", function () {
       await expect(
         seedSFT
           .connect(addr1)
-          .mint(addr2.address, tokenId, amount, tokenURI, cmHash, df1Hash)
+          .mint(addr2.address, tokenId, amount, cid, cmHash, df1Hash)
       )
         .to.be.revertedWithCustomError(seedSFT, "OwnableUnauthorizedAccount")
         .withArgs(addr1.address);
@@ -43,7 +43,7 @@ describe("Test SeedSFT Contract", function () {
     //   await expect(
     //     seedSFT
     //       .connect(owner)
-    //       .mint(addr1.address, tokenId, amount, tokenURI, cmHash, df1Hash)
+    //       .mint(addr1.address, tokenId, amount, cid, cmHash, df1Hash)
     //   )
     //     .to.emit(seedSFT, "TransferSingle")
     //     .withArgs(owner, addressZero, addr1.address, tokenId, amount);
@@ -53,10 +53,10 @@ describe("Test SeedSFT Contract", function () {
       await expect(
         seedSFT
           .connect(owner)
-          .mint(addr1.address, tokenId, amount, tokenURI, cmHash, df1Hash)
+          .mint(addr1.address, tokenId, amount, cid, cmHash, df1Hash)
       )
         .to.emit(seedSFT, "SeedData")
-        .withArgs(tokenId, cmHash, df1Hash);
+        .withArgs(tokenId, cid, cmHash, df1Hash);
     });
   });
 
@@ -66,7 +66,7 @@ describe("Test SeedSFT Contract", function () {
     it("Should get the SeedData of an SFT", async function () {
       await seedSFT
         .connect(owner)
-        .mint(addr1.address, tokenId, amount, tokenURI, cmHash, df1Hash);
+        .mint(addr1.address, tokenId, amount, cid, cmHash, df1Hash);
 
       // Appel de getSeedData pour récupérer les informations
       const seed = await seedSFT.getSeedData(tokenId);

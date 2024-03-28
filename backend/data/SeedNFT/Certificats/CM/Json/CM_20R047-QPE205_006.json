@@ -28,11 +28,14 @@
     "origine_du_materiel_de_base": "FRANCE - QPE205-Vallée de la Saône",
     "pays_et_region_de_provenance_du_materiel_de_base": "FRANCE",
     "altitude_ou_zone_altimetrique_du_site_du_materiel_de_base": "225 mètres",
+    "latitude_du_site_de_prélèvement_du_materiel_de_base": "47.000",
+    "longitude_du_site_de_prélèvement_du_materiel_de_base": "5.000",
     "annee_de_maturite_pour_les_graines": "2020",
     "quantite_de_materiel_reproducteur": {
       "en_lettres": "Vingt six hectolitres et soixante huit litres",
       "en_chiffres": "2668 HL"
     },
+
     "nature_de_la_graine": {
       "graines_recoltees_brutes": false,
       "graines_nettoyees_et_triees": true

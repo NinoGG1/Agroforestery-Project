@@ -150,12 +150,12 @@ const SeedSFTMint = () => {
 
           <GridItem>
             <FormControl id="token-uri" isRequired>
-              <FormLabel>Uri des metadatas du token</FormLabel>
+              <FormLabel>CID des metadatas du token</FormLabel>
               <Input
                 type="text"
                 value={tokenUri}
                 onChange={(e) => setTokenUri(e.target.value)}
-                placeholder="Ajouter l'Uri du token"
+                placeholder="Ajouter le CID du token"
               />
             </FormControl>
           </GridItem>

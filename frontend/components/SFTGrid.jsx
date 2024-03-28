@@ -8,7 +8,7 @@ const SFTGrid = ({ sfts }) => {
     <Box maxWidth="100vw" margin="auto" overflow="hidden">
       <Grid templateColumns="repeat(auto-fit, minmax(240px, 1fr))" gap={6}>
         {sfts.map((sft) => (
-          <GridItem key={sft.id}>
+          <GridItem key={crypto.randomUUID()}>
             <SFTCard sft={sft} />
           </GridItem>
         ))}

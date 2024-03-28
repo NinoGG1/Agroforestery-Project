@@ -1,23 +1,37 @@
 {
-  "name": "Semences Chêne sessile #1",
-  "description": "Semence de Chêne sessil, catégorie identifiée, origine France.",
-  "image": "",
+  "name": "Graines Chêne sessile #1",
+  "description": "Graines de Chêne sessile, catégorie identifiée, origine France.",
+  "numero_certificat_ce": "FR27-20 R 047",
+  "imageCM1": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg",
+  "imageDF1": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg",
   "attributes": [
     {
-      "trait_type": "nom_commun",
-      "value": "Chêne sessile"
+      "trait_type": "nom_botanique",
+      "value": "Quercus petraea"
+    },
+    {
+      "trait_type": "nature_du_materiel_reproducteur",
+      "value": "graines"
     },
     {
       "trait_type": "categorie_du_materiel_reproducteur",
-      "value": "Selectionnée"
+      "value": "selectionnée"
+    },
+    {
+      "trait_type": "latitude_du_site_de_prélèvement_du_materiel_de_base",
+      "value": "47.000"
+    },
+    {
+      "trait_type": "longitude_du_site_de_prélèvement_du_materiel_de_base",
+      "value": "5.000"
     },
     {
       "trait_type": "Certificat-maitre",
-      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg"
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.json"
     },
-        {
-      "trait_type": "Certificat-maitre",
-      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg"
+    {
+      "trait_type": "Document du fournisseur 1",
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.json"
     }
   ]
 }

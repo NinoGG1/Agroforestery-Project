@@ -12,8 +12,9 @@ export const EventsProvider = ({ children }) => {
 
   // ************* Seed Events ************* //
   const [mergedSeedEvents, setMergedSeedEvents] = useState([]);
+  const [metadata, setMetadata] = useState([]);
 
-  // Function for fetching Seed events
+  // Fonction pour récupérer les événements de SeedSFT
   const fetchSeedEvents = async (eventSignature) => {
     return await publicClient.getLogs({
       address: SeedSFTAddress,
@@ -22,6 +23,19 @@ export const EventsProvider = ({ children }) => {
       toBlock: "latest",
       account: address,
     });
+  };
+
+  // Fonction pour récupérer les métadonnées des Seeds
+  const fetchMetadata = async (cids) => {
+    const metadataPromises = cids.map(async (cid) => {
+      const url = `https://ipfs.io/ipfs/${cid}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      return { cid, ...data };
+    });
+    const metadataArray = await Promise.all(metadataPromises);
+    setMetadata(metadataArray);
+    console.log("metadataArray", metadataArray);
   };
 
   // TransferSingle Event
@@ -47,14 +61,14 @@ export const EventsProvider = ({ children }) => {
   const [seedDataEvent, setseedDataEvent] = useState([]);
   const getSeedDataEvent = async () => {
     const seedDataEvent = await fetchSeedEvents(
-      "event SeedData(uint256 indexed tokenId, string tokenURI, string cmHash, string df1Hash)"
+      "event SeedData(uint256 indexed tokenId, string cid, string cmHash, string df1Hash)"
     );
     console.log("seedDataEvent Response:", seedDataEvent);
 
     setseedDataEvent(
       seedDataEvent.map((log) => ({
         tokenId: log.args.tokenId.toString(),
-        tokenURI: log.args.tokenURI.toString(),
+        cid: log.args.cid.toString(),
         cmHash: log.args.cmHash.toString(),
         df1Hash: log.args.df1Hash.toString(),
       }))
@@ -63,48 +77,52 @@ export const EventsProvider = ({ children }) => {
 
   // Merge Seed events
   const mergeSeedEvents = () => {
-    // Créez un objet pour regrouper les événements par ID
+    // Création d'un objet pour regrouper les événements par ID/tokenId
     const seedEventsById = {};
 
-    // Traiter transferSingleSeedEvent
+    // Traiter transferSingleSeedEvent pour initialiser ou mettre à jour les événements
     transferSingleSeedEvent.forEach((event) => {
       const { id, ...rest } = event;
+      // Initialiser ou mettre à jour avec les informations de transferSingle
       seedEventsById[id] = { ...(seedEventsById[id] || {}), ...rest, id };
     });
 
-    // Traiter seedDataEvent
+    // Traiter seedDataEvent pour ajouter ou mettre à jour les informations basées sur le tokenId
     seedDataEvent.forEach((event) => {
-      const { tokenId, tokenURI, cmHash, df1Hash } = event;
+      const { tokenId, cid, cmHash, df1Hash } = event;
+      // Si l'événement basé sur tokenId existe déjà (à partir de transferSingleSeedEvent), fusionner les informations
       if (seedEventsById[tokenId]) {
         seedEventsById[tokenId] = {
           ...seedEventsById[tokenId],
-          tokenURI,
+          cid, // Inclure le CID pour une utilisation future éventuelle avec les métadonnées
           cmHash,
           df1Hash,
         };
       } else {
-        seedEventsById[tokenId] = { id: tokenId, tokenURI, cmHash, df1Hash };
+        // Si l'événement basé sur tokenId n'existe pas encore, initialiser avec les informations de seedDataEvent
+        seedEventsById[tokenId] = { id: tokenId, cid, cmHash, df1Hash };
       }
     });
 
-    // Convertir l'objet en tableau
-    return Object.values(seedEventsById);
+    // Convertir l'objet seedEventsById en un tableau d'événements fusionnés
+    const mergedEvents = Object.values(seedEventsById);
+
+    return mergedEvents;
   };
 
   // Récupération des events à la connexion
   useEffect(() => {
     const getAllEvents = async () => {
-      if (address !== "undefined") {
+      if (address !== undefined) {
         await getTransferSingleSeedEvent();
         await getSeedDataEvent();
+        await fetchMetadata(transferSingleSeedEvent.map((event) => event.cid));
       }
     };
     getAllEvents();
   }, [address]);
 
   useEffect(() => {
-    console.log("transferSingleSeedEvent Updated", transferSingleSeedEvent);
-    console.log("seedDataEvent Updated", seedDataEvent);
     setMergedSeedEvents(mergeSeedEvents());
   }, [transferSingleSeedEvent, seedDataEvent]); // Ecoute les mises à jour d'état
 

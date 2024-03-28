@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Layout from "@/components/Layout";
 import { EventsProvider } from "@/context/Events";
 import { ReadFunctionsProvider } from "@/context/ReadFunctions";
+import { MetadataProvider } from "@/context/Metadata";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({ children }) {
         <RainbowKitAndChakraProvider>
           <EventsProvider>
             <ReadFunctionsProvider>
-              <Layout>{children}</Layout>
+              <MetadataProvider>
+                <Layout>{children}</Layout>
+              </MetadataProvider>
             </ReadFunctionsProvider>
           </EventsProvider>
         </RainbowKitAndChakraProvider>

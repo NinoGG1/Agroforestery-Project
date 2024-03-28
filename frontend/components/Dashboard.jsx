@@ -1,7 +1,5 @@
 "use client";
 
-import { useAccount } from "wagmi";
-
 // Components
 import {
   Tabs,
@@ -21,36 +19,46 @@ import {
 import { useReadFunctions } from "@/context/ReadFunctions";
 import SeedSFTMint from "./SeedSFTMint";
 import SFTGrid from "./SFTGrid";
-import EventsContext from "@/context/Events";
 import { useContext, useEffect, useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import AllTransactions from "./AllTransactions";
+import { useAccount, address, isConnected } from "wagmi";
+import EventsContext from "@/context/Events";
+import MetadataContext from "@/context/Metadata";
 
 const Dashboard = () => {
   const { address, isConnected } = useAccount();
-  const { ownerAddress } = useReadFunctions();
   const { colorMode } = useColorMode();
-  const { mergedSeedEvents } = useContext(EventsContext);
-
+  const { mergedSeedEvents, mergeSeedEvents } = useContext(EventsContext);
+  const { metadata, fetchMetadata } = useContext(MetadataContext);
   const [sfts, setSfts] = useState([]);
 
   useEffect(() => {
-    // Exemple de récupération de vos événements
-    const fetchEvents = async () => {
-      const sftsData = mergedSeedEvents.map((event) => ({
-        id: event.id,
-        to: event.to,
-        value: event.value,
-        cmHash: event.cmHash,
-        df1Hash: event.df1Hash,
-        tokenURI: event.tokenURI,
-      }));
+    const cids = mergedSeedEvents
+      .map((event) => event.cid)
+      .filter((cid) => cid);
+    if (cids.length > 0) {
+      fetchMetadata(cids);
+    }
+  }, [mergedSeedEvents]);
 
-      setSfts(sftsData);
-    };
+  useEffect(() => {
+    // Fusionner les données mergedSeedEvents avec les métadonnées récupérées
+    const sftsData = mergedSeedEvents.map((event) => {
+      const metadataForEvent =
+        metadata.find((meta) => meta.cid === event.cid) || {};
+      return {
+        ...event,
+        ...metadataForEvent, // Ajoute les données des métadonnées correspondantes à chaque SFT
+      };
+    });
 
-    fetchEvents();
-  }, [address, isConnected, mergedSeedEvents]);
+    setSfts(sftsData);
+  }, [mergedSeedEvents, metadata]); // Dépend de la mise à jour des métadonnées et des mergedSeedEvents
+
+  useEffect(() => {
+    console.log("SFTs with Metadata:", sfts);
+  }, [sfts]);
 
   return (
     <div>
