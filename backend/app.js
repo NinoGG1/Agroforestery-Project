@@ -10,8 +10,8 @@ const app = express();
 app.use(cors());
 
 // Utilisez vos routes ici
-app.use("/hash", hashRoutes);
-app.use("/ipfs", ipfsRoutes);
+app.use("/", hashRoutes);
+app.use("/", ipfsRoutes);
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

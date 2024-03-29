@@ -26,8 +26,6 @@ router.post("/uploadToIPFS", upload.single("file"), async (req, res) => {
   }
 });
 
-const fs = require("fs").promises; // Utiliser fs.promises pour les opérations asynchrones
-
 router.post("/getMetadatas", upload.single("file"), async (req, res) => {
   const filePath = req.file.path;
 

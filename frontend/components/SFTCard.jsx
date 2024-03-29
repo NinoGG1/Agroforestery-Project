@@ -43,7 +43,6 @@ const SFTCard = ({ sft }) => {
           flexDirection="column"
           justifyContent="space-around"
         >
-          {/* Superposez votre contenu ici */}
           <Text fontSize="md" color={titleColor} fontWeight="bold">
             {sft.name}
             <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>

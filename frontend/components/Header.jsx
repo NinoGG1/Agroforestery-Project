@@ -58,7 +58,15 @@ const Header = () => {
       borderRadius={"0px 0px 20px 20px"}
       transition="background-color 0.3s"
     >
-      <Heading size="lg">Agroforest Project</Heading>
+      <Heading size="lg" display={"flex"} alignItems="center">
+        <Image
+          src="http://localhost:3000/assets/Logo.png"
+          h={"3rem"}
+          mr={"1rem"}
+        />
+        Tree Tracker
+      </Heading>
+
       <Flex align-items="center">
         <ConnectButton
           accountStatus="avatar"

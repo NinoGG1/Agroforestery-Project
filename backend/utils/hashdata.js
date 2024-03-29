@@ -16,9 +16,6 @@ async function hashJSONFromFile(filePath) {
       `Le hash du fichier '${path.basename(filePath)}' est : ${hash}`
     );
 
-    // Ici, vous pouvez ajouter une logique pour, par exemple,
-    // envoyer ce hash à un smart contract ou le stocker dans une base de données.
-
     return hash;
   } catch (error) {
     console.error("Erreur lors du hashage du fichier JSON :", error);

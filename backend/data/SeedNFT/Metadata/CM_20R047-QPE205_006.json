@@ -2,8 +2,8 @@
   "name": "Graines Chêne sessile #1",
   "description": "Graines de Chêne sessile, catégorie identifiée, origine France.",
   "numero_certificat_ce": "FR27-20 R 047",
-  "imageCM1": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg",
-  "imageDF1": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.jpg",
+  "pdfDocument1": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ",
+  "pdfDocument2": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ",
   "attributes": [
     {
       "trait_type": "nom_botanique",
@@ -27,11 +27,11 @@
     },
     {
       "trait_type": "Certificat-maitre",
-      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.json"
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ"
     },
     {
       "trait_type": "Document du fournisseur 1",
-      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ/CM_20R047-QPE205_006.json"
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ"
     }
   ]
 }

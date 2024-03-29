@@ -22,8 +22,15 @@ import {
   Link,
   Grid,
   GridItem,
+  Divider,
+  MenuDivider,
+  VStack,
+  HStack,
+  Stack,
+  StackDivider,
+  useBreakpointValue,
 } from "@chakra-ui/react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useAccount,
   useWriteContract,
@@ -31,40 +38,234 @@ import {
 } from "wagmi";
 import { SeedSFTAddress, SeedSFTAbi } from "@/constants";
 import EventsContext from "@/context/Events";
-import FileInput from "./FileInput";
+import TextInput from "./FormComponents/TextInput";
+import NumberInput from "./FormComponents/NumberInput";
+import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
+import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
+import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
 
 const SeedSFTMint = () => {
-  // ************* Upload de fichiers ************* //
-  //   const [selectedFile, setSelectedFile] = useState(null);
-
-  //   const handleFileChange = (event) => {
-  //     const file = event.target.files[0];
-  //     if (file) {
-  //       setSelectedFile(file);
-  //     }
-  //   };
-
   const [ownerAddress, setOwnerAddress] = useState("");
   const [tokenId, setTokenId] = useState("");
   const [tokenQuantity, setTokenQuantity] = useState("");
   const [tokenUri, setTokenUri] = useState("");
-  const [CM1Hash, setCM1Hash] = useState("");
-  const [DF1Hash, setDF1Hash] = useState("");
-
+  const [CM1JsonHash, setCM1JsonHash] = useState("");
+  const [CM1JsonCid, setCM1JsonCid] = useState("");
+  const [CM1PdfCid, setCM1PdfCid] = useState("");
+  const [DF1JsonHash, setDF1JsonHash] = useState("");
+  const [DF1JsonCid, setDF1JsonCid] = useState("");
+  const [DF1PdfCid, setDF1PdfCid] = useState("");
+  const [metadata, setMetadata] = useState({});
+  const [metadataCid, setMetadataCid] = useState("");
+  const documents = [
+    {
+      name: "Certificat Maître",
+      jsonCid: CM1JsonCid, // Exemple de CID IPFS pour JSON
+      pdfCid: CM1PdfCid, // Exemple de CID IPFS pour PDF
+    },
+    {
+      name: "Document du Fournisseur 1",
+      jsonCid: DF1JsonCid, // Pas encore chargé
+      pdfCid: DF1PdfCid, // Exemple de CID IPFS pour PDF
+    },
+  ];
   const toast = useToast();
   const { address, isConnected } = useAccount();
   const {
-    seedDataEvent,
-    transferSingleSeedEvent,
-    uriSeedEvent,
     getSeedDataEvent,
-    getUriSeedEvent,
     getTransferSingleSeedEvent,
     mergedSeedEvents,
     mergeSeedEvents,
   } = useContext(EventsContext);
 
-  // Mint SFT
+  // ******************* Gestion des fichiers *******************
+  // Obtenir le hash et le cid du fichier CM1 json
+  const handleChangeForCM1Json = ({ file, hash, ipfsHash }) => {
+    console.log("Fichier traité :", file);
+    console.log("Hash du fichier :", hash);
+    console.log("Hash IPFS :", ipfsHash);
+    setCM1JsonHash(hash);
+    setCM1JsonCid(ipfsHash);
+  };
+  // Obtenir le cid du fichier CM1 pdf
+  const handleChangeForCM1Pdf = ({ file, hash, ipfsHash }) => {
+    console.log("Fichier traité :", file);
+    console.log("Hash du fichier :", hash);
+    console.log("Hash IPFS :", ipfsHash);
+    setCM1PdfCid(ipfsHash);
+  };
+  // Obtenir le hash et le cid du fichier DF1 json
+  const handleChangeForDF1Json = ({ file, hash, ipfsHash }) => {
+    console.log("Fichier traité :", file);
+    console.log("Hash du fichier :", hash);
+    console.log("Hash IPFS :", ipfsHash);
+    setDF1JsonHash(hash);
+    setDF1JsonCid(ipfsHash);
+  };
+  // Obtenir le cid du fichier DF1 pdf
+  const handleChangeForDF1Pdf = ({ file, hash, ipfsHash }) => {
+    console.log("Fichier traité :", file);
+    console.log("Hash du fichier :", hash);
+    console.log("Hash IPFS :", ipfsHash);
+    setDF1PdfCid(ipfsHash);
+  };
+
+  // ******************* Préparation des métadonnées *******************
+  // Déterminer le prochain Id de token
+  const calculateNextTokenId = () => {
+    const lastTokenId = mergedSeedEvents.reduce((maxId, event) => {
+      const tokenId = parseInt(event.id, 10);
+      return tokenId > maxId ? tokenId : maxId;
+    }, 0);
+    return lastTokenId + 1;
+  };
+
+  const fetchJsonData = async (cid) => {
+    const url = `https://ipfs.io/ipfs/${cid}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  };
+
+  const createAndUploadMetadataObject = async () => {
+    setTokenId(calculateNextTokenId());
+    const CM1JsonData = await fetchJsonData(CM1JsonCid);
+    const DF1JsonData = await fetchJsonData(DF1JsonCid);
+
+    const newMetadata = {
+      // Nom du token
+      name: `${
+        CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur.graines
+          ? "Graines de "
+          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
+              .parties_de_plantes
+          ? "Parties_de_plantes de "
+          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
+              .plants
+          ? "Plants de "
+          : ""
+      }${CM1JsonData.materiaux_forestiers.nom_botanique} #${tokenId}`,
+
+      // Description du token
+      description: `${
+        CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur.graines
+          ? "Graines de "
+          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
+              .parties_de_plantes
+          ? "Parties_de_plantes de "
+          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
+              .plants
+          ? "Plants de "
+          : ""
+      }${CM1JsonData.materiaux_forestiers.nom_botanique} de catégorie ${
+        CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
+          .identifie
+          ? "identifié"
+          : CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
+              .selectionnée
+          ? "sélectionné"
+          : CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
+              .testée
+          ? "testé"
+          : ""
+      }`,
+      numero_certificat_ce: CM1JsonData.numero_certificat_ce,
+      Certificat_maitre_pdf: `ipfs://${CM1PdfCid}`,
+      Document_du_fournisseur_1_pdf: `ipfs://${DF1PdfCid}`,
+
+      quantité_de_colis_echangé:
+        DF1JsonData.autres_informations.nombre_de_colis_echange,
+      attributes: [
+        {
+          trait_type: "nom_botanique",
+          value: CM1JsonData.materiaux_forestiers.nom_botanique,
+        },
+        {
+          trait_type: "nature_du_materiel_reproducteur",
+          value: CM1JsonData.materiaux_forestiers
+            .nature_du_materiel_reproducteur.graines
+            ? "Graines"
+            : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
+                .parties_de_plantes
+            ? "Parties_de_plantes"
+            : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
+                .plants
+            ? "Plants"
+            : "",
+        },
+        {
+          trait_type: "categorie_du_materiel_reproducteur",
+          value: CM1JsonData.materiaux_forestiers
+            .categorie_du_materiel_reproducteur.identifie
+            ? "identifié"
+            : CM1JsonData.materiaux_forestiers
+                .categorie_du_materiel_reproducteur.selectionnée
+            ? "sélectionné"
+            : CM1JsonData.materiaux_forestiers
+                .categorie_du_materiel_reproducteur.testée
+            ? "testé"
+            : "",
+        },
+        {
+          trait_type: "latitude_du_site_de_prélèvement_du_materiel_de_base",
+          value:
+            CM1JsonData.materiaux_forestiers
+              .latitude_du_site_de_prélèvement_du_materiel_de_base,
+        },
+        {
+          trait_type: "longitude_du_site_de_prélèvement_du_materiel_de_base",
+          value:
+            CM1JsonData.materiaux_forestiers
+              .longitude_du_site_de_prélèvement_du_materiel_de_base,
+        },
+        {
+          trait_type: "quantité_totale_de_colis_lors_du_prélèvement",
+          value: CM1JsonData.materiaux_forestiers.nombre_de_colis,
+        },
+        {
+          trait_type: "Certificat_maitre_json",
+          value: `ipfs://${CM1JsonCid}`,
+        },
+
+        {
+          trait_type: "Document du fournisseur 1",
+          value: `ipfs://${DF1JsonCid}`,
+        },
+      ],
+    };
+
+    setMetadata(newMetadata);
+
+    // Convertir l'objet metadata en Blob JSON pour l'upload
+    const jsonBlob = new Blob([JSON.stringify(newMetadata)], {
+      type: "application/json",
+    });
+    const formData = new FormData();
+    formData.append("file", jsonBlob, "metadata.json");
+
+    // Uploader le Blob sur IPFS
+    try {
+      const response = await fetch("http://localhost:3001/uploadToIPFS", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Erreur lors de l'upload sur IPFS");
+      const data = await response.json();
+      console.log("Metadata uploaded to IPFS:", data.ipfsHash);
+      setMetadataCid(data.ipfsHash);
+      // Appeler onUploadSuccess ou toute autre action de suivi ici, si nécessaire
+    } catch (error) {
+      console.error("Erreur lors de l'upload des métadonnées sur IPFS:", error);
+      // Gérer l'erreur, par exemple, en affichant un message à l'utilisateur
+    }
+  };
+
+  useEffect(() => {
+    console.log("Metadata updated:", metadata);
+  }, [metadata]);
+
+  // ******************* Communication avec le smart contract *******************
+  // Mint du SFT
   const {
     data: hash,
     error: mintSeedSftError,
@@ -82,8 +283,8 @@ const SeedSFTMint = () => {
         setOwnerAddress("");
         setTokenId("");
         setTokenQuantity("");
-        setCM1Hash("");
-        setDF1Hash("");
+        setCM1JsonHash("");
+        setDF1JsonHash("");
         setTokenUri("");
         getSeedDataEvent();
         getTransferSingleSeedEvent();
@@ -99,115 +300,198 @@ const SeedSFTMint = () => {
       },
     },
   });
-
   const mintSeedSft = async () => {
     writeContract({
       address: SeedSFTAddress,
       abi: SeedSFTAbi,
       functionName: "mint",
       account: address,
-      args: [ownerAddress, tokenId, tokenQuantity, tokenUri, CM1Hash, DF1Hash],
+      args: [
+        ownerAddress,
+        tokenId,
+        tokenQuantity,
+        tokenUri,
+        CM1JsonHash,
+        DF1JsonHash,
+      ],
     });
   };
-
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt(hash);
 
+  // ******************* Render *******************
   return (
     <div>
-      <Box mx="auto">
-        <Grid
-          bg={"gray.900"}
-          borderRadius={"10px"}
-          mt={"2rem"}
-          templateColumns="repeat(2, 1fr)"
-          gap={"1rem"}
-          p={"2rem"}
+      <Box p={"2rem"} bg={"gray.900"} borderRadius={"10px"} mt={"2rem"}>
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          justifyContent="space-between"
+          height="100%"
         >
-          <GridItem colSpan={2}>
-            <FormControl id="owner-address" isRequired>
-              <FormLabel>Adresse du pépiniériste</FormLabel>
-              <Input
-                type="text"
+          {/* Etape 1 : Upload des fichiers et préparation des metadonnées */}
+          <Flex
+            direction="column"
+            flex="1"
+            pr={"2rem"}
+            borderRight={{ md: "1px solid" }}
+            borderColor={{ md: "gray.200" }}
+          >
+            <VStack spacing={"1rem"} align="stretch" flex="1" overflowY="auto">
+              <Heading as="h3" size="md" mb="1rem">
+                Etape 1 : Upload des fichiers et préparation des metadonnées
+              </Heading>
+
+              <Heading size="sm" textAlign={"left"}>
+                Certificat Maître
+              </Heading>
+              <HStack spacing={"1rem"}>
+                <HashAndUploadButton
+                  label="Certificat maître.json"
+                  accept=".json"
+                  onFileProcessed={handleChangeForCM1Json}
+                  isRequired
+                />
+                <UploadToIpfsButton
+                  label="Certificat maître.pdf"
+                  accept=".pdf"
+                  onFileProcessed={handleChangeForCM1Pdf}
+                  isRequired
+                />
+              </HStack>
+
+              <Divider mt={"0.5rem"} />
+
+              <Heading size="sm" textAlign={"left"}>
+                Document du Fournisseur 1
+              </Heading>
+              <HStack spacing={"1rem"}>
+                <HashAndUploadButton
+                  label="Document du Fournisseur 1.json"
+                  accept=".json"
+                  onFileProcessed={handleChangeForDF1Json}
+                  isRequired
+                />
+                <UploadToIpfsButton
+                  label="Document du Fournisseur 1.pdf"
+                  accept=".pdf"
+                  onFileProcessed={handleChangeForDF1Pdf}
+                  isRequired
+                />
+              </HStack>
+
+              <Divider mt={"0.5rem"} />
+
+              <Heading size="sm" textAlign={"left"}>
+                Suivi des documents
+              </Heading>
+              <DocumentStatusTable documents={documents} />
+            </VStack>
+
+            <Box mt="2rem">
+              <Button
+                onClick={createAndUploadMetadataObject}
+                disabled={
+                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
+                }
+                bgColor={
+                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
+                    ? "#1E2E2B"
+                    : "green.500"
+                }
+                cursor={
+                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
+                    ? "not-allowed"
+                    : "pointer"
+                }
+                color="white"
+                _hover={{
+                  bg:
+                    !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
+                      ? "#1E2E2B"
+                      : "#2E4039",
+                }}
+                width="full"
+              >
+                {!DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
+                  ? "Veuillez charger tous les documents"
+                  : "Préparer les metadonnées"}
+              </Button>
+            </Box>
+          </Flex>
+
+          {/* Etape 2 : Création, Mint du Token */}
+          <Box flex="1" pl={"2rem"}>
+            <Heading as="h3" size="md" mb="2rem">
+              Etape 2 : Création du Token représentant l'échange 1
+            </Heading>
+            {/* Formulaire */}
+            <VStack spacing={5} align="stretch">
+              <TextInput
+                label="Adresse du pépiniériste"
                 value={ownerAddress}
                 onChange={(e) => setOwnerAddress(e.target.value)}
                 placeholder="Ajouter l'adresse du pépiniériste"
+                isRequired
               />
-            </FormControl>
-          </GridItem>
 
-          <GridItem>
-            <FormControl id="token-id" isRequired>
-              <FormLabel>ID du Token</FormLabel>
-              <Input
-                type="text"
-                value={tokenId}
-                onChange={(e) => setTokenId(e.target.value)}
-                placeholder="Ajouter l'ID du token"
+              <HStack spacing={5}>
+                <TextInput
+                  label="ID du Token"
+                  value={tokenId}
+                  onChange={(e) => setTokenId(e.target.value)}
+                  placeholder="Ajouter l'ID du token"
+                  isReadOnly
+                />
+                <NumberInput
+                  label="Quantité"
+                  value={tokenQuantity}
+                  onChange={(e) => setTokenQuantity(e.target.value)}
+                  placeholder="Entrez une quantité"
+                  isRequired={true}
+                />
+              </HStack>
+
+              <TextInput
+                label="Hash du certificat maître"
+                value={CM1JsonHash}
+                onChange={(e) => setCM1JsonHash(e.target.value)}
+                placeholder="Le hash du CM apparaîtra ici"
+                isReadOnly
               />
-            </FormControl>
-          </GridItem>
 
-          <GridItem>
-            <FormControl id="token-uri" isRequired>
-              <FormLabel>CID des metadatas du token</FormLabel>
-              <Input
-                type="text"
-                value={tokenUri}
+              <TextInput
+                label="Hash du Document du Fournisseur 1"
+                value={DF1JsonHash}
+                onChange={(e) => setDF1JsonHash(e.target.value)}
+                placeholder="Le hash du DF1 apparaîtra ici"
+                isReadOnly
+              />
+
+              <TextInput
+                label="CID des metadatas du token"
+                value={metadataCid}
                 onChange={(e) => setTokenUri(e.target.value)}
-                placeholder="Ajouter le CID du token"
+                placeholder="Le CID des metadonnées du token apparaîtra ici"
+                isReadOnly
               />
-            </FormControl>
-          </GridItem>
 
-          <GridItem>
-            <FormControl id="token-quantity" isRequired>
-              <FormLabel>Quantité de Token</FormLabel>
-              <Input
-                type="number"
-                value={tokenQuantity}
-                onChange={(e) => setTokenQuantity(e.target.value)}
-                placeholder="Ajouter la quantité de token"
-                min={1}
-              />
-            </FormControl>
-          </GridItem>
+              <Button
+                disabled={mintSeedSftPending}
+                bgColor="#2E4039"
+                color="white"
+                _hover={{ bg: "#1E2E2B" }}
+                onClick={mintSeedSft}
+                width="full"
+              >
+                {mintSeedSftPending
+                  ? "Confirmation en cours..."
+                  : "Minter le SFT"}
+              </Button>
+            </VStack>
+          </Box>
+        </Flex>
 
-          <GridItem>
-            <FormControl id="master-cert-hash" isRequired>
-              <FormLabel>Hash du Certificat Maître</FormLabel>
-              <Input
-                type="text"
-                value={CM1Hash}
-                onChange={(e) => setCM1Hash(e.target.value)}
-                placeholder="Ajouter le hash du Certificat Maître"
-              />
-            </FormControl>
-          </GridItem>
-
-          <GridItem>
-            <FormControl id="supplier-doc-hash" isRequired>
-              <FormLabel>Hash du Document du Fournisseur 1</FormLabel>
-              <Input
-                type="text"
-                value={DF1Hash}
-                onChange={(e) => setDF1Hash(e.target.value)}
-                placeholder="Ajouter le hash du Document du Fournisseur 1"
-              />
-            </FormControl>
-          </GridItem>
-
-          <GridItem colSpan={2} mt={"1rem"}>
-            <Button
-              disabled={mintSeedSftPending}
-              bgColor={"#2E4039"}
-              onClick={mintSeedSft}
-              width="full" // Assure que le bouton s'étend sur toute la largeur disponible
-            >
-              {mintSeedSftPending ? "Confirming..." : "Minter le SFT"}
-            </Button>
-          </GridItem>
-        </Grid>
+        {/* Alerts */}
         <Flex direction="column">
           {hash && (
             <Alert status="success" mt="1rem" mb="1rem">
@@ -236,12 +520,6 @@ const SeedSFTMint = () => {
           )}
         </Flex>
       </Box>
-
-      {/* ************* Upload de fichiers ************* */}
-      {/* <Box p={4}>
-        <FileInput onChange={handleFileChange} accept="image/*" />
-        {selectedFile && <Text mt={2}>File selected: {selectedFile.name}</Text>}
-      </Box> */}
     </div>
   );
 };

@@ -1,0 +1,36 @@
+{
+    "numéro_de_document": "1",
+    "numéro_du_dossier_de_travail_interne": "N/A",
+    "numéro_du_certificat_maître": "N/A",
+    "fournisseur": {
+        "numéro_SIRET_SIREN": "N/A",
+        "espèce_variété_clone": "N/A",
+        "nom_commun": "N/A",
+        "nom_botanique": "N/A"
+    },
+    "qualités_génétiques": {
+        "catégories_UE_ou_équivalents": {
+            "testé": false,
+            "qualifié": false,
+            "sélectionné": false,
+            "identifié": false,
+            "admission_provisoire": false
+        },
+        "référence_du_registre": "N/A",
+        "région_de_provenance": "N/A",
+        "origine_du_matériel_non_autochtone_ou_non_indigène": "N/A"
+    },
+    "caractères_de_qualité_extérieure": {
+        "poids_de_1000_graines_pures_kg": "N/A",
+        "pourcentage_de_pureté": "N/A",
+        "nombre_de_graines_germinables_par_kg_ou_l": "N/A",
+        "pourcentage_de_germination_des_graines_pures": "N/A",
+        "pourcentage_de_viabilité": "N/A"
+    },
+    "autres_informations": {
+        "année_de_mûrissement_début": "N/A",
+        "quantité_livrée_kg_ou_l": "N/A",
+        "conservation_au_froid": "N/A",
+        "date_d'expédition": "N/A"
+    }
+}
