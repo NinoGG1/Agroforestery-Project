@@ -1,34 +1,17 @@
-import { DownloadIcon } from "@chakra-ui/icons";
+"use client";
+
 import {
   Box,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  Text,
   Button,
-  FormControl,
-  FormLabel,
   useToast,
   Flex,
   Alert,
   AlertIcon,
   Heading,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  Link,
-  Grid,
-  GridItem,
   Divider,
-  MenuDivider,
   VStack,
   HStack,
-  Stack,
-  StackDivider,
-  useBreakpointValue,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -44,11 +27,11 @@ import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
 
-const SeedSFTMint = () => {
+const FormSFT1 = () => {
+  // ******************* States *******************
   const [ownerAddress, setOwnerAddress] = useState("");
   const [tokenId, setTokenId] = useState("");
   const [tokenQuantity, setTokenQuantity] = useState("");
-  const [tokenUri, setTokenUri] = useState("");
   const [CM1JsonHash, setCM1JsonHash] = useState("");
   const [CM1JsonCid, setCM1JsonCid] = useState("");
   const [CM1PdfCid, setCM1PdfCid] = useState("");
@@ -57,18 +40,8 @@ const SeedSFTMint = () => {
   const [DF1PdfCid, setDF1PdfCid] = useState("");
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
-  const documents = [
-    {
-      name: "Certificat Maître",
-      jsonCid: CM1JsonCid, // Exemple de CID IPFS pour JSON
-      pdfCid: CM1PdfCid, // Exemple de CID IPFS pour PDF
-    },
-    {
-      name: "Document du Fournisseur 1",
-      jsonCid: DF1JsonCid, // Pas encore chargé
-      pdfCid: DF1PdfCid, // Exemple de CID IPFS pour PDF
-    },
-  ];
+
+  // ******************* Hooks *******************
   const toast = useToast();
   const { address, isConnected } = useAccount();
   const {
@@ -79,6 +52,20 @@ const SeedSFTMint = () => {
   } = useContext(EventsContext);
 
   // ******************* Gestion des fichiers *******************
+  // Documents concernant l'échange 1
+  const documents = [
+    {
+      name: "Certificat Maître",
+      jsonCid: CM1JsonCid,
+      pdfCid: CM1PdfCid,
+    },
+    {
+      name: "Document du Fournisseur 1",
+      jsonCid: DF1JsonCid,
+      pdfCid: DF1PdfCid,
+    },
+  ];
+
   // Obtenir le hash et le cid du fichier CM1 json
   const handleChangeForCM1Json = ({ file, hash, ipfsHash }) => {
     console.log("Fichier traité :", file);
@@ -87,6 +74,7 @@ const SeedSFTMint = () => {
     setCM1JsonHash(hash);
     setCM1JsonCid(ipfsHash);
   };
+
   // Obtenir le cid du fichier CM1 pdf
   const handleChangeForCM1Pdf = ({ file, hash, ipfsHash }) => {
     console.log("Fichier traité :", file);
@@ -94,6 +82,7 @@ const SeedSFTMint = () => {
     console.log("Hash IPFS :", ipfsHash);
     setCM1PdfCid(ipfsHash);
   };
+
   // Obtenir le hash et le cid du fichier DF1 json
   const handleChangeForDF1Json = ({ file, hash, ipfsHash }) => {
     console.log("Fichier traité :", file);
@@ -102,6 +91,7 @@ const SeedSFTMint = () => {
     setDF1JsonHash(hash);
     setDF1JsonCid(ipfsHash);
   };
+
   // Obtenir le cid du fichier DF1 pdf
   const handleChangeForDF1Pdf = ({ file, hash, ipfsHash }) => {
     console.log("Fichier traité :", file);
@@ -120,6 +110,7 @@ const SeedSFTMint = () => {
     return lastTokenId + 1;
   };
 
+  // Récupérer les données JSON à partir de l'IPFS
   const fetchJsonData = async (cid) => {
     const url = `https://ipfs.io/ipfs/${cid}`;
     const response = await fetch(url);
@@ -127,6 +118,7 @@ const SeedSFTMint = () => {
     return data;
   };
 
+  // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
     setTokenId(calculateNextTokenId());
     const CM1JsonData = await fetchJsonData(CM1JsonCid);
@@ -169,6 +161,7 @@ const SeedSFTMint = () => {
           ? "testé"
           : ""
       }`,
+      type: "SFT1",
       numero_certificat_ce: CM1JsonData.numero_certificat_ce,
       Certificat_maitre_pdf: `ipfs://${CM1PdfCid}`,
       Document_du_fournisseur_1_pdf: `ipfs://${DF1PdfCid}`,
@@ -265,7 +258,7 @@ const SeedSFTMint = () => {
   }, [metadata]);
 
   // ******************* Communication avec le smart contract *******************
-  // Mint du SFT
+  // Write contract pour mint le SFT
   const {
     data: hash,
     error: mintSeedSftError,
@@ -285,7 +278,7 @@ const SeedSFTMint = () => {
         setTokenQuantity("");
         setCM1JsonHash("");
         setDF1JsonHash("");
-        setTokenUri("");
+        setMetadataCid("");
         getSeedDataEvent();
         getTransferSingleSeedEvent();
         mergeSeedEvents();
@@ -300,6 +293,8 @@ const SeedSFTMint = () => {
       },
     },
   });
+
+  // Fonction pour mint le SFT
   const mintSeedSft = async () => {
     writeContract({
       address: SeedSFTAddress,
@@ -310,12 +305,14 @@ const SeedSFTMint = () => {
         ownerAddress,
         tokenId,
         tokenQuantity,
-        tokenUri,
+        metadataCid,
         CM1JsonHash,
         DF1JsonHash,
       ],
     });
   };
+
+  // Hook pour attendre la confirmation de la transaction
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
     useWaitForTransactionReceipt(hash);
 
@@ -328,7 +325,7 @@ const SeedSFTMint = () => {
           justifyContent="space-between"
           height="100%"
         >
-          {/* Etape 1 : Upload des fichiers et préparation des metadonnées */}
+          {/**************** Etape 1 : Upload des fichiers et préparation des metadonnées ****************/}
           <Flex
             direction="column"
             flex="1"
@@ -413,13 +410,13 @@ const SeedSFTMint = () => {
                 width="full"
               >
                 {!DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                  ? "Veuillez charger tous les documents"
+                  ? "Charger tous les documents pour pouvoir préparer les metadonnées"
                   : "Préparer les metadonnées"}
               </Button>
             </Box>
           </Flex>
 
-          {/* Etape 2 : Création, Mint du Token */}
+          {/**************** Etape 2 : Création, Mint du Token ****************/}
           <Box flex="1" pl={"2rem"}>
             <Heading as="h3" size="md" mb="2rem">
               Etape 2 : Création du Token représentant l'échange 1
@@ -476,22 +473,43 @@ const SeedSFTMint = () => {
               />
 
               <Button
-                disabled={mintSeedSftPending}
-                bgColor="#2E4039"
-                color="white"
-                _hover={{ bg: "#1E2E2B" }}
                 onClick={mintSeedSft}
+                disabled={!ownerAddress || !tokenQuantity || mintSeedSftPending}
+                bgColor={
+                  !ownerAddress || !tokenQuantity || mintSeedSftPending
+                    ? "#1E2E2B"
+                    : "green.500"
+                }
+                cursor={
+                  !ownerAddress || !tokenQuantity || mintSeedSftPending
+                    ? "not-allowed"
+                    : "pointer"
+                }
+                color="white"
+                _hover={{
+                  bg:
+                    !ownerAddress || !tokenQuantity || mintSeedSftPending
+                      ? "#1E2E2B"
+                      : "#2E4039",
+                }}
                 width="full"
+                isLoading={mintSeedSftPending}
+                loadingText="Confirmation..."
+                leftIcon={
+                  mintSeedSftPending && <Spinner size="sm" speed="0.65s" />
+                }
               >
-                {mintSeedSftPending
-                  ? "Confirmation en cours..."
-                  : "Minter le SFT"}
+                {!ownerAddress || !tokenQuantity
+                  ? "Remplir tous les champs pour pouvoir minter le Token"
+                  : mintSeedSftPending
+                  ? ""
+                  : "Minter le Token"}
               </Button>
             </VStack>
           </Box>
         </Flex>
 
-        {/* Alerts */}
+        {/**************** Alerts ****************/}
         <Flex direction="column">
           {hash && (
             <Alert status="success" mt="1rem" mb="1rem">
@@ -524,4 +542,4 @@ const SeedSFTMint = () => {
   );
 };
 
-export default SeedSFTMint;
+export default FormSFT1;

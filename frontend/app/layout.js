@@ -5,8 +5,6 @@ import Layout from "@/components/Layout";
 import { EventsProvider } from "@/context/Events";
 import { ReadFunctionsProvider } from "@/context/ReadFunctions";
 import { MetadataProvider } from "@/context/Metadata";
-import { HashFileProvider } from "@/context/HashFile";
-import { UploadFileToIpfsProvider } from "@/context/UploadFileToIpfs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,11 +21,7 @@ export default function RootLayout({ children }) {
           <EventsProvider>
             <ReadFunctionsProvider>
               <MetadataProvider>
-                <HashFileProvider>
-                  <UploadFileToIpfsProvider>
-                    <Layout>{children}</Layout>
-                  </UploadFileToIpfsProvider>
-                </HashFileProvider>
+                <Layout>{children}</Layout>
               </MetadataProvider>
             </ReadFunctionsProvider>
           </EventsProvider>

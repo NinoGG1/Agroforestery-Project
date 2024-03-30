@@ -30,6 +30,7 @@ export const MetadataProvider = ({ children }) => {
     // Filtre les résultats nuls et met à jour l'état des métadonnées
     const metadataArray = (await Promise.all(metadataPromises)).filter(Boolean);
     setMetadata(metadataArray);
+    console.log("Métadonnées récupérées pour les CIDs :", metadataArray);
   };
 
   return (

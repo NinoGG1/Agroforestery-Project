@@ -17,7 +17,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { useReadFunctions } from "@/context/ReadFunctions";
-import SeedSFTMint from "./SeedSFTMint";
+import FormSFT1 from "./FormSFT1";
 import SFTGrid from "./SFTGrid";
 import { useContext, useEffect, useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
@@ -122,7 +122,7 @@ const Dashboard = () => {
               <AllTransactions sfts={sfts} />
             </TabPanel>
             <TabPanel p={"0"}>
-              <SeedSFTMint />
+              <FormSFT1 />
               <Heading
                 textAlign={"left"}
                 size={"lg"}
@@ -133,7 +133,7 @@ const Dashboard = () => {
                 Echanges de type 1 réalisés : Marchand grenier{" "}
                 <ChevronRightIcon /> Pépiniériste
               </Heading>
-              <SFTGrid sfts={sfts} />
+              <SFTGrid sfts={sfts} filterType="SFT1" />
             </TabPanel>
             <TabPanel p={"0"}>
               <Heading
