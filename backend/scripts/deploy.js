@@ -1,14 +1,14 @@
 const hre = require("hardhat");
 
 async function main() {
-  const SeedSFT = await hre.ethers.deployContract("SeedSFT");
-  const PlantSFT = await hre.ethers.deployContract("PlantSFT");
+  const SFT1 = await hre.ethers.deployContract("SFT1");
+  const UserManager = await hre.ethers.deployContract("UserManager");
 
-  await SeedSFT.waitForDeployment();
-  await PlantSFT.waitForDeployment();
+  await SFT1.waitForDeployment();
+  await UserManager.waitForDeployment();
 
-  console.log(`SeedSFT deployed to ${SeedSFT.target}`);
-  console.log(`PlantSFT deployed to ${PlantSFT.target}`);
+  console.log(`SFT1 deployed to ${SFT1.target}`);
+  console.log(`UserManager deployed to ${UserManager.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

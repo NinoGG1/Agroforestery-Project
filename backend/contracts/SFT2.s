@@ -6,26 +6,26 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 //Errors
-error UriAlreadyUsed();
+error TokenIdAlreadyUsed();
 
-contract SeedSFT is ERC1155, Ownable {
+contract SFT2 is ERC1155, Ownable {
     using Strings for uint256;
 
     string private _uri;
 
-    // Structure pour stocker les données Seed  
-    struct seed {
-        string CmHash;
-        string Df1Hash;
+    // Structure pour stocker les données sft2  
+    struct sft2 {
+        uint256 Sft1TokenId;
+        string Df2Hash;
     }
 
-    // Mapping pour suivre les données Seed par ID de token
-    mapping(uint => seed) public seedData;
+    // Mapping pour suivre les données sft2 par ID de token
+    mapping(uint256 => sft2) public sft2Data;
 
     constructor() ERC1155("") Ownable(msg.sender) {}
 
-    // Evénement pour suivre les données Seed
-    event SeedData(uint256 indexed tokenId, string cid, string cmHash, string df1Hash);
+    // Evénement pour suivre les données sft2
+    event Sft2Data(uint256 indexed tokenId, string cid, string cmHash, string df1Hash);
 
 // ************************ Mint ************************
 
@@ -34,19 +34,19 @@ contract SeedSFT is ERC1155, Ownable {
         // Mint le token
         _mint(account, tokenId, amount, "");
         
-        // Associer les données Seed avec l'ID de token
-        seedData[tokenId] = seed(cmHash, df1Hash);
+        // Associer les données Sft2 avec l'ID de token
+        sft2Data[tokenId] = sft2(cmHash, df1Hash);
 
         // Définir l'URI pour ce token
         _setURI(cid);
 
-        // Émettre l'événement avec les données Seed
-        emit SeedData(tokenId, cid, cmHash, df1Hash);
+        // Émettre l'événement avec les données sft2
+        emit Sft2Data(tokenId, cid, cmHash, df1Hash);
     }
 
 // ************************ Getters ************************
 
-    function getSeedData(uint tokenId) public view returns (seed memory) {
-        return seedData[tokenId];
+    function getSft2Data(uint tokenId) public view returns (sft2 memory) {
+        return sft2Data[tokenId];
     }
 }
