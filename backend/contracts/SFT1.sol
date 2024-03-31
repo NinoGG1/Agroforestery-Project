@@ -34,11 +34,6 @@ contract SFT1 is ERC1155, Ownable, UserManager {
     // Mapping pour suivre les données sft1 par ID de token
     mapping(uint64 => sft1) public sft1Data;
 
-    // Permet d'éviter les collisions de fonctions lors de l'utilisation de plusieurs contrats OpenZeppelin
-    function supportsInterface(bytes4 interfaceId) public view override(ERC1155, AccessControl) returns (bool) {
-    return ERC1155.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
-    }
-
     // Evénement pour suivre les données sft1
     /**
      * @dev Emitted when SFT1 data is set
@@ -59,6 +54,44 @@ contract SFT1 is ERC1155, Ownable, UserManager {
             revert UseManagerUnauthorizedAccount();
         }
         _;
+    }
+
+    // ::::::::::::::::::::: Getters :::::::::::::::::::::
+
+    // Surcharge de la fonction uri pour retourner l'URI basée sur le CID correspondant au tokenId, uint64 convertit en uint256 pour correspondre à l'interface ERC-1155
+    /**
+     * @dev Returns the URI for a token ID
+     * @param tokenId The ID of the token
+     * @return The URI for the token
+     * @notice Return the URI for the token ID, revert if the token ID does not exist
+     */
+    function uri(uint256 tokenId) override public view returns (string memory) {
+        if (bytes(sft1Data[uint64(tokenId)].uri).length == 0) revert QueryForNonexistentToken();
+        return sft1Data[uint64(tokenId)].uri;
+    }
+
+    // Fonction pour obtenir les données sft1 par ID de token
+    /**
+     * @dev Get the SFT1 data for a token ID
+     * @param tokenId The ID of the token
+     * @return The SFT1 data for the token ID
+     * @notice Get the SFT1 data for the token ID, revert if the token ID does not exist
+     */
+    function getSft1Data(uint64 tokenId) public view returns (sft1 memory) {
+        if (bytes(sft1Data[uint64(tokenId)].uri).length == 0) revert QueryForNonexistentToken();
+        return sft1Data[tokenId];
+    }
+
+    // ::::::::::::::::::::: MANAGE INTERFACE :::::::::::::::::::::
+    // Permet d'éviter les collisions de fonctions lors de l'utilisation de plusieurs contrats OpenZeppelin
+    /**
+     * @dev See {IERC165-supportsInterface}
+     * @param interfaceId The interface identifier
+        * @return `true` if the contract implements `interfaceId`
+     * @notice Override the supportsInterface function to avoid function collisions when using multiple OpenZeppelin contracts
+     */
+    function supportsInterface(bytes4 interfaceId) public view override(ERC1155, AccessControl) returns (bool) {
+    return ERC1155.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
     }
 
     // ::::::::::::::::::::: Mint :::::::::::::::::::::
@@ -99,30 +132,5 @@ contract SFT1 is ERC1155, Ownable, UserManager {
         emit Sft1Data(tokenId, cid, cmHash, df1Hash);
     }
 
-
-    // ::::::::::::::::::::: Getters :::::::::::::::::::::
-
-    // Surcharge de la fonction uri pour retourner l'URI basée sur le CID correspondant au tokenId, uint64 convertit en uint256 pour correspondre à l'interface ERC-1155
-    /**
-     * @dev Returns the URI for a token ID
-     * @param tokenId The ID of the token
-     * @return The URI for the token
-     * @notice Return the URI for the token ID, revert if the token ID does not exist
-     */
-    function uri(uint256 tokenId) override public view returns (string memory) {
-        if (bytes(sft1Data[uint64(tokenId)].uri).length == 0) revert QueryForNonexistentToken();
-        return sft1Data[uint64(tokenId)].uri;
-    }
-
-    // Fonction pour obtenir les données sft1 par ID de token
-    /**
-     * @dev Get the SFT1 data for a token ID
-     * @param tokenId The ID of the token
-     * @return The SFT1 data for the token ID
-     * @notice Get the SFT1 data for the token ID, revert if the token ID does not exist
-     */
-    function getSft1Data(uint64 tokenId) public view returns (sft1 memory) {
-        if (bytes(sft1Data[uint64(tokenId)].uri).length == 0) revert QueryForNonexistentToken();
-        return sft1Data[tokenId];
-    }
+ 
 }
