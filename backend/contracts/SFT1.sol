@@ -14,6 +14,8 @@ error cmHashCannotBeEmpty();
 error df1HashCannotBeEmpty();
 error TokenIdAlreadyUsed();
 error QueryForNonexistentToken();
+error UseManagerUnauthorizedAccount();
+error HasToBePepinieristeToReceiveSFT1();
 
 /**
  * @title SFT1
@@ -37,9 +39,6 @@ contract SFT1 is ERC1155, Ownable, UserManager {
     return ERC1155.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
     }
 
-    // Constructeur
-    constructor() ERC1155("") Ownable(msg.sender) {}
-
     // Evénement pour suivre les données sft1
     /**
      * @dev Emitted when SFT1 data is set
@@ -50,6 +49,17 @@ contract SFT1 is ERC1155, Ownable, UserManager {
      */
     event Sft1Data(uint64 indexed tokenId, string cid, bytes32 cmHash, bytes32 df1Hash);
 
+    // Constructeur
+    constructor() ERC1155("") Ownable(msg.sender) {}
+
+    // ::::::::::::::::::::: Modifier :::::::::::::::::::::
+
+    modifier onlyAdminOrMarchandGrainer {
+        if (!hasRole(ADMIN, msg.sender) && !hasRole(MARCHAND_GRAINIER, msg.sender)) {
+            revert UseManagerUnauthorizedAccount();
+        }
+        _;
+    }
 
     // ::::::::::::::::::::: Mint :::::::::::::::::::::
 
@@ -65,15 +75,16 @@ contract SFT1 is ERC1155, Ownable, UserManager {
      * @notice Mint a new SFT1 token with the URI constructed from the CID, and store the data in the sft1Data mapping, and emit the Sft1Data event
      * @notice Only the owner, the MarchandGrainier, and the Admin can call this function
      */
-    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, bytes32 cmHash, bytes32 df1Hash) public onlyOwner onlyMarchandGrainier() onlyAdmin() {
+    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, bytes32 cmHash, bytes32 df1Hash) public onlyAdminOrMarchandGrainer {
 
         // Vérifications
         if (account == address(0)) revert InvalidAddress();
         if (amount <= 0) revert AmountMustBeGreaterThanZero();
         if (bytes(cid).length == 0) revert CIDCannotBeEmpty();
-        if (cmHash.length == 0) revert cmHashCannotBeEmpty();
-        if (df1Hash.length == 0) revert df1HashCannotBeEmpty();
+        if (cmHash == bytes32(0)) revert cmHashCannotBeEmpty();
+        if (df1Hash == bytes32(0)) revert df1HashCannotBeEmpty();
         if (bytes(sft1Data[tokenId].uri).length != 0) revert TokenIdAlreadyUsed();
+        if (!hasRole(PEPINIERISTE, account)) revert HasToBePepinieristeToReceiveSFT1(); // Vérifier si l'adresse destinataire du SFT a le rôle PÉPINIÉRISTE
 
         // Construire l'URI à partir du CID
         string memory tokenUri = string(abi.encodePacked("ipfs://", cid));
