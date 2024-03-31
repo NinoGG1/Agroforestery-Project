@@ -49,16 +49,34 @@ contract UserManager is AccessControl {
     }
 
     // Fonction pour assigner un rôle à un utilisateur
+    /** 
+        * @dev Assign a role to a user
+        * @param user The address of the user
+        * @param role The role to assign
+        * @notice Only admins can assign roles
+    */
     function assignRole(address user, bytes32 role) public onlyRole(ADMIN) {
         _grantRole(role, user);
     }
 
     // Fonction pour révoquer un rôle à un utilisateur
+    /** 
+        * @dev Revoke a role from a user
+        * @param user The address of the user
+        * @param role The role to revoke
+        * @notice Only admins can revoke roles for other users
+    */
     function revokeUserRole(address user, bytes32 role) public onlyRole(ADMIN) {
         _revokeRole(role, user);
     }
 
     // Fonction pour qu'un utilisateur renonce à un rôle
+    /** 
+        * @dev User renounces a role
+        * @param user The address of the user
+        * @param role The role to renounce
+        * @notice The user can renounce their own roles
+    */
     function renounceRole(address user, bytes32 role) public {
         if (msg.sender != user) revert InvalidRoleRenounce();
         _revokeRole(role, user);

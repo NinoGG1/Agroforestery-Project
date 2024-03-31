@@ -11,7 +11,7 @@ describe("Test SFT1 Contract", function () {
   const cmHash =
     "0x7465737400000000000000000000000000000000000000000000000000000000";
   const df1Hash =
-    "0x7465737400000000000000000000000000000000000000000000000000000000";
+    "0x7465737800000000000000000000000000000000000000000000000000000000";
   const addressZero = "0x0000000000000000000000000000000000000000"; // Adresse 0
   const emptyHash =
     "0x0000000000000000000000000000000000000000000000000000000000000000"; // Hash vide pour bytes32
@@ -20,6 +20,7 @@ describe("Test SFT1 Contract", function () {
     [owner, ADMIN, MARCHAND_GRAINIER, PEPINIERISTE] = await ethers.getSigners();
     const contract = await ethers.getContractFactory("SFT1");
     SFT1 = await contract.deploy();
+    console.log("SFT1 address:", SFT1.address);
 
     // Assignation des rôles après le déploiement
     await SFT1.assignRole(ADMIN.address, await SFT1.ADMIN());
@@ -38,7 +39,6 @@ describe("Test SFT1 Contract", function () {
   });
 
   // ::::::::::::: GETTERS ::::::::::::: //
-
   // Tests de la fonction uri
   describe("URI Functionality", function () {
     beforeEach(async function () {
@@ -55,7 +55,7 @@ describe("Test SFT1 Contract", function () {
 
     it("should revert for a non-existent token ID", async function () {
       // Utiliser un tokenId qui n'a pas été minté
-      const nonExistentTokenId = 999; // Assurez-vous que ce tokenId n'a jamais été minté dans vos tests
+      const nonExistentTokenId = 999;
       await expect(SFT1.uri(nonExistentTokenId)).to.be.revertedWithCustomError(
         SFT1,
         "QueryForNonexistentToken"
@@ -100,7 +100,7 @@ describe("Test SFT1 Contract", function () {
         "0x7465737400000000000000000000000000000000000000000000000000000000"
       );
       expect(sft1.df1Hash.toString()).to.equal(
-        "0x7465737400000000000000000000000000000000000000000000000000000000"
+        "0x7465737800000000000000000000000000000000000000000000000000000000"
       );
     });
   });
@@ -209,7 +209,7 @@ describe("Test SFT1 Contract", function () {
     });
 
     it("Should not mint an SFT1 with an already used token ID", async function () {
-      // Mint du 1er token par le owner à addr1.
+      // Mint du 1er token par le MARCHAND_GRAINIER à PEPINIERISTE.
       await SFT1.connect(MARCHAND_GRAINIER).mint(
         PEPINIERISTE.address,
         tokenId,
@@ -219,7 +219,7 @@ describe("Test SFT1 Contract", function () {
         df1Hash
       );
 
-      // Tenter de mint un autre token avec le même ID à addr2, ce qui devrait échouer.
+      // Tenter de mint un autre token avec le même ID à PEPINIERISTE, ce qui devrait échouer.
       await expect(
         SFT1.connect(MARCHAND_GRAINIER).mint(
           PEPINIERISTE.address,
@@ -233,7 +233,7 @@ describe("Test SFT1 Contract", function () {
     });
 
     it("Sould not authorize to mint an SFT1 to an adress that has not been assigned the role of PEPINIERISTE", async function () {
-      // Mint du token avec l'adresse ADMIN, ce qui devrait échouer
+      // Mint du token vers l'adresse ADMIN, ce qui devrait échouer
       await expect(
         SFT1.connect(MARCHAND_GRAINIER).mint(
           ADMIN.address,

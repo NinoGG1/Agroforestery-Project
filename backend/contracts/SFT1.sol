@@ -39,8 +39,8 @@ contract SFT1 is ERC1155, Ownable, UserManager {
      * @dev Emitted when SFT1 data is set
      * @param tokenId The ID of the token
      * @param cid The CID of the token
-     * @param cmHash The hash of the commitment
-     * @param df1Hash The hash of the data file 1
+     * @param cmHash The hash of the "Certificat Maitre"
+     * @param df1Hash The hash of the "Dcoument du fournisseur 1"
      */
     event Sft1Data(uint64 indexed tokenId, string cid, bytes32 cmHash, bytes32 df1Hash);
 
@@ -48,7 +48,6 @@ contract SFT1 is ERC1155, Ownable, UserManager {
     constructor() ERC1155("") Ownable(msg.sender) {}
 
     // ::::::::::::::::::::: Modifier :::::::::::::::::::::
-
     modifier onlyAdminOrMarchandGrainer {
         if (!hasRole(ADMIN, msg.sender) && !hasRole(MARCHAND_GRAINIER, msg.sender)) {
             revert UseManagerUnauthorizedAccount();
@@ -56,8 +55,7 @@ contract SFT1 is ERC1155, Ownable, UserManager {
         _;
     }
 
-    // ::::::::::::::::::::: Getters :::::::::::::::::::::
-
+    // ::::::::::::::::::::: GETTERS :::::::::::::::::::::
     // Surcharge de la fonction uri pour retourner l'URI basée sur le CID correspondant au tokenId, uint64 convertit en uint256 pour correspondre à l'interface ERC-1155
     /**
      * @dev Returns the URI for a token ID
@@ -87,15 +85,14 @@ contract SFT1 is ERC1155, Ownable, UserManager {
     /**
      * @dev See {IERC165-supportsInterface}
      * @param interfaceId The interface identifier
-        * @return `true` if the contract implements `interfaceId`
+     * @return `true` if the contract implements `interfaceId`
      * @notice Override the supportsInterface function to avoid function collisions when using multiple OpenZeppelin contracts
      */
     function supportsInterface(bytes4 interfaceId) public view override(ERC1155, AccessControl) returns (bool) {
     return ERC1155.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
     }
 
-    // ::::::::::::::::::::: Mint :::::::::::::::::::::
-
+    // ::::::::::::::::::::: MINT :::::::::::::::::::::
     // Fonction pour mint un token SFT1
     /**
      * @dev Mint a new SFT1 token
@@ -103,10 +100,10 @@ contract SFT1 is ERC1155, Ownable, UserManager {
      * @param tokenId The ID of the token
      * @param amount The amount of the token to mint
      * @param cid The CID of the token
-     * @param cmHash The hash of the commitment
-     * @param df1Hash The hash of the data file 1
+     * @param cmHash The hash of the "Certificat Maitre"
+     * @param df1Hash The hash of the "Dcoument du fournisseur 1"
      * @notice Mint a new SFT1 token with the URI constructed from the CID, and store the data in the sft1Data mapping, and emit the Sft1Data event
-     * @notice Only the owner, the MarchandGrainier, and the Admin can call this function
+     * @notice Only the "Marchand Grainier", and the "Admin" can call this function
      */
     function mint(address account, uint64 tokenId, uint32 amount, string memory cid, bytes32 cmHash, bytes32 df1Hash) public onlyAdminOrMarchandGrainer {
 
