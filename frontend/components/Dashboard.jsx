@@ -8,26 +8,20 @@ import {
   Tab,
   TabPanel,
   Box,
-  GridItem,
-  Grid,
   Heading,
-  Flex,
-  Divider,
   useColorMode,
   Image,
 } from "@chakra-ui/react";
-import { useReadFunctions } from "@/context/ReadFunctions";
 import FormSFT1 from "./FormSFT1";
 import SFTGrid from "./SFTGrid";
 import { useContext, useEffect, useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import AllTransactions from "./AllTransactions";
-import { useAccount, address, isConnected } from "wagmi";
+import { useAccount } from "wagmi";
 import EventsContext from "@/context/Events";
 import MetadataContext from "@/context/Metadata";
 
 const Dashboard = () => {
-  const { address, isConnected } = useAccount();
   const { colorMode } = useColorMode();
   const { mergedSeedEvents, mergeSeedEvents } = useContext(EventsContext);
   const { metadata, fetchMetadata } = useContext(MetadataContext);

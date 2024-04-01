@@ -20,9 +20,13 @@ const HashAndUploadButton = ({ label, accept, onFileProcessed }) => {
   const hashFileContent = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
-    return Array.from(new Uint8Array(hashBuffer))
-      .map((byte) => byte.toString(16).padStart(2, "0"))
-      .join("");
+    // Convertir directement en chaîne hexadécimale préfixée par "0x"
+    const hashHex =
+      "0x" +
+      Array.from(new Uint8Array(hashBuffer))
+        .map((byte) => byte.toString(16).padStart(2, "0"))
+        .join("");
+    return hashHex;
   };
 
   const uploadFileToIPFS = async (file) => {

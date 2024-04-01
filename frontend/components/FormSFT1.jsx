@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Box,
   Button,
@@ -19,7 +18,7 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { SeedSFTAddress, SeedSFTAbi } from "@/constants";
+import { SFT1Address, SFT1Abi } from "@/constants";
 import EventsContext from "@/context/Events";
 import TextInput from "./FormComponents/TextInput";
 import NumberInput from "./FormComponents/NumberInput";
@@ -297,8 +296,8 @@ const FormSFT1 = () => {
   // Fonction pour mint le SFT
   const mintSeedSft = async () => {
     writeContract({
-      address: SeedSFTAddress,
-      abi: SeedSFTAbi,
+      address: SFT1Address,
+      abi: SFT1Abi,
       functionName: "mint",
       account: address,
       args: [

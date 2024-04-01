@@ -44,16 +44,4 @@ contract UserManager is AccessControl {
     function revokeUserRole(address user, bytes32 role) public onlyRole(ADMIN) {
         _revokeRole(role, user);
     }
-
-    // Fonction pour qu'un utilisateur renonce à un rôle
-    /** 
-        * @dev User renounces a role
-        * @param user The address of the user
-        * @param role The role to renounce
-        * @notice The user can renounce their own roles
-    */
-    function renounceRole(address user, bytes32 role) public {
-        if (msg.sender != user) revert InvalidRoleRenounce();
-        _revokeRole(role, user);
-    }
 }

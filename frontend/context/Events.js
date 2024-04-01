@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { SeedSFTAddress, SeedSFTAbi } from "@/constants";
+import { SFT1Address } from "@/constants";
 
 const EventsContext = createContext();
 
@@ -17,7 +17,7 @@ export const EventsProvider = ({ children }) => {
   // Fonction pour récupérer les événements de SeedSFT
   const fetchSeedEvents = async (eventSignature) => {
     return await publicClient.getLogs({
-      address: SeedSFTAddress,
+      address: SFT1Address,
       event: parseAbiItem(eventSignature),
       fromBlock: 0n,
       toBlock: "latest",

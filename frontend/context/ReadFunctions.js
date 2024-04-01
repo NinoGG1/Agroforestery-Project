@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { SeedSFTAddress, SeedSFTAbi } from "@/constants";
+import { SFT1Address, SFT1Abi } from "@/constants";
 
 const ReadFunctionsContext = createContext();
 
@@ -13,8 +13,8 @@ export const ReadFunctionsProvider = ({ children }) => {
 
   // Read the owner of the contract
   const { data: ownerAddress } = useReadContract({
-    address: SeedSFTAddress,
-    abi: SeedSFTAbi,
+    address: SFT1Address,
+    abi: SFT1Abi,
     functionName: "owner",
   });
 
@@ -25,8 +25,8 @@ export const ReadFunctionsProvider = ({ children }) => {
     isPending: getSeedDataIsPending,
     refetch: refetchSeedData,
   } = useReadContract({
-    address: SeedSFTAddress,
-    abi: SeedSFTAbi,
+    address: SFT1Address,
+    abi: SFT1Abi,
     functionName: "getSeedData",
     args: [tokenId],
   });

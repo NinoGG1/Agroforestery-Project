@@ -1,13 +1,350 @@
 // Contract adress
-export const SeedSFTAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-export const PlantSFTAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+export const UseManagerAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+export const SFT1Address = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+export const SFT2Address = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
 
 // Contract abi
-export const SeedSFTAbi = [
+export const UseManagerAbi = [
   {
     inputs: [],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "AccessControlBadConfirmation",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "neededRole",
+        type: "bytes32",
+      },
+    ],
+    name: "AccessControlUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "previousAdminRole",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "newAdminRole",
+        type: "bytes32",
+      },
+    ],
+    name: "RoleAdminChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleGranted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleRevoked",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "ADMIN",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "DEFAULT_ADMIN_ROLE",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "EXPLOITANT_FORESTIER",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "MARCHAND_GRAINIER",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "PEPINIERISTE",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+    ],
+    name: "assignRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+    ],
+    name: "getRoleAdmin",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "grantRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "hasRole",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "callerConfirmation",
+        type: "address",
+      },
+    ],
+    name: "renounceRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+    ],
+    name: "revokeUserRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
+      },
+    ],
+    name: "supportsInterface",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+];
+export const SFT1Abi = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_userManagerAddress",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "AmountMustBeGreaterThanZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CIDCannotBeEmpty",
+    type: "error",
   },
   {
     inputs: [
@@ -112,6 +449,16 @@ export const SeedSFTAbi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "HasToBePepinieristeToReceiveSFT1",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidAddress",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -131,6 +478,37 @@ export const SeedSFTAbi = [
       },
     ],
     name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "QueryForNonexistentToken",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TokenIdAlreadyUsed",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "message",
+        type: "string",
+      },
+    ],
+    name: "UnauthorizedAccess",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "cmHashCannotBeEmpty",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "df1HashCannotBeEmpty",
     type: "error",
   },
   {
@@ -182,30 +560,30 @@ export const SeedSFTAbi = [
     inputs: [
       {
         indexed: true,
-        internalType: "uint256",
+        internalType: "uint64",
         name: "tokenId",
-        type: "uint256",
+        type: "uint64",
       },
       {
         indexed: false,
         internalType: "string",
-        name: "tokenURI",
+        name: "cid",
         type: "string",
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "bytes32",
         name: "cmHash",
-        type: "string",
+        type: "bytes32",
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "bytes32",
         name: "df1Hash",
-        type: "string",
+        type: "bytes32",
       },
     ],
-    name: "SeedData",
+    name: "Sft1Data",
     type: "event",
   },
   {
@@ -352,27 +730,32 @@ export const SeedSFTAbi = [
   {
     inputs: [
       {
-        internalType: "uint256",
+        internalType: "uint64",
         name: "tokenId",
-        type: "uint256",
+        type: "uint64",
       },
     ],
-    name: "getSeedData",
+    name: "getSft1Data",
     outputs: [
       {
         components: [
           {
             internalType: "string",
-            name: "CmHash",
+            name: "uri",
             type: "string",
           },
           {
-            internalType: "string",
-            name: "Df1Hash",
-            type: "string",
+            internalType: "bytes32",
+            name: "cmHash",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32",
+            name: "df1Hash",
+            type: "bytes32",
           },
         ],
-        internalType: "struct SeedSFT.seed",
+        internalType: "struct SFT1.sft1",
         name: "",
         type: "tuple",
       },
@@ -412,29 +795,29 @@ export const SeedSFTAbi = [
         type: "address",
       },
       {
-        internalType: "uint256",
+        internalType: "uint64",
         name: "tokenId",
-        type: "uint256",
+        type: "uint64",
       },
       {
-        internalType: "uint256",
+        internalType: "uint32",
         name: "amount",
-        type: "uint256",
+        type: "uint32",
       },
       {
         internalType: "string",
-        name: "tokenURI",
+        name: "cid",
         type: "string",
       },
       {
-        internalType: "string",
+        internalType: "bytes32",
         name: "cmHash",
-        type: "string",
+        type: "bytes32",
       },
       {
-        internalType: "string",
+        internalType: "bytes32",
         name: "df1Hash",
-        type: "string",
+        type: "bytes32",
       },
     ],
     name: "mint",
@@ -531,30 +914,6 @@ export const SeedSFTAbi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    name: "seedData",
-    outputs: [
-      {
-        internalType: "string",
-        name: "CmHash",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "Df1Hash",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "operator",
         type: "address",
@@ -568,6 +927,35 @@ export const SeedSFTAbi = [
     name: "setApprovalForAll",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    name: "sft1Data",
+    outputs: [
+      {
+        internalType: "string",
+        name: "uri",
+        type: "string",
+      },
+      {
+        internalType: "bytes32",
+        name: "cmHash",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "df1Hash",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -606,7 +994,7 @@ export const SeedSFTAbi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "",
+        name: "tokenId",
         type: "uint256",
       },
     ],
@@ -621,5 +1009,734 @@ export const SeedSFTAbi = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [],
+    name: "userManager",
+    outputs: [
+      {
+        internalType: "contract IUserManager",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
-// export const PlantSFTAbi =;
+export const SFT2Abi = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_sft1Address",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_userManagerAddress",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "AmountMustBeGreaterThanZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CIDCannotBeEmpty",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "balance",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "needed",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "ERC1155InsufficientBalance",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "approver",
+        type: "address",
+      },
+    ],
+    name: "ERC1155InvalidApprover",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "idsLength",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "valuesLength",
+        type: "uint256",
+      },
+    ],
+    name: "ERC1155InvalidArrayLength",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+    ],
+    name: "ERC1155InvalidOperator",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+    ],
+    name: "ERC1155InvalidReceiver",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "ERC1155InvalidSender",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "ERC1155MissingApprovalForAll",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "HasToBeExploitantForestierToReceiveSFT2",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidAddress",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "QueryForNonexistentToken",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "SFT1DoesNotBelongToPepinieriste",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TokenIdAlreadyUsed",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "message",
+        type: "string",
+      },
+    ],
+    name: "UnauthorizedAccess",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "df2HashCannotBeEmpty",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "approved",
+        type: "bool",
+      },
+    ],
+    name: "ApprovalForAll",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint64",
+        name: "tokenId",
+        type: "uint64",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "cid",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "sft1TokenId",
+        type: "uint64",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "df2Hash",
+        type: "bytes32",
+      },
+    ],
+    name: "Sft2Data",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "ids",
+        type: "uint256[]",
+      },
+      {
+        indexed: false,
+        internalType: "uint256[]",
+        name: "values",
+        type: "uint256[]",
+      },
+    ],
+    name: "TransferBatch",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "TransferSingle",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "string",
+        name: "value",
+        type: "string",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "URI",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "balanceOf",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address[]",
+        name: "accounts",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "ids",
+        type: "uint256[]",
+      },
+    ],
+    name: "balanceOfBatch",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint64",
+        name: "tokenId",
+        type: "uint64",
+      },
+    ],
+    name: "getSft2Data",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "uri",
+            type: "string",
+          },
+          {
+            internalType: "uint64",
+            name: "sft1TokenId",
+            type: "uint64",
+          },
+          {
+            internalType: "bytes32",
+            name: "df2Hash",
+            type: "bytes32",
+          },
+        ],
+        internalType: "struct SFT2.sft2",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+    ],
+    name: "isApprovedForAll",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint64",
+        name: "tokenId",
+        type: "uint64",
+      },
+      {
+        internalType: "uint32",
+        name: "amount",
+        type: "uint32",
+      },
+      {
+        internalType: "string",
+        name: "cid",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "sft1TokenId",
+        type: "uint64",
+      },
+      {
+        internalType: "bytes32",
+        name: "df2Hash",
+        type: "bytes32",
+      },
+    ],
+    name: "mint",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256[]",
+        name: "ids",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "values",
+        type: "uint256[]",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "safeBatchTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "safeTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "approved",
+        type: "bool",
+      },
+    ],
+    name: "setApprovalForAll",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "sft1Contract",
+    outputs: [
+      {
+        internalType: "contract ISFT1",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    name: "sft2Data",
+    outputs: [
+      {
+        internalType: "string",
+        name: "uri",
+        type: "string",
+      },
+      {
+        internalType: "uint64",
+        name: "sft1TokenId",
+        type: "uint64",
+      },
+      {
+        internalType: "bytes32",
+        name: "df2Hash",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
+      },
+    ],
+    name: "supportsInterface",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "uri",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "userManager",
+    outputs: [
+      {
+        internalType: "contract IUserManager",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+];

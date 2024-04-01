@@ -1,107 +1,80 @@
+const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { expect, assert } = require("chai");
 
-describe("Test UserManager Contract", function () {
-  let UserManager;
-  let owner, ADMIN, MARCHAND_GRAINIER, PEPINIERISTE;
+describe("UserManager", function () {
+  let userManager;
+  let deployer, user1, user2;
 
   beforeEach(async function () {
-    [owner, ADMIN, MARCHAND_GRAINIER, PEPINIERISTE] = await ethers.getSigners();
-    const UserManagercontract = await ethers.getContractFactory("UserManager");
-    UserManager = await UserManagercontract.deploy();
+    // Récupération des comptes de test
+    [deployer, user1, user2] = await ethers.getSigners();
+
+    // Déploiement du contrat UserManager
+    const UserManager = await ethers.getContractFactory("UserManager");
+    userManager = await UserManager.deploy();
   });
 
   describe("Deployment", function () {
-    it("Should deploy the contract", async function () {
-      let theOwner = await UserManager.owner();
-      assert(theOwner === owner.address);
+    it("Deployer should have the ADMIN role", async function () {
+      expect(
+        await userManager.hasRole(await userManager.ADMIN(), deployer.address)
+      ).to.be.true;
     });
   });
 
-  // describe("assignRole", function () {
-  //   it("Should allow ADMIN to assign roles", async function () {
-  //     await userManager.assignRole(
-  //       marchandGrainier.address,
-  //       userManager.MARCHAND_GRAINIER()
-  //     );
-  //     expect(
-  //       await userManager.hasRole(
-  //         userManager.MARCHAND_GRAINIER(),
-  //         marchandGrainier.address
-  //       )
-  //     ).to.be.true;
-  //   });
+  describe("assignRole", function () {
+    it("Should not allow unauthorized users to assign roles", async function () {
+      await expect(
+        userManager
+          .connect(user1)
+          .assignRole(user2.address, await userManager.PEPINIERISTE())
+      ).to.be.revertedWithCustomError(
+        userManager,
+        "AccessControlUnauthorizedAccount"
+      );
+    });
 
-  //   it("Should prevent non-ADMINs from assigning roles", async function () {
-  //     await expect(
-  //       userManager
-  //         .connect(pepinieriste)
-  //         .assignRole(otherAccount.address, userManager.MARCHAND_GRAINIER())
-  //     )
-  //       .to.be.revertedWithCustomError(userManager, "Unauthorized")
-  //       .withArgs("Seul l'admin peut effectuer cette action");
-  //   });
-  // });
+    it("Should allow ADMIN to assign roles", async function () {
+      await userManager.assignRole(
+        user1.address,
+        await userManager.MARCHAND_GRAINIER()
+      );
+      expect(
+        await userManager.hasRole(
+          await userManager.MARCHAND_GRAINIER(),
+          user1.address
+        )
+      ).to.be.true;
+    });
+  });
 
-  // describe("revokeUserRole", function () {
-  //   it("Should allow ADMIN to revoke roles", async function () {
-  //     await userManager.assignRole(
-  //       marchandGrainier.address,
-  //       userManager.MARCHAND_GRAINIER()
-  //     );
-  //     await userManager.revokeUserRole(
-  //       marchandGrainier.address,
-  //       userManager.MARCHAND_GRAINIER()
-  //     );
-  //     expect(
-  //       await userManager.hasRole(
-  //         userManager.MARCHAND_GRAINIER(),
-  //         marchandGrainier.address
-  //       )
-  //     ).to.be.false;
-  //   });
+  describe("revokeUserRole", function () {
+    it("Should not allow unauthorized users to revoke roles", async function () {
+      await expect(
+        userManager
+          .connect(user1)
+          .revokeUserRole(user2.address, await userManager.PEPINIERISTE())
+      ).to.be.revertedWithCustomError(
+        userManager,
+        "AccessControlUnauthorizedAccount"
+      );
+    });
 
-  //   it("Should prevent non-ADMINs from revoking roles", async function () {
-  //     await userManager.assignRole(
-  //       marchandGrainier.address,
-  //       userManager.MARCHAND_GRAINIER()
-  //     );
-  //     await expect(
-  //       userManager
-  //         .connect(pepinieriste)
-  //         .revokeUserRole(
-  //           marchandGrainier.address,
-  //           userManager.MARCHAND_GRAINIER()
-  //         )
-  //     )
-  //       .to.be.revertedWithCustomError(userManager, "Unauthorized")
-  //       .withArgs("Seul l'admin peut effectuer cette action");
-  //   });
-  // });
-
-  // describe("renounceRole", function () {
-  //   it("Should allow users to renounce their roles", async function () {
-  //     await userManager.assignRole(
-  //       pepinieriste.address,
-  //       userManager.PEPINIERISTE()
-  //     );
-  //     await userManager
-  //       .connect(pepinieriste)
-  //       .renounceRole(pepinieriste.address, userManager.PEPINIERISTE());
-  //     expect(
-  //       await userManager.hasRole(
-  //         userManager.PEPINIERISTE(),
-  //         pepinieriste.address
-  //       )
-  //     ).to.be.false;
-  //   });
-
-  //   it("Should prevent users from renouncing roles they do not own", async function () {
-  //     await expect(
-  //       userManager
-  //         .connect(marchandGrainier)
-  //         .renounceRole(pepinieriste.address, userManager.PEPINIERISTE())
-  //     ).to.be.revertedWith("InvalidRoleRenounce");
-  //   });
-  // });
+    it("should allow ADMIN to revoke roles", async function () {
+      await userManager.assignRole(
+        user1.address,
+        await userManager.MARCHAND_GRAINIER()
+      );
+      await userManager.revokeUserRole(
+        user1.address,
+        await userManager.MARCHAND_GRAINIER()
+      );
+      expect(
+        await userManager.hasRole(
+          await userManager.MARCHAND_GRAINIER(),
+          user1.address
+        )
+      ).to.be.false;
+    });
+  });
 });
