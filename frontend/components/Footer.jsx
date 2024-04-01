@@ -9,7 +9,7 @@ const Footer = () => {
       alignItems="center"
       backgroundColor="color1"
     >
-      <Text color="white">Tous droits réservés - AgriForest Project</Text>
+      <Text color="white">Tous droits réservés - Tree Tracker</Text>
     </Flex>
   );
 };

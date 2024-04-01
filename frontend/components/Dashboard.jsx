@@ -18,41 +18,12 @@ import { useContext, useEffect, useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import AllTransactions from "./AllTransactions";
 import { useAccount } from "wagmi";
-import EventsContext from "@/context/Events";
-import MetadataContext from "@/context/Metadata";
+import MergeDataContext from "@/context/MergeData";
+import FormSFT2 from "./FormSFT2";
 
 const Dashboard = () => {
   const { colorMode } = useColorMode();
-  const { mergedSeedEvents, mergeSeedEvents } = useContext(EventsContext);
-  const { metadata, fetchMetadata } = useContext(MetadataContext);
-  const [sfts, setSfts] = useState([]);
-
-  useEffect(() => {
-    const cids = mergedSeedEvents
-      .map((event) => event.cid)
-      .filter((cid) => cid);
-    if (cids.length > 0) {
-      fetchMetadata(cids);
-    }
-  }, [mergedSeedEvents]);
-
-  useEffect(() => {
-    // Fusionner les données mergedSeedEvents avec les métadonnées récupérées
-    const sftsData = mergedSeedEvents.map((event) => {
-      const metadataForEvent =
-        metadata.find((meta) => meta.cid === event.cid) || {};
-      return {
-        ...event,
-        ...metadataForEvent, // Ajoute les données des métadonnées correspondantes à chaque SFT
-      };
-    });
-
-    setSfts(sftsData);
-  }, [mergedSeedEvents, metadata]); // Dépend de la mise à jour des métadonnées et des mergedSeedEvents
-
-  useEffect(() => {
-    console.log("SFTs with Metadata:", sfts);
-  }, [sfts]);
+  const { sfts } = useContext(MergeDataContext);
 
   return (
     <div>
@@ -130,6 +101,7 @@ const Dashboard = () => {
               <SFTGrid sfts={sfts} filterType="SFT1" />
             </TabPanel>
             <TabPanel p={"0"}>
+              <FormSFT2 />
               <Heading
                 textAlign={"left"}
                 size={"lg"}

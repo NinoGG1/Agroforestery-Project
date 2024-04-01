@@ -3,19 +3,18 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { SFT1Address } from "@/constants";
+import { SFT1Address, SFT2Address } from "@/constants";
 
 const EventsContext = createContext();
 
 export const EventsProvider = ({ children }) => {
   const { address } = useAccount();
 
-  // ************* Seed Events ************* //
-  const [mergedSeedEvents, setMergedSeedEvents] = useState([]);
-  const [metadata, setMetadata] = useState([]);
+  // :::::::::::::::::::::: SFT1 Events :::::::::::::::::::::: //
+  const [mergedSft1Events, setMergedSft1Events] = useState([]);
 
-  // Fonction pour récupérer les événements de SeedSFT
-  const fetchSeedEvents = async (eventSignature) => {
+  // Fonction pour récupérer les événements du Smart Contract SFT1
+  const fetchSft1Events = async (eventSignature) => {
     return await publicClient.getLogs({
       address: SFT1Address,
       event: parseAbiItem(eventSignature),
@@ -25,29 +24,16 @@ export const EventsProvider = ({ children }) => {
     });
   };
 
-  // Fonction pour récupérer les métadonnées des Seeds
-  const fetchMetadata = async (cids) => {
-    const metadataPromises = cids.map(async (cid) => {
-      const url = `https://ipfs.io/ipfs/${cid}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      return { cid, ...data };
-    });
-    const metadataArray = await Promise.all(metadataPromises);
-    setMetadata(metadataArray);
-    console.log("metadataArray", metadataArray);
-  };
-
-  // TransferSingle Event
-  const [transferSingleSeedEvent, setTransferSingleSeedEvent] = useState([]);
-  const getTransferSingleSeedEvent = async () => {
-    const transferSingleSeedEvent = await fetchSeedEvents(
+  // TransferSingleSft1Event
+  const [transferSingleSft1Event, setTransferSingleSft1Event] = useState([]);
+  const getTransferSingleSft1Event = async () => {
+    const transferSingleSft1Event = await fetchSft1Events(
       "event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value)"
     );
-    console.log("transferSingleSeedEvent Response:", transferSingleSeedEvent);
+    console.log("transferSingleSft1Event Response:", transferSingleSft1Event);
 
-    setTransferSingleSeedEvent(
-      transferSingleSeedEvent.map((log) => ({
+    setTransferSingleSft1Event(
+      transferSingleSft1Event.map((log) => ({
         operator: log.args.operator,
         from: log.args.from,
         to: log.args.to,
@@ -57,16 +43,16 @@ export const EventsProvider = ({ children }) => {
     );
   };
 
-  // SeedData Event
-  const [seedDataEvent, setseedDataEvent] = useState([]);
-  const getSeedDataEvent = async () => {
-    const seedDataEvent = await fetchSeedEvents(
-      "event SeedData(uint256 indexed tokenId, string cid, string cmHash, string df1Hash)"
+  // Sft1DataEvent
+  const [sft1DataEvent, setSft1DataEvent] = useState([]);
+  const getSft1DataEvent = async () => {
+    const sft1DataEvent = await fetchSft1Events(
+      "event Sft1Data(uint64 indexed tokenId, string cid, bytes32 cmHash, bytes32 df1Hash)"
     );
-    console.log("seedDataEvent Response:", seedDataEvent);
+    console.log("Sft1DataEvent Response:", sft1DataEvent);
 
-    setseedDataEvent(
-      seedDataEvent.map((log) => ({
+    setSft1DataEvent(
+      sft1DataEvent.map((log) => ({
         tokenId: log.args.tokenId.toString(),
         cid: log.args.cid.toString(),
         cmHash: log.args.cmHash.toString(),
@@ -75,66 +61,157 @@ export const EventsProvider = ({ children }) => {
     );
   };
 
-  // Merge Seed events
-  const mergeSeedEvents = () => {
-    // Création d'un objet pour regrouper les événements par ID/tokenId
-    const seedEventsById = {};
+  // MergeSft1Events
+  const mergeSft1Events = () => {
+    const sft1EventsById = {};
 
-    // Traiter transferSingleSeedEvent pour initialiser ou mettre à jour les événements
-    transferSingleSeedEvent.forEach((event) => {
+    transferSingleSft1Event.forEach((event) => {
       const { id, ...rest } = event;
-      // Initialiser ou mettre à jour avec les informations de transferSingle
-      seedEventsById[id] = { ...(seedEventsById[id] || {}), ...rest, id };
+      sft1EventsById[id] = { ...(sft1EventsById[id] || {}), ...rest, id };
     });
 
-    // Traiter seedDataEvent pour ajouter ou mettre à jour les informations basées sur le tokenId
-    seedDataEvent.forEach((event) => {
+    sft1DataEvent.forEach((event) => {
       const { tokenId, cid, cmHash, df1Hash } = event;
-      // Si l'événement basé sur tokenId existe déjà (à partir de transferSingleSeedEvent), fusionner les informations
-      if (seedEventsById[tokenId]) {
-        seedEventsById[tokenId] = {
-          ...seedEventsById[tokenId],
-          cid, // Inclure le CID pour une utilisation future éventuelle avec les métadonnées
+      if (sft1EventsById[tokenId]) {
+        sft1EventsById[tokenId] = {
+          ...sft1EventsById[tokenId],
+          cid,
           cmHash,
           df1Hash,
         };
       } else {
-        // Si l'événement basé sur tokenId n'existe pas encore, initialiser avec les informations de seedDataEvent
-        seedEventsById[tokenId] = { id: tokenId, cid, cmHash, df1Hash };
+        sft1EventsById[tokenId] = { id: tokenId, cid, cmHash, df1Hash };
       }
     });
 
-    // Convertir l'objet seedEventsById en un tableau d'événements fusionnés
-    const mergedEvents = Object.values(seedEventsById);
-
+    const mergedEvents = Object.values(sft1EventsById);
+    console.log("Merged SFT1 Events:", mergedEvents);
     return mergedEvents;
   };
 
   // Récupération des events à la connexion
   useEffect(() => {
-    const getAllEvents = async () => {
+    const getAllSft1Events = async () => {
       if (address !== undefined) {
-        await getTransferSingleSeedEvent();
-        await getSeedDataEvent();
-        await fetchMetadata(transferSingleSeedEvent.map((event) => event.cid));
+        await getTransferSingleSft1Event();
+        await getSft1DataEvent();
       }
     };
-    getAllEvents();
+    getAllSft1Events();
   }, [address]);
 
   useEffect(() => {
-    setMergedSeedEvents(mergeSeedEvents());
-  }, [transferSingleSeedEvent, seedDataEvent]); // Ecoute les mises à jour d'état
+    setMergedSft1Events(mergeSft1Events());
+  }, [sft1DataEvent]);
+
+  // :::::::::::::::::::::: SFT2 Events :::::::::::::::::::::: //
+  const [mergedSft2Events, setMergedSft2Events] = useState([]);
+
+  // Fonction pour récupérer les événements du Smart Contract SFT2
+  const fetchSft2Events = async (eventSignature) => {
+    return await publicClient.getLogs({
+      address: SFT2Address,
+      event: parseAbiItem(eventSignature),
+      fromBlock: 0n,
+      toBlock: "latest",
+      account: address,
+    });
+  };
+
+  // TransferSingleSft2Event
+  const [transferSingleSft2Event, setTransferSingleSft2Event] = useState([]);
+  const getTransferSingleSft2Event = async () => {
+    const transferSingleSft2Event = await fetchSft2Events(
+      "event TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value)"
+    );
+    console.log("transferSingleSft2Event Response:", transferSingleSft2Event);
+
+    setTransferSingleSft2Event(
+      transferSingleSft2Event.map((log) => ({
+        operator: log.args.operator,
+        from: log.args.from,
+        to: log.args.to,
+        id: log.args.id.toString(),
+        value: log.args.value.toString(),
+      }))
+    );
+  };
+
+  // Sft2DataEvent
+  const [sft2DataEvent, setSft2DataEvent] = useState([]);
+  const getSft2DataEvent = async () => {
+    const sft2DataEvent = await fetchSft2Events(
+      "event Sft2Data(uint64 indexed tokenId, string cid, uint64 sft1TokenId, bytes32 df2Hash)"
+    );
+    console.log("Sft2DataEvent Response:", sft2DataEvent);
+
+    setSft2DataEvent(
+      sft2DataEvent.map((log) => ({
+        tokenId: log.args.tokenId.toString(),
+        cid: log.args.cid.toString(),
+        sft1TokenId: log.args.sft1TokenId.toString(),
+        df2Hash: log.args.df2Hash.toString(),
+      }))
+    );
+  };
+
+  // MergeSft2Events
+  const mergeSft2Events = () => {
+    const sft2EventsById = {};
+
+    transferSingleSft2Event.forEach((event) => {
+      const { id, ...rest } = event;
+      sft2EventsById[id] = { ...(sft2EventsById[id] || {}), ...rest, id };
+    });
+    sft2DataEvent.forEach((event) => {
+      const { tokenId, cid, sft1TokenId, df2Hash } = event;
+      if (sft2EventsById[tokenId]) {
+        sft2EventsById[tokenId] = {
+          ...sft2EventsById[tokenId],
+          cid,
+          sft1TokenId,
+          df2Hash,
+        };
+      } else {
+        sft2EventsById[tokenId] = { id: tokenId, cid, sft1TokenId, df2Hash };
+      }
+    });
+
+    const mergedEvents = Object.values(sft2EventsById);
+    console.log("Merged SFT2 Events:", mergedEvents);
+    return mergedEvents;
+  };
+
+  // Récupération des events à la connexion
+  useEffect(() => {
+    const getAllSft2Events = async () => {
+      if (address !== undefined) {
+        await getTransferSingleSft2Event();
+        await getSft2DataEvent();
+      }
+    };
+    getAllSft2Events();
+  }, [address]);
+
+  useEffect(() => {
+    setMergedSft2Events(mergeSft2Events());
+  }, [sft2DataEvent]);
 
   return (
     <EventsContext.Provider
       value={{
-        transferSingleSeedEvent,
-        seedDataEvent,
-        mergedSeedEvents,
-        getTransferSingleSeedEvent,
-        getSeedDataEvent,
-        mergeSeedEvents,
+        transferSingleSft1Event,
+        sft1DataEvent,
+        mergedSft1Events,
+        getTransferSingleSft1Event,
+        getSft1DataEvent,
+        mergeSft1Events,
+        transferSingleSft2Event,
+        sft2DataEvent,
+        mergedSft2Events,
+        getTransferSingleSft2Event,
+        getSft2DataEvent,
+        mergeSft2Events,
       }}
     >
       {children}

@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import { EventsProvider } from "@/context/Events";
 import { ReadFunctionsProvider } from "@/context/ReadFunctions";
 import { MetadataProvider } from "@/context/Metadata";
+import { MergeDataProvider } from "@/context/MergeData";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({ children }) {
           <EventsProvider>
             <ReadFunctionsProvider>
               <MetadataProvider>
-                <Layout>{children}</Layout>
+                <MergeDataProvider>
+                  <Layout>{children}</Layout>
+                </MergeDataProvider>
               </MetadataProvider>
             </ReadFunctionsProvider>
           </EventsProvider>

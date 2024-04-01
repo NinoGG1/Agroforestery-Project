@@ -7,7 +7,7 @@ const MetadataContext = createContext();
 export const MetadataProvider = ({ children }) => {
   const [metadata, setMetadata] = useState([]);
 
-  // Fonction pour récupérer les métadonnées des Seeds
+  // Fonction pour récupérer les métadonnées des Sft1 et Sft2
   const fetchMetadata = async (cids) => {
     if (!cids || cids.length === 0) {
       console.log("Aucun CID fourni pour la récupération des métadonnées.");
@@ -17,6 +17,9 @@ export const MetadataProvider = ({ children }) => {
       try {
         const url = `https://ipfs.io/ipfs/${cid}`;
         const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         return { cid, ...data };
       } catch (error) {

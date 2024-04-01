@@ -12,13 +12,13 @@ import {
   HStack,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useAccount,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { SFT1Address, SFT1Abi } from "@/constants";
+import { SFT2Address, SFT2Abi } from "@/constants";
 import EventsContext from "@/context/Events";
 import TextInput from "./FormComponents/TextInput";
 import NumberInput from "./FormComponents/NumberInput";
@@ -26,109 +26,59 @@ import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
 
-const FormSFT1 = () => {
+const FormSFT2 = () => {
   // ******************* States *******************
   const [ownerAddress, setOwnerAddress] = useState("");
   const [tokenId, setTokenId] = useState("");
   const [tokenQuantity, setTokenQuantity] = useState("");
-  const [CM1JsonHash, setCM1JsonHash] = useState("");
-  const [CM1JsonCid, setCM1JsonCid] = useState("");
-  const [CM1PdfCid, setCM1PdfCid] = useState("");
-  const [DF1JsonHash, setDF1JsonHash] = useState("");
-  const [DF1JsonCid, setDF1JsonCid] = useState("");
-  const [DF1PdfCid, setDF1PdfCid] = useState("");
+  const [sft1TokenId, setSft1TokenId] = useState("");
+  const [DF2JsonHash, setDF2JsonHash] = useState("");
+  const [DF2JsonCid, setDF2JsonCid] = useState("");
+  const [DF2PdfCid, setDF2PdfCid] = useState("");
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
-  const CM1JsonInputRef = useRef(null);
-  const CM1PdfInputRef = useRef(null);
-  const DF1JsonInputRef = useRef(null);
-  const DF1PdfInputRef = useRef(null);
-
-  // Fonction de reset du formulaire
-  const resetForm = () => {
-    // Réinitialiser les états
-    setOwnerAddress("");
-    setTokenId("");
-    setTokenQuantity("");
-    setCM1JsonHash("");
-    setCM1JsonCid("");
-    setCM1PdfCid("");
-    setDF1JsonHash("");
-    setDF1JsonCid("");
-    setDF1PdfCid("");
-    setMetadata({});
-    setMetadataCid("");
-
-    // Réinitialiser les inputs de type file
-    if (CM1JsonInputRef.current) CM1JsonInputRef.current.value = "";
-    if (CM1PdfInputRef.current) CM1PdfInputRef.current.value = "";
-    if (DF1JsonInputRef.current) DF1JsonInputRef.current.value = "";
-    if (DF1PdfInputRef.current) DF1PdfInputRef.current.value = "";
-  };
 
   // ******************* Hooks *******************
   const toast = useToast();
   const { address, isConnected } = useAccount();
   const {
-    getTransferSingleSft1Event,
-    getSft1DataEvent,
-    mergeSft1Events,
-    mergedSft1Events,
+    getSft2DataEvent,
+    getTransferSingleSft2Event,
+    mergedSft2Events,
+    mergeSft2Events,
   } = useContext(EventsContext);
 
   // ******************* Gestion des fichiers *******************
-  // Documents concernant l'échange 1
+  // Documents concernant l'échange 2
   const documents = [
     {
-      name: "Certificat Maître",
-      jsonCid: CM1JsonCid,
-      pdfCid: CM1PdfCid,
-    },
-    {
-      name: "Document du Fournisseur 1",
-      jsonCid: DF1JsonCid,
-      pdfCid: DF1PdfCid,
+      name: "Document du Fournisseur 2",
+      jsonCid: DF2JsonCid,
+      pdfCid: DF2PdfCid,
     },
   ];
 
-  // Obtenir le hash et le cid du fichier CM1 json
-  const handleChangeForCM1Json = ({ file, hash, ipfsHash }) => {
+  // Obtenir le hash et le cid du fichier DF2 json
+  const handleChangeForDF2Json = ({ file, hash, ipfsHash }) => {
     console.log("Fichier traité :", file);
     console.log("Hash du fichier :", hash);
     console.log("Hash IPFS :", ipfsHash);
-    setCM1JsonHash(hash);
-    setCM1JsonCid(ipfsHash);
+    setDF2JsonHash(hash);
+    setDF2JsonCid(ipfsHash);
   };
 
-  // Obtenir le cid du fichier CM1 pdf
-  const handleChangeForCM1Pdf = ({ file, hash, ipfsHash }) => {
+  // Obtenir le cid du fichier DF2 pdf
+  const handleChangeForDF2Pdf = ({ file, hash, ipfsHash }) => {
     console.log("Fichier traité :", file);
     console.log("Hash du fichier :", hash);
     console.log("Hash IPFS :", ipfsHash);
-    setCM1PdfCid(ipfsHash);
-  };
-
-  // Obtenir le hash et le cid du fichier DF1 json
-  const handleChangeForDF1Json = ({ file, hash, ipfsHash }) => {
-    console.log("Fichier traité :", file);
-    console.log("Hash du fichier :", hash);
-    console.log("Hash IPFS :", ipfsHash);
-    setDF1JsonHash(hash);
-    setDF1JsonCid(ipfsHash);
-  };
-
-  // Obtenir le cid du fichier DF1 pdf
-  const handleChangeForDF1Pdf = ({ file, hash, ipfsHash }) => {
-    console.log("Fichier traité :", file);
-    console.log("Hash du fichier :", hash);
-    console.log("Hash IPFS :", ipfsHash);
-    setDF1PdfCid(ipfsHash);
+    setDF2PdfCid(ipfsHash);
   };
 
   // ******************* Préparation des métadonnées *******************
   // Déterminer le prochain Id de token
   const calculateNextTokenId = () => {
-    const lastTokenId = mergedSft1Events.reduce((maxId, event) => {
+    const lastTokenId = mergedSft2Events.reduce((maxId, event) => {
       const tokenId = parseInt(event.id, 10);
       return tokenId > maxId ? tokenId : maxId;
     }, 0);
@@ -146,8 +96,7 @@ const FormSFT1 = () => {
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
     setTokenId(calculateNextTokenId());
-    const CM1JsonData = await fetchJsonData(CM1JsonCid);
-    const DF1JsonData = await fetchJsonData(DF1JsonCid);
+    const DF2JsonData = await fetchJsonData(DF1JsonCid);
 
     const newMetadata = {
       // Nom du token
@@ -186,7 +135,7 @@ const FormSFT1 = () => {
           ? "testé"
           : ""
       }`,
-      type: "SFT1",
+      type: "SFT2",
       numero_certificat_ce: CM1JsonData.numero_certificat_ce,
       Certificat_maitre_pdf: `ipfs://${CM1PdfCid}`,
       Document_du_fournisseur_1_pdf: `ipfs://${DF1PdfCid}`,
@@ -278,24 +227,28 @@ const FormSFT1 = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("Metadata updated:", metadata);
+  }, [metadata]);
+
   // ******************* Communication avec le smart contract *******************
-  // Write contract pour mint le SFT1
+  // Write contract pour mint le SFT2
   const {
     data: hash,
-    error: mintSeedSFT1Error,
-    isPending: mintSeedSFT1Pending,
+    error: mintSeedSFT2Error,
+    isPending: mintSeedSFT2Pending,
     writeContract,
   } = useWriteContract({
     mutation: {
       onSuccess: () => {
         toast({
-          title: "Le SFT1 a été minté avec succès",
+          title: "Le SFT2 a été minté avec succès",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
-        getTransferSingleSft1Event();
-        getSft1DataEvent();
+        getTransferSingleSft2Event();
+        getSft2DataEvent();
         resetForm();
       },
       onError: (error) => {
@@ -309,11 +262,11 @@ const FormSFT1 = () => {
     },
   });
 
-  // Fonction pour mint le SFT1
-  const mintSeedSFT1 = async () => {
+  // Fonction pour mint le SFT2
+  const mintSeedSFT2 = async () => {
     writeContract({
-      address: SFT1Address,
-      abi: SFT1Abi,
+      address: SFT2Address,
+      abi: SFT2Abi,
       functionName: "mint",
       account: address,
       args: [
@@ -321,8 +274,8 @@ const FormSFT1 = () => {
         tokenId,
         tokenQuantity,
         metadataCid,
-        CM1JsonHash,
-        DF1JsonHash,
+        sft1TokenId,
+        DF2JsonHash,
       ],
     });
   };
@@ -353,44 +306,28 @@ const FormSFT1 = () => {
                 Etape 1 : Upload des fichiers et préparation des metadonnées
               </Heading>
 
+              <TextInput
+                label="ID du SFT1 associé"
+                value={sft1TokenId}
+                onChange={(e) => setSft1TokenId(e.target.value)}
+                placeholder="Ajouter l'ID du SFT1 associé"
+                isRequired
+              />
+
               <Heading size="sm" textAlign={"left"}>
-                Certificat Maître
+                Document du Fournisseur 2
               </Heading>
               <HStack spacing={"1rem"}>
                 <HashAndUploadButton
-                  label="Certificat maître.json"
-                  inputRef={CM1JsonInputRef}
+                  label="Document du Fournisseur 2.json"
                   accept=".json"
-                  onFileProcessed={handleChangeForCM1Json}
+                  onFileProcessed={handleChangeForDF2Json}
                   isRequired
                 />
                 <UploadToIpfsButton
-                  label="Certificat maître.pdf"
-                  inputRef={CM1PdfInputRef}
+                  label="Document du Fournisseur 2.pdf"
                   accept=".pdf"
-                  onFileProcessed={handleChangeForCM1Pdf}
-                  isRequired
-                />
-              </HStack>
-
-              <Divider mt={"0.5rem"} />
-
-              <Heading size="sm" textAlign={"left"}>
-                Document du Fournisseur 1
-              </Heading>
-              <HStack spacing={"1rem"}>
-                <HashAndUploadButton
-                  label="Document du Fournisseur 1.json"
-                  inputRef={DF1JsonInputRef}
-                  accept=".json"
-                  onFileProcessed={handleChangeForDF1Json}
-                  isRequired
-                />
-                <UploadToIpfsButton
-                  label="Document du Fournisseur 1.pdf"
-                  inputRef={DF1PdfInputRef}
-                  accept=".pdf"
-                  onFileProcessed={handleChangeForDF1Pdf}
+                  onFileProcessed={handleChangeForDF2Pdf}
                   isRequired
                 />
               </HStack>
@@ -406,29 +343,16 @@ const FormSFT1 = () => {
             <Box mt="2rem">
               <Button
                 onClick={createAndUploadMetadataObject}
-                disabled={
-                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                }
-                bgColor={
-                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                    ? "#1E2E2B"
-                    : "green.500"
-                }
-                cursor={
-                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                    ? "not-allowed"
-                    : "pointer"
-                }
+                disabled={!DF2JsonCid || !DF2PdfCid}
+                bgColor={!DF2JsonCid || !DF2PdfCid ? "#1E2E2B" : "green.500"}
+                cursor={!DF2JsonCid || !DF2PdfCid ? "not-allowed" : "pointer"}
                 color="white"
                 _hover={{
-                  bg:
-                    !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                      ? "#1E2E2B"
-                      : "#2E4039",
+                  bg: !DF2JsonCid || !DF2PdfCid ? "#1E2E2B" : "#2E4039",
                 }}
                 width="full"
               >
-                {!DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
+                {!DF2JsonCid || !DF2PdfCid
                   ? "Charger tous les documents pour pouvoir préparer les metadonnées"
                   : "Préparer les metadonnées"}
               </Button>
@@ -468,61 +392,53 @@ const FormSFT1 = () => {
               </HStack>
 
               <TextInput
-                label="Hash du certificat maître"
-                value={CM1JsonHash}
-                onChange={(e) => setCM1JsonHash(e.target.value)}
-                placeholder="Le hash du CM apparaîtra ici"
-                isReadOnly
-              />
-
-              <TextInput
-                label="Hash du Document du Fournisseur 1"
-                value={DF1JsonHash}
-                onChange={(e) => setDF1JsonHash(e.target.value)}
-                placeholder="Le hash du DF1 apparaîtra ici"
+                label="Hash du Document du Fournisseur 2"
+                value={DF2JsonHash}
+                onChange={(e) => setDF2JsonHash(e.target.value)}
+                placeholder="Le hash du DF2 apparaîtra ici"
                 isReadOnly
               />
 
               <TextInput
                 label="CID des metadatas du token"
                 value={metadataCid}
-                onChange={(e) => setMetadataCid(e.target.value)}
+                onChange={(e) => setTokenUri(e.target.value)}
                 placeholder="Le CID des metadonnées du token apparaîtra ici"
                 isReadOnly
               />
 
               <Button
-                onClick={mintSeedSFT1}
+                onClick={mintSeedSFT2}
                 disabled={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
+                  !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
                 }
                 bgColor={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
+                  !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
                     ? "#1E2E2B"
                     : "green.500"
                 }
                 cursor={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
+                  !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
                     ? "not-allowed"
                     : "pointer"
                 }
                 color="white"
                 _hover={{
                   bg:
-                    !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
+                    !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
                       ? "#1E2E2B"
                       : "#2E4039",
                 }}
                 width="full"
-                isLoading={mintSeedSFT1Pending}
+                isLoading={mintSeedSFT2Pending}
                 loadingText="Confirmation..."
                 leftIcon={
-                  mintSeedSFT1Pending && <Spinner size="sm" speed="0.65s" />
+                  mintSeedSFT2Pending && <Spinner size="sm" speed="0.65s" />
                 }
               >
                 {!ownerAddress || !tokenQuantity
                   ? "Remplir tous les champs pour pouvoir minter le Token"
-                  : mintSeedSFT1Pending
+                  : mintSeedSFT2Pending
                   ? ""
                   : "Minter le Token"}
               </Button>
@@ -551,11 +467,11 @@ const FormSFT1 = () => {
               Transaction confirmed.
             </Alert>
           )}
-          {mintSeedSFT1Error && (
+          {mintSeedSFT2Error && (
             <Alert status="error" mt="1rem" mb="1rem">
               <AlertIcon />
               Error:{" "}
-              {mintSeedSFT1Error.shortMessage || mintSeedSFT1Error.message}
+              {mintSeedSFT2Error.shortMessage || mintSeedSFT2Error.message}
             </Alert>
           )}
         </Flex>
@@ -564,4 +480,4 @@ const FormSFT1 = () => {
   );
 };
 
-export default FormSFT1;
+export default FormSFT2;

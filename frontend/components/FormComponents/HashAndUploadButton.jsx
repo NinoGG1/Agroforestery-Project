@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Spinner } from "@chakra-ui/react";
 import { CheckIcon, DownloadIcon } from "@chakra-ui/icons";
 
@@ -57,6 +57,17 @@ const HashAndUploadButton = ({ label, accept, onFileProcessed }) => {
     }
     setIsUploading(false);
   };
+
+  // useEffect pour réinitialiser ipfsHash et les boutons après 5 secondes
+  useEffect(() => {
+    if (ipfsHash) {
+      const timer = setTimeout(() => {
+        setIpfsHash(""); // Réinitialise l'état après 5 secondes
+      }, 5000);
+
+      return () => clearTimeout(timer); // Nettoie le timer en cas de démontage du composant
+    }
+  }, [ipfsHash]);
 
   return (
     <>

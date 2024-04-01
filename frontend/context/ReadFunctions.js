@@ -18,16 +18,16 @@ export const ReadFunctionsProvider = ({ children }) => {
     functionName: "owner",
   });
 
-  // Read seed data
+  // Read sft1 data
   const {
-    data: seedData,
-    error: getSeedDataError,
-    isPending: getSeedDataIsPending,
-    refetch: refetchSeedData,
+    data: sft1Data,
+    error: getSft1DataError,
+    isPending: getSft1DataIsPending,
+    refetch: refetchSft1Data,
   } = useReadContract({
     address: SFT1Address,
     abi: SFT1Abi,
-    functionName: "getSeedData",
+    functionName: "getSft1Data",
     args: [tokenId],
   });
 
@@ -35,9 +35,9 @@ export const ReadFunctionsProvider = ({ children }) => {
     <ReadFunctionsContext.Provider
       value={{
         ownerAddress,
-        seedData,
-        refetchSeedData: (newTokenId) =>
-          refetchSeedData({ args: [newTokenId] }),
+        sft1Data,
+        refetchSft1Data: (newTokenId) =>
+          refetchSft1Data({ args: [newTokenId] }),
       }}
     >
       {children}
