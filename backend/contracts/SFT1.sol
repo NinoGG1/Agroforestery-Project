@@ -3,7 +3,7 @@ pragma solidity 0.8.23;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./UserManager.sol";
+import "./IUserManager.sol";
 
 
 // ::::::::::::::::::::: Custom errors :::::::::::::::::::::
@@ -14,15 +14,16 @@ error cmHashCannotBeEmpty();
 error df1HashCannotBeEmpty();
 error TokenIdAlreadyUsed();
 error QueryForNonexistentToken();
-error UseManagerUnauthorizedAccount();
 error HasToBePepinieristeToReceiveSFT1();
+error UnauthorizedAccess(string message);
 
 /**
  * @title SFT1
  * @dev Contract for SFT1 tokens
  * @notice SFT1 is a contract for minting ERC-1155 tokens with metadata stored on IPFS
  */
-contract SFT1 is ERC1155, Ownable, UserManager {
+contract SFT1 is ERC1155, Ownable {
+    IUserManager public userManager;
 
     // Structure pour stocker les données sft1  
     struct sft1 {
@@ -45,15 +46,21 @@ contract SFT1 is ERC1155, Ownable, UserManager {
     event Sft1Data(uint64 indexed tokenId, string cid, bytes32 cmHash, bytes32 df1Hash);
 
     // Constructeur
-    constructor() ERC1155("") Ownable(msg.sender) {}
+    constructor(address _userManagerAddress) ERC1155("") Ownable(msg.sender) {
+    userManager = IUserManager(_userManagerAddress);
+}
 
     // ::::::::::::::::::::: Modifier :::::::::::::::::::::
     modifier onlyAdminOrMarchandGrainer {
-        if (!hasRole(ADMIN, msg.sender) && !hasRole(MARCHAND_GRAINIER, msg.sender)) {
-            revert UseManagerUnauthorizedAccount();
+        bool isAdmin = userManager.hasRole(keccak256("ADMIN"), msg.sender);
+        bool isMarchandGrainer = userManager.hasRole(keccak256("MARCHAND_GRAINIER"), msg.sender);
+
+        if (!isAdmin && !isMarchandGrainer) {
+            revert UnauthorizedAccess("Only admin or marchand grainer can perform this action");
         }
         _;
     }
+
 
     // ::::::::::::::::::::: GETTERS :::::::::::::::::::::
     // Surcharge de la fonction uri pour retourner l'URI basée sur le CID correspondant au tokenId, uint64 convertit en uint256 pour correspondre à l'interface ERC-1155
@@ -78,19 +85,7 @@ contract SFT1 is ERC1155, Ownable, UserManager {
     function getSft1Data(uint64 tokenId) public view returns (sft1 memory) {
         if (bytes(sft1Data[uint64(tokenId)].uri).length == 0) revert QueryForNonexistentToken();
         return sft1Data[tokenId];
-    }
-
-    // ::::::::::::::::::::: MANAGE INTERFACE :::::::::::::::::::::
-    // Permet d'éviter les collisions de fonctions lors de l'utilisation de plusieurs contrats OpenZeppelin
-    /**
-     * @dev See {IERC165-supportsInterface}
-     * @param interfaceId The interface identifier
-     * @return `true` if the contract implements `interfaceId`
-     * @notice Override the supportsInterface function to avoid function collisions when using multiple OpenZeppelin contracts
-     */
-    function supportsInterface(bytes4 interfaceId) public view override(ERC1155, AccessControl) returns (bool) {
-    return ERC1155.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
-    }
+    }  
 
     // ::::::::::::::::::::: MINT :::::::::::::::::::::
     // Fonction pour mint un token SFT1
@@ -113,8 +108,11 @@ contract SFT1 is ERC1155, Ownable, UserManager {
         if (bytes(cid).length == 0) revert CIDCannotBeEmpty();
         if (cmHash == bytes32(0)) revert cmHashCannotBeEmpty();
         if (df1Hash == bytes32(0)) revert df1HashCannotBeEmpty();
-        if (bytes(sft1Data[tokenId].uri).length != 0) revert TokenIdAlreadyUsed();
-        if (!hasRole(PEPINIERISTE, account)) revert HasToBePepinieristeToReceiveSFT1(); // Vérifier si l'adresse destinataire du SFT a le rôle PÉPINIÉRISTE
+        if (bytes(sft1Data[tokenId].uri).length != 0)
+        revert TokenIdAlreadyUsed();
+        // Utilisation de userManager pour vérifier si l'adresse destinataire a le rôle PEPINIERISTE
+        bytes32 rolePepinieriste = keccak256("PEPINIERISTE");
+        if (!userManager.hasRole(rolePepinieriste, account)) revert HasToBePepinieristeToReceiveSFT1();
 
         // Construire l'URI à partir du CID
         string memory tokenUri = string(abi.encodePacked("ipfs://", cid));

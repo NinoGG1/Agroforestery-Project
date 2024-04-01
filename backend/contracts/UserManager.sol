@@ -4,7 +4,7 @@ pragma solidity 0.8.23;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 // ::::::::::::::::::::: Custom errors :::::::::::::::::::::
-error Unauthorized(string message);
+error Unauthorized(string action);
 error InvalidRoleRenounce();
 
 /**
@@ -21,31 +21,6 @@ contract UserManager is AccessControl {
     // Constructeur
     constructor() {
         _grantRole(ADMIN, msg.sender);
-    }
-
-    // ::::::::::::::::::::: Modifier :::::::::::::::::::::    
-    // Modifier pour restreindre l'accès aux admins
-    modifier onlyAdmin() {
-        if (!hasRole(ADMIN, msg.sender)) revert Unauthorized("Seul l'admin peut effectuer cette action");
-        _;
-    }
-
-    // Modifier pour restreindre l'accès aux marchands grainiers
-    modifier onlyMarchandGrainier() {
-        if (!hasRole(MARCHAND_GRAINIER, msg.sender)) revert Unauthorized("Seul le marchand grainier peut effectuer cette action");
-        _;
-    }
-
-    // Modifier pour restreindre l'accès aux pépiniéristes
-    modifier onlyPepinieriste() {
-        if (!hasRole(PEPINIERISTE, msg.sender)) revert Unauthorized("Seul le pepinieriste peut effectuer cette action");
-        _;
-    }
-
-    // Modifier pour restreindre l'accès aux exploitants forestiers
-    modifier onlyExploitantForestier() {
-        if (!hasRole(EXPLOITANT_FORESTIER, msg.sender)) revert Unauthorized("Seul l'exploitant forestier peut effectuer cette action");
-        _;
     }
 
     // Fonction pour assigner un rôle à un utilisateur

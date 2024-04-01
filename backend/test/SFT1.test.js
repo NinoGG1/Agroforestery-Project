@@ -18,17 +18,24 @@ describe("Test SFT1 Contract", function () {
 
   beforeEach(async function () {
     [owner, ADMIN, MARCHAND_GRAINIER, PEPINIERISTE] = await ethers.getSigners();
-    const contract = await ethers.getContractFactory("SFT1");
-    SFT1 = await contract.deploy();
-    console.log("SFT1 address:", SFT1.address);
+
+    // Déploiement du contrat UserManager
+    const userManagerContract = await ethers.getContractFactory("UserManager");
+    const userManager = await userManagerContract.deploy();
 
     // Assignation des rôles après le déploiement
-    await SFT1.assignRole(ADMIN.address, await SFT1.ADMIN());
-    await SFT1.assignRole(
+    await userManager.assignRole(ADMIN.address, await userManager.ADMIN());
+    await userManager.assignRole(
       MARCHAND_GRAINIER.address,
-      await SFT1.MARCHAND_GRAINIER()
+      await userManager.MARCHAND_GRAINIER()
     );
-    await SFT1.assignRole(PEPINIERISTE.address, await SFT1.PEPINIERISTE());
+    await userManager.assignRole(
+      PEPINIERISTE.address,
+      await userManager.PEPINIERISTE()
+    );
+
+    const contract = await ethers.getContractFactory("SFT1");
+    SFT1 = await contract.deploy(userManager.target);
   });
 
   describe("Deployment", function () {
@@ -105,23 +112,6 @@ describe("Test SFT1 Contract", function () {
     });
   });
 
-  // ::::::::::::: SUPPORT INTERFACE ::::::::::::: //
-  describe("Interface Support", function () {
-    it("should not support a random interface", async function () {
-      // Utiliser un identifiant d'interface aléatoire
-      expect(await SFT1.supportsInterface("0x12345678")).to.be.false;
-    });
-    it("should supports ERC1155 interface", async function () {
-      // Remplacer par l'identifiant d'interface ERC1155
-      expect(await SFT1.supportsInterface("0xd9b67a26")).to.be.true;
-    });
-
-    it("should supports AccessControl interface", async function () {
-      // Remplacer par l'identifiant d'interface AccessControl
-      expect(await SFT1.supportsInterface("0x7965db0b")).to.be.true;
-    });
-  });
-
   // ::::::::::::: MINT ::::::::::::: //
   describe("mint", function () {
     it("Should not authorize a non Admin or non Marchand_Grainier to mint an SFT", async function () {
@@ -135,7 +125,7 @@ describe("Test SFT1 Contract", function () {
           cmHash,
           df1Hash
         )
-      ).to.be.revertedWithCustomError(SFT1, "UseManagerUnauthorizedAccount");
+      ).to.be.revertedWithCustomError(SFT1, "UnauthorizedAccess");
     });
 
     it("Should not authorize to mint to address 0", async function () {

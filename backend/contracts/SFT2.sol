@@ -3,7 +3,7 @@ pragma solidity 0.8.23;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./UserManager.sol";
+import "./IUserManager.sol";
 import "./ISFT1.sol";
 
 
@@ -17,15 +17,17 @@ error TokenIdAlreadyUsed();
 error QueryForNonexistentToken();
 error UseManagerUnauthorizedAccount();
 error HasToBeExploitantForestierToReceiveSFT2();
-error YouNeedToOwnTheSFT1Token();
+error SFT1DoesNotBelongToPepinieriste();
+error UnauthorizedAccess(string message);
 
 /**
  * @title SFT2
  * @dev Contract for SFT2 tokens
  * @notice SFT2 is a contract for minting ERC-1155 tokens with metadata stored on IPFS
  */
-contract SFT2 is ERC1155, Ownable, UserManager {
+contract SFT2 is ERC1155, Ownable {
     ISFT1 public sft1Contract;
+    IUserManager public userManager;
 
     // Structure pour stocker les données sft2  
     struct sft2 {
@@ -48,15 +50,19 @@ contract SFT2 is ERC1155, Ownable, UserManager {
     event Sft2Data(uint64 indexed tokenId, string cid, uint64 sft1TokenId, bytes32 df2Hash);
 
     // Constructeur
-    constructor(address _sft1Address) ERC1155("") Ownable(msg.sender) {
+    constructor(address _sft1Address, address _userManagerAddress) ERC1155("") Ownable(msg.sender) {
         sft1Contract = ISFT1(_sft1Address);
+        userManager = IUserManager(_userManagerAddress);
     }
 
     // ::::::::::::::::::::: Modifier :::::::::::::::::::::
 
     modifier onlyAdminOrPepinieriste {
-        if (!hasRole(ADMIN, msg.sender) && !hasRole(PEPINIERISTE, msg.sender)) {
-            revert UseManagerUnauthorizedAccount();
+        bool isAdmin = userManager.hasRole(keccak256("ADMIN"), msg.sender);
+        bool isPepinieriste = userManager.hasRole(keccak256("PEPINIERISTE"), msg.sender);
+
+        if (!isAdmin && !isPepinieriste) {
+            revert UnauthorizedAccess("Only admin or pepninieriste can perform this action");
         }
         _;
     }
@@ -85,18 +91,6 @@ contract SFT2 is ERC1155, Ownable, UserManager {
         return sft2Data[tokenId];
     }
 
-    // ::::::::::::::::::::: MANAGE INTERFACE :::::::::::::::::::::
-    // Permet d'éviter les collisions de fonctions lors de l'utilisation de plusieurs contrats OpenZeppelin
-    /**
-     * @dev See {IERC165-supportsInterface}
-     * @param interfaceId The interface identifier
-     * @return `true` if the contract implements `interfaceId`
-     * @notice Override the supportsInterface function to avoid function collisions when using multiple OpenZeppelin contracts
-     */
-    function supportsInterface(bytes4 interfaceId) public view override(ERC1155, AccessControl) returns (bool) {
-    return ERC1155.supportsInterface(interfaceId) || AccessControl.supportsInterface(interfaceId);
-    }
-
     // ::::::::::::::::::::: MINT :::::::::::::::::::::
     // Fonction pour mint un token SFT2
     /**
@@ -110,19 +104,19 @@ contract SFT2 is ERC1155, Ownable, UserManager {
      * @notice Mint a new SFT2 token with the given CID and associate it with the given SFT1 token ID
      */
     function mint(address account, uint64 tokenId, uint32 amount, string memory cid, uint64 sft1TokenId, bytes32 df2Hash) public onlyAdminOrPepinieriste {
+        // Si l'adresse appelante est un pépiniériste et essaie de minter un SFT2, vérifiez qu'elle possède le SFT1 correspondant
+        if (userManager.hasRole(keccak256("PEPINIERISTE"), msg.sender) && sft1Contract.balanceOf(msg.sender, sft1TokenId) <= 0) {
+            revert SFT1DoesNotBelongToPepinieriste();
+        }
 
-        // Vérifications
         if (account == address(0)) revert InvalidAddress();
         if (amount <= 0) revert AmountMustBeGreaterThanZero();
         if (bytes(cid).length == 0) revert CIDCannotBeEmpty();
         if (df2Hash == bytes32(0)) revert df2HashCannotBeEmpty();
         if (bytes(sft2Data[tokenId].uri).length != 0) revert TokenIdAlreadyUsed();
-        // Vérifier si l'adresse destinataire du SFT a le rôle EXPLOITANT_FORESTIER
-        if (!hasRole(EXPLOITANT_FORESTIER, account)) revert HasToBeExploitantForestierToReceiveSFT2(); 
-        // Si l'address qui mint le SFT2 est un pépiniériste, vérifier qu'il possède le SFT1 associé
-        if (hasRole(PEPINIERISTE, msg.sender)) {
-            if (sft1Contract.balanceOf(account, sft1TokenId) <= 0) revert YouNeedToOwnTheSFT1Token();
-        }
+        // Utilisation de userManager pour vérifier si l'adresse destinataire a le rôle EXPLOITANT_FORESTIER
+        bytes32 roleExploitantForestier = keccak256("EXPLOITANT_FORESTIER");
+        if (!userManager.hasRole(roleExploitantForestier, account)) revert HasToBeExploitantForestierToReceiveSFT2();
 
         // Construire l'URI à partir du CID
         string memory tokenUri = string(abi.encodePacked("ipfs://", cid));

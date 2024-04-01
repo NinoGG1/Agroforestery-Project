@@ -2,13 +2,15 @@ const { ethers } = require("hardhat");
 const { expect, assert } = require("chai");
 
 describe("Test SFT2 Contract", function () {
+  let SFT1;
   let SFT2;
-  let owner, ADMIN, PEPINIERISTE, EXPLOITANT_FORESTIER;
+  let owner, ADMIN, PEPINIERISTE, PEPINIERISTE2, EXPLOITANT_FORESTIER;
 
   const tokenId = 1;
   const amount = 100;
   const cid = "QmRbU5hfL8UCP9LFNqQzGMgUrYG7WL58HNDMBVpcy5ZEZy";
   const sft1TokenId = 2;
+  const sft1TokenIdPepinieriste2 = 3;
   const df2Hash =
     "0x7465737400000000000000000000000000000000000000000000000000000000";
   const addressZero = "0x0000000000000000000000000000000000000000"; // Adresse 0
@@ -16,23 +18,33 @@ describe("Test SFT2 Contract", function () {
     "0x0000000000000000000000000000000000000000000000000000000000000000"; // Hash vide pour bytes32
 
   beforeEach(async function () {
-    [owner, ADMIN, PEPINIERISTE, EXPLOITANT_FORESTIER] =
+    [owner, ADMIN, PEPINIERISTE, PEPINIERISTE2, EXPLOITANT_FORESTIER] =
       await ethers.getSigners();
+
+    // Déploiement du contrat UserManager
+    const userManagerContract = await ethers.getContractFactory("UserManager");
+    const userManager = await userManagerContract.deploy();
+
+    // Assignation des rôles après le déploiement
+    await userManager.assignRole(ADMIN.address, await userManager.ADMIN());
+    await userManager.assignRole(
+      PEPINIERISTE.address,
+      await userManager.PEPINIERISTE()
+    );
+    await userManager.assignRole(
+      PEPINIERISTE2.address,
+      await userManager.PEPINIERISTE()
+    );
+    await userManager.assignRole(
+      EXPLOITANT_FORESTIER.address,
+      await userManager.EXPLOITANT_FORESTIER()
+    );
 
     // Déployez le contrat SFT1
     const SFT1Contract = await ethers.getContractFactory("SFT1");
-    const SFT1 = await SFT1Contract.deploy();
-    console.log("Adresse de SFT1 :", SFT1.address);
+    SFT1 = await SFT1Contract.deploy(userManager.target);
 
-    // Assignation des rôles après le déploiement du SFT1
-    await SFT1.assignRole(ADMIN.address, await SFT1.ADMIN());
-    await SFT1.assignRole(PEPINIERISTE.address, await SFT1.PEPINIERISTE());
-    await SFT1.assignRole(
-      EXPLOITANT_FORESTIER.address,
-      await SFT1.EXPLOITANT_FORESTIER()
-    );
-
-    // Mintez un SFT1
+    // Mintez un SFT1 vers le PEPINIERISTE
     const cmHash =
       "0x7465737400000000000000000000000000000000000000000000000000000000";
     const df1Hash =
@@ -46,17 +58,19 @@ describe("Test SFT2 Contract", function () {
       df1Hash
     );
 
+    // Mintez un SFT1 vers le PEPINIERISTE2
+    await SFT1.connect(ADMIN).mint(
+      PEPINIERISTE2.address,
+      sft1TokenIdPepinieriste2,
+      amount,
+      cid,
+      cmHash,
+      df1Hash
+    );
+
     // Déployez le contrat SFT2
     const contract = await ethers.getContractFactory("SFT2");
-    SFT2 = await contract.deploy(SFT1.address);
-
-    // Assignation des rôles après le déploiement du SFT2
-    await SFT2.assignRole(ADMIN.address, await SFT2.ADMIN());
-    await SFT2.assignRole(PEPINIERISTE.address, await SFT2.PEPINIERISTE());
-    await SFT2.assignRole(
-      EXPLOITANT_FORESTIER.address,
-      await SFT2.EXPLOITANT_FORESTIER()
-    );
+    SFT2 = await contract.deploy(SFT1.target, userManager.target);
   });
 
   describe("Deployment", function () {
@@ -124,27 +138,10 @@ describe("Test SFT2 Contract", function () {
 
       // Vérification des informations
       expect(sft2.uri).to.equal("ipfs://" + cid);
-      expect(sft2.sft1TokenId.toString()).to.equal(2);
-      expect(sft2.df1Hash.toString()).to.equal(
+      expect(sft2.sft1TokenId).to.equal(sft1TokenId);
+      expect(sft2.df2Hash.toString()).to.equal(
         "0x7465737400000000000000000000000000000000000000000000000000000000"
       );
-    });
-  });
-
-  // ::::::::::::: SUPPORT INTERFACE ::::::::::::: //
-  describe("Interface Support", function () {
-    it("should not support a random interface", async function () {
-      // Utiliser un identifiant d'interface aléatoire
-      expect(await SFT2.supportsInterface("0x12345678")).to.be.false;
-    });
-    it("should supports ERC1155 interface", async function () {
-      // Remplacer par l'identifiant d'interface ERC1155
-      expect(await SFT2.supportsInterface("0xd9b67a26")).to.be.true;
-    });
-
-    it("should supports AccessControl interface", async function () {
-      // Remplacer par l'identifiant d'interface AccessControl
-      expect(await SFT2.supportsInterface("0x7965db0b")).to.be.true;
     });
   });
 
@@ -161,7 +158,7 @@ describe("Test SFT2 Contract", function () {
           sft1TokenId,
           df2Hash
         )
-      ).to.be.revertedWithCustomError(SFT2, "UseManagerUnauthorizedAccount");
+      ).to.be.revertedWithCustomError(SFT2, "UnauthorizedAccess");
     });
 
     it("Should not authorize to mint to address 0", async function () {
@@ -206,10 +203,6 @@ describe("Test SFT2 Contract", function () {
       ).to.be.revertedWithCustomError(SFT2, "CIDCannotBeEmpty");
     });
 
-    // it("Should not mint an SFT2 with an empty sft1TokenID", async function () {
-
-    // });
-
     it("Should not mint an SFT2 with an empty DF2 Hash", async function () {
       // Mint du token avec un DF2 Hash vide, ce qui devrait échouer
       await expect(
@@ -248,7 +241,7 @@ describe("Test SFT2 Contract", function () {
       ).to.be.revertedWithCustomError(SFT2, "TokenIdAlreadyUsed");
     });
 
-    it("Sould not authorize to mint an SFT2 to an adress that has not been assigned the role of EXPLOITANT_FORESTIER", async function () {
+    it("Should not authorize to mint an SFT2 to an adress that has not been assigned the role of EXPLOITANT_FORESTIER", async function () {
       // Mint du token vers l'adresse ADMIN, ce qui devrait échouer
       await expect(
         SFT2.connect(PEPINIERISTE).mint(
@@ -265,7 +258,21 @@ describe("Test SFT2 Contract", function () {
       );
     });
 
-    it("Sould mint an SFT2 by addres with role PEPINIERISTE", async function () {
+    it("Should not allow a PEPINIERISTE to mint an SFT2 if the SFT1 does not belong to him", async function () {
+      // Mint du token par le PEPINIERISTE avec le sft1TokenId du PEPINIERISTE2, ce qui devrait échouer
+      await expect(
+        SFT2.connect(PEPINIERISTE).mint(
+          EXPLOITANT_FORESTIER.address,
+          tokenId,
+          amount,
+          cid,
+          sft1TokenIdPepinieriste2,
+          df2Hash
+        )
+      ).to.be.revertedWithCustomError(SFT2, "SFT1DoesNotBelongToPepinieriste");
+    });
+
+    it("Should mint an SFT2 by addres with role PEPINIERISTE", async function () {
       await expect(
         SFT2.connect(PEPINIERISTE).mint(
           EXPLOITANT_FORESTIER.address,
