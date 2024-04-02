@@ -141,9 +141,8 @@ const SFTCard = ({ sft }) => {
           justifyContent="space-around"
         >
           <Text fontSize="md" color={titleColor} fontWeight="bold">
-            {sft.name}
             <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
-              {sft.id}
+              {sft.name}
             </Link>
           </Text>
           <VStack mt={"0.5rem"} align="start" gap={"0.5rem"}>

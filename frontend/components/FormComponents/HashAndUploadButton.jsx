@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button, Input, Spinner } from "@chakra-ui/react";
 import { CheckCircleIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
+import EventsContext from "@/context/Events";
 
 const HashAndUploadButton = ({ label, accept, onFileProcessed }) => {
   const inputRef = useRef(null);
   // État pour stocker si le fichier a été chargé avec succès et son hash IPFS
   const [ipfsHash, setIpfsHash] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const { mergedSft1Events, mergedSft2Events } = useContext(EventsContext);
 
   const triggerFileInput = () => {
     // Si le fichier est déjà chargé, ne rien faire (ou ouvrir le lien IPFS dans une nouvelle fenêtre)
@@ -57,6 +59,11 @@ const HashAndUploadButton = ({ label, accept, onFileProcessed }) => {
     }
     setIsUploading(false);
   };
+
+  useEffect(() => {
+    setIpfsHash("");
+    setIsUploading(false);
+  }, [mergedSft1Events, mergedSft2Events]);
 
   return (
     <>

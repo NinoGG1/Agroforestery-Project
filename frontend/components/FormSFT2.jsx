@@ -12,7 +12,7 @@ import {
   HStack,
   Spinner,
 } from "@chakra-ui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   useAccount,
   useWriteContract,
@@ -25,6 +25,7 @@ import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
+import { CheckCircleIcon } from "@chakra-ui/icons";
 
 const FormSFT2 = () => {
   // ******************* States *******************
@@ -37,6 +38,28 @@ const FormSFT2 = () => {
   const [DF2PdfCid, setDF2PdfCid] = useState("");
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
+  const [PrepaIsUploading, setPrepaIsUploading] = useState(false);
+
+  const DF2JsonInputRef = useRef(null);
+  const DF2PdfInputRef = useRef(null);
+
+  // Fonction de reset du formulaire
+  const resetForm = () => {
+    // Réinitialiser les états
+    setOwnerAddress("");
+    setTokenId("");
+    setTokenQuantity("");
+    setSft1TokenId("");
+    setDF2JsonHash("");
+    setDF2JsonCid("");
+    setDF2PdfCid("");
+    setMetadata({});
+    setMetadataCid("");
+    setPrepaIsUploading(false);
+
+    if (DF2JsonInputRef.current) DF2JsonInputRef.current.value = "";
+    if (DF2PdfInputRef.current) DF2PdfInputRef.current.value = "";
+  };
 
   // ******************* Hooks *******************
   const toast = useToast();
@@ -95,7 +118,10 @@ const FormSFT2 = () => {
 
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
-    setTokenId(calculateNextTokenId());
+    setPrepaIsUploading(true);
+    const nextTokenId = calculateNextTokenId();
+    setTokenId(nextTokenId);
+
     const DF2JsonData = await fetchJsonData(DF2JsonCid);
 
     const newMetadata = {
@@ -108,7 +134,7 @@ const FormSFT2 = () => {
           : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
           ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3} de `
           : ""
-      }${DF2JsonData.detailsProduit.nomBotanique} #${tokenId}`,
+      }${DF2JsonData.detailsProduit.nomBotanique} #${nextTokenId}`,
 
       // Description du token
       description: `${
@@ -193,6 +219,7 @@ const FormSFT2 = () => {
     };
 
     setMetadata(newMetadata);
+    setTokenQuantity(DF2JsonData.detailsProduit.detailsPlantes.quantite);
 
     // Convertir l'objet metadata en Blob JSON pour l'upload
     const jsonBlob = new Blob([JSON.stringify(newMetadata)], {
@@ -211,7 +238,7 @@ const FormSFT2 = () => {
       const data = await response.json();
       console.log("Metadata uploaded to IPFS:", data.ipfsHash);
       setMetadataCid(data.ipfsHash);
-      // Appeler onUploadSuccess ou toute autre action de suivi ici, si nécessaire
+      setPrepaIsUploading(false);
     } catch (error) {
       console.error("Erreur lors de l'upload des métadonnées sur IPFS:", error);
       // Gérer l'erreur, par exemple, en affichant un message à l'utilisateur
@@ -311,12 +338,14 @@ const FormSFT2 = () => {
               <HStack spacing={"1rem"}>
                 <HashAndUploadButton
                   label="Document du Fournisseur 2.json"
+                  inputRef={DF2JsonInputRef}
                   accept=".json"
                   onFileProcessed={handleChangeForDF2Json}
                   isRequired
                 />
                 <UploadToIpfsButton
                   label="Document du Fournisseur 2.pdf"
+                  inputRef={DF2PdfInputRef}
                   accept=".pdf"
                   onFileProcessed={handleChangeForDF2Pdf}
                   isRequired
@@ -331,23 +360,30 @@ const FormSFT2 = () => {
               <DocumentStatusTable documents={documents} />
             </VStack>
 
-            <Box mt="2rem">
-              <Button
-                onClick={createAndUploadMetadataObject}
-                disabled={!DF2JsonCid || !DF2PdfCid}
-                bgColor={!DF2JsonCid || !DF2PdfCid ? "#1E2E2B" : "green.500"}
-                cursor={!DF2JsonCid || !DF2PdfCid ? "not-allowed" : "pointer"}
-                color="white"
-                _hover={{
-                  bg: !DF2JsonCid || !DF2PdfCid ? "#1E2E2B" : "#2E4039",
-                }}
-                width="full"
-              >
-                {!DF2JsonCid || !DF2PdfCid
-                  ? "Charger tous les documents pour pouvoir préparer les metadonnées"
-                  : "Préparer les metadonnées"}
-              </Button>
-            </Box>
+            {DF2JsonCid && DF2PdfCid && (
+              <Box mt="2rem">
+                <Button
+                  onClick={createAndUploadMetadataObject}
+                  variant={"solid"}
+                  bgColor={metadataCid ? "#E0F2E9" : "#2E4039"}
+                  color={metadataCid ? "#2E4039" : "white"}
+                  isLoading={PrepaIsUploading}
+                  loadingText="Chargement..."
+                  width="full"
+                  rightIcon={
+                    PrepaIsUploading ? (
+                      <Spinner size="sm" speed="0.65s" />
+                    ) : metadataCid ? (
+                      <CheckCircleIcon />
+                    ) : null
+                  }
+                >
+                  {metadataCid
+                    ? "Métadonnées préparées"
+                    : "Préparer les métadonnées"}
+                </Button>
+              </Box>
+            )}
           </Flex>
 
           {/**************** Etape 2 : Création, Mint du Token ****************/}
@@ -358,10 +394,10 @@ const FormSFT2 = () => {
             {/* Formulaire */}
             <VStack spacing={5} align="stretch">
               <TextInput
-                label="Adresse du pépiniériste"
+                label="Adresse de l'exploitant forestier"
                 value={ownerAddress}
                 onChange={(e) => setOwnerAddress(e.target.value)}
-                placeholder="Ajouter l'adresse du pépiniériste"
+                placeholder="Adresse de l'exploitant forestier"
                 isRequired
               />
 
@@ -378,7 +414,7 @@ const FormSFT2 = () => {
                   value={tokenQuantity}
                   onChange={(e) => setTokenQuantity(e.target.value)}
                   placeholder="Entrez une quantité"
-                  isRequired={true}
+                  isReadOnly
                 />
               </HStack>
 
@@ -398,41 +434,38 @@ const FormSFT2 = () => {
                 isReadOnly
               />
 
-              <Button
-                onClick={mintSeedSFT2}
-                disabled={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
-                }
-                bgColor={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
-                    ? "#1E2E2B"
-                    : "green.500"
-                }
-                cursor={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
-                    ? "not-allowed"
-                    : "pointer"
-                }
-                color="white"
-                _hover={{
-                  bg:
-                    !ownerAddress || !tokenQuantity || mintSeedSFT2Pending
-                      ? "#1E2E2B"
-                      : "#2E4039",
-                }}
-                width="full"
-                isLoading={mintSeedSFT2Pending}
-                loadingText="Confirmation..."
-                leftIcon={
-                  mintSeedSFT2Pending && <Spinner size="sm" speed="0.65s" />
-                }
-              >
-                {!ownerAddress || !tokenQuantity
-                  ? "Remplir tous les champs pour pouvoir minter le Token"
-                  : mintSeedSFT2Pending
-                  ? ""
-                  : "Minter le Token"}
-              </Button>
+              {ownerAddress && (
+                <Box mt="2rem">
+                  <Button
+                    onClick={mintSeedSFT2}
+                    variant={"solid"}
+                    bgColor={
+                      !ownerAddress || mintSeedSFT2Pending
+                        ? "#E0F2E9"
+                        : "#2E4039"
+                    }
+                    color={
+                      !ownerAddress || mintSeedSFT2Pending ? "#2E4039" : "white"
+                    }
+                    width="full"
+                    isLoading={mintSeedSFT2Pending}
+                    loadingText="Confirmation..."
+                    rightIcon={
+                      mintSeedSFT2Pending ? (
+                        <Spinner size="sm" speed="0.65s" />
+                      ) : (
+                        ""
+                      )
+                    }
+                  >
+                    {!ownerAddress
+                      ? "Remplir tous les champs pour pouvoir minter le Token"
+                      : mintSeedSFT2Pending
+                      ? ""
+                      : "Minter le Token"}
+                  </Button>
+                </Box>
+              )}
             </VStack>
           </Box>
         </Flex>

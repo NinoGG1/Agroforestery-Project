@@ -25,7 +25,7 @@ import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, CheckCircleIcon } from "@chakra-ui/icons";
 
 const FormSFT1 = () => {
   // ******************* States *******************
@@ -148,7 +148,10 @@ const FormSFT1 = () => {
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
     setPrepaIsUploading(true);
-    setTokenId(calculateNextTokenId());
+    // Calculer directement le prochain tokenId sans utiliser setTokenId
+    const nextTokenId = calculateNextTokenId();
+    setTokenId(nextTokenId);
+
     const CM1JsonData = await fetchJsonData(CM1JsonCid);
     const DF1JsonData = await fetchJsonData(DF1JsonCid);
 
@@ -164,7 +167,7 @@ const FormSFT1 = () => {
               .plants
           ? "Plants de "
           : ""
-      }${CM1JsonData.materiaux_forestiers.nom_botanique} #${tokenId}`,
+      }${CM1JsonData.materiaux_forestiers.nom_botanique} #${nextTokenId}`,
 
       // Description du token
       description: `${
@@ -255,7 +258,9 @@ const FormSFT1 = () => {
       ],
     };
 
+    // Mettre à jour l'état metadata
     setMetadata(newMetadata);
+    setTokenQuantity(DF1JsonData.autres_informations.nombre_de_colis_echange);
 
     // Convertir l'objet metadata en Blob JSON pour l'upload
     const jsonBlob = new Blob([JSON.stringify(newMetadata)], {
@@ -276,7 +281,6 @@ const FormSFT1 = () => {
       setMetadataCid(data.ipfsHash);
       // Mettre à jour l'état de chargement
       setPrepaIsUploading(false);
-      // Appeler onUploadSuccess ou toute autre action de suivi ici, si nécessaire
     } catch (error) {
       console.error("Erreur lors de l'upload des métadonnées sur IPFS:", error);
       // Gérer l'erreur, par exemple, en affichant un message à l'utilisateur
@@ -368,6 +372,7 @@ const FormSFT1 = () => {
                   accept=".json"
                   onFileProcessed={handleChangeForCM1Json}
                   isRequired
+                  transactionConfirmed={isConfirmed}
                 />
                 <UploadToIpfsButton
                   label="Certificat maître.pdf"
@@ -375,6 +380,7 @@ const FormSFT1 = () => {
                   accept=".pdf"
                   onFileProcessed={handleChangeForCM1Pdf}
                   isRequired
+                  transactionConfirmed={isConfirmed}
                 />
               </HStack>
 
@@ -408,48 +414,30 @@ const FormSFT1 = () => {
               <DocumentStatusTable documents={documents} />
             </VStack>
 
-            <Box mt="2rem">
-              <Button
-                onClick={createAndUploadMetadataObject}
-                variant="solid"
-                disabled={
-                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                }
-                bgColor={
-                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                    ? "#1E2E2B"
-                    : "green.500"
-                }
-                cursor={
-                  !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                    ? "not-allowed"
-                    : "pointer"
-                }
-                color={metadataCid ? "#2E4039" : "white"}
-                _hover={{
-                  bg:
-                    !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                      ? "#1E2E2B"
-                      : "#2E4039",
-                }}
-                isLoading={PrepaIsUploading} // Désactive le bouton pendant le chargement
-                loadingText="Chargement..." // Texte affiché pendant le chargement
-                width="full"
-                rightIcon={
-                  PrepaIsUploading ? (
-                    <Spinner size="sm" speed="0.65s" />
-                  ) : metadataCid ? (
-                    <CheckCircleIcon />
-                  ) : (
-                    ""
-                  )
-                }
-              >
-                {!DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                  ? "Charger les documents pour pouvoir préparer les metadonnées"
-                  : "Préparer les metadonnées"}
-              </Button>
-            </Box>
+            {DF1JsonCid && DF1PdfCid && CM1JsonCid && CM1PdfCid && (
+              <Box mt="2rem">
+                <Button
+                  onClick={createAndUploadMetadataObject}
+                  variant="solid"
+                  bgColor={metadataCid ? "#E0F2E9" : "#2E4039"}
+                  color={metadataCid ? "#2E4039" : "white"}
+                  isLoading={PrepaIsUploading}
+                  loadingText="Chargement..."
+                  width="full"
+                  rightIcon={
+                    PrepaIsUploading ? (
+                      <Spinner size="sm" speed="0.65s" />
+                    ) : metadataCid ? (
+                      <CheckCircleIcon />
+                    ) : null
+                  }
+                >
+                  {metadataCid
+                    ? "Métadonnées préparées"
+                    : "Préparer les métadonnées"}
+                </Button>
+              </Box>
+            )}
           </Flex>
 
           {/**************** Etape 2 : Création, Mint du Token ****************/}
@@ -481,6 +469,7 @@ const FormSFT1 = () => {
                   onChange={(e) => setTokenQuantity(e.target.value)}
                   placeholder="Entrez une quantité"
                   isRequired={true}
+                  isReadOnly
                 />
               </HStack>
 
@@ -508,41 +497,38 @@ const FormSFT1 = () => {
                 isReadOnly
               />
 
-              <Button
-                onClick={mintSeedSFT1}
-                disabled={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
-                }
-                bgColor={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
-                    ? "#1E2E2B"
-                    : "green.500"
-                }
-                cursor={
-                  !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
-                    ? "not-allowed"
-                    : "pointer"
-                }
-                color="white"
-                _hover={{
-                  bg:
-                    !ownerAddress || !tokenQuantity || mintSeedSFT1Pending
-                      ? "#1E2E2B"
-                      : "#2E4039",
-                }}
-                width="full"
-                isLoading={mintSeedSFT1Pending}
-                loadingText="Confirmation..."
-                leftIcon={
-                  mintSeedSFT1Pending && <Spinner size="sm" speed="0.65s" />
-                }
-              >
-                {!ownerAddress || !tokenQuantity
-                  ? "Remplir tous les champs pour pouvoir minter le Token"
-                  : mintSeedSFT1Pending
-                  ? ""
-                  : "Minter le Token"}
-              </Button>
+              {ownerAddress && (
+                <Box mt="2rem">
+                  <Button
+                    onClick={mintSeedSFT1}
+                    variant={"solid"}
+                    bgColor={
+                      !ownerAddress || mintSeedSFT1Pending
+                        ? "#E0F2E9"
+                        : "#2E4039"
+                    }
+                    color={
+                      !ownerAddress || mintSeedSFT1Pending ? "#2E4039" : "white"
+                    }
+                    width="full"
+                    isLoading={mintSeedSFT1Pending}
+                    loadingText="Confirmation..."
+                    rightIcon={
+                      mintSeedSFT1Pending ? (
+                        <Spinner size="sm" speed="0.65s" />
+                      ) : (
+                        ""
+                      )
+                    }
+                  >
+                    {!ownerAddress
+                      ? "Remplir tous les champs pour pouvoir minter le Token"
+                      : mintSeedSFT1Pending
+                      ? ""
+                      : "Minter le Token"}
+                  </Button>
+                </Box>
+              )}
             </VStack>
           </Box>
         </Flex>
