@@ -96,107 +96,98 @@ const FormSFT2 = () => {
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
     setTokenId(calculateNextTokenId());
-    const DF2JsonData = await fetchJsonData(DF1JsonCid);
+    const DF2JsonData = await fetchJsonData(DF2JsonCid);
 
     const newMetadata = {
       // Nom du token
       name: `${
-        CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur.graines
-          ? "Graines de "
-          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
-              .parties_de_plantes
-          ? "Parties_de_plantes de "
-          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
-              .plants
-          ? "Plants de "
+        DF2JsonData.detailsProduit.typeDeMateriel.partieDePlante
+          ? "Parties de plantes de "
+          : DF2JsonData.detailsProduit.typeDeMateriel.racinesNues
+          ? "Racine nues de "
+          : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
+          ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3} de `
           : ""
-      }${CM1JsonData.materiaux_forestiers.nom_botanique} #${tokenId}`,
+      }${DF2JsonData.detailsProduit.nomBotanique} #${tokenId}`,
 
       // Description du token
       description: `${
-        CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur.graines
-          ? "Graines de "
-          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
-              .parties_de_plantes
-          ? "Parties_de_plantes de "
-          : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
-              .plants
-          ? "Plants de "
+        DF2JsonData.detailsProduit.typeDeMateriel.partieDePlante
+          ? "Parties de plantes de "
+          : DF2JsonData.detailsProduit.typeDeMateriel.racinesNues
+          ? "Racine nues de "
+          : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
+          ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3} de`
           : ""
-      }${CM1JsonData.materiaux_forestiers.nom_botanique} de catégorie ${
-        CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
-          .identifie
-          ? "identifié"
-          : CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
-              .selectionnée
-          ? "sélectionné"
-          : CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
-              .testée
-          ? "testé"
+      }${DF2JsonData.detailsProduit.nomBotanique} #${tokenId} de catégorie ${
+        DF2JsonData.detailsProduit.categorieDuMaterielReproducteur.testee
+          ? "testée"
+          : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur.qualifiee
+          ? "qualifiée"
+          : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
+              .selectionnee
+          ? "selectionnée"
+          : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur.identifie
+          ? "identifiée"
           : ""
       }`,
       type: "SFT2",
-      numero_certificat_ce: CM1JsonData.numero_certificat_ce,
-      Certificat_maitre_pdf: `ipfs://${CM1PdfCid}`,
-      Document_du_fournisseur_1_pdf: `ipfs://${DF1PdfCid}`,
-
+      numeroCertificatMaitre: DF2JsonData.numeroCertificatMaitre,
+      idSFT1: `${sft1TokenId}`,
+      Document_du_fournisseur_2_pdf: `ipfs://${DF2PdfCid}`,
       quantité_de_colis_echangé:
-        DF1JsonData.autres_informations.nombre_de_colis_echange,
+        DF2JsonData.detailsProduit.detailsPlantes.quantite,
       attributes: [
         {
-          trait_type: "nom_botanique",
-          value: CM1JsonData.materiaux_forestiers.nom_botanique,
+          trait_type: "nomBotanique",
+          value: DF2JsonData.detailsProduit.nomBotanique,
         },
         {
           trait_type: "nature_du_materiel_reproducteur",
-          value: CM1JsonData.materiaux_forestiers
-            .nature_du_materiel_reproducteur.graines
-            ? "Graines"
-            : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
-                .parties_de_plantes
-            ? "Parties_de_plantes"
-            : CM1JsonData.materiaux_forestiers.nature_du_materiel_reproducteur
-                .plants
-            ? "Plants"
+          value: DF2JsonData.detailsProduit.typeDeMateriel.partieDePlante
+            ? "Parties de plantes"
+            : DF2JsonData.detailsProduit.typeDeMateriel.racinesNues
+            ? "Racine nues"
+            : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
+            ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3}`
             : "",
         },
         {
-          trait_type: "categorie_du_materiel_reproducteur",
-          value: CM1JsonData.materiaux_forestiers
-            .categorie_du_materiel_reproducteur.identifie
-            ? "identifié"
-            : CM1JsonData.materiaux_forestiers
-                .categorie_du_materiel_reproducteur.selectionnée
-            ? "sélectionné"
-            : CM1JsonData.materiaux_forestiers
-                .categorie_du_materiel_reproducteur.testée
-            ? "testé"
+          trait_type: "categorieDuMaterielReproducteur",
+          value: DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
+            .testee
+            ? "testée"
+            : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
+                .qualifiee
+            ? "qualifiée"
+            : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
+                .selectionnee
+            ? "selectionnée"
+            : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
+                .identifie
+            ? "identifiée"
             : "",
         },
         {
-          trait_type: "latitude_du_site_de_prélèvement_du_materiel_de_base",
-          value:
-            CM1JsonData.materiaux_forestiers
-              .latitude_du_site_de_prélèvement_du_materiel_de_base,
+          trait_type: "latitude_pépiniériste",
+          value: DF2JsonData.fournisseur.latitude_pépiniériste,
         },
         {
-          trait_type: "longitude_du_site_de_prélèvement_du_materiel_de_base",
-          value:
-            CM1JsonData.materiaux_forestiers
-              .longitude_du_site_de_prélèvement_du_materiel_de_base,
+          trait_type: "longitude_pépiniériste",
+          value: DF2JsonData.fournisseur.longitude_pépiniériste,
         },
         {
-          trait_type: "quantité_totale_de_colis_lors_du_prélèvement",
-          value: CM1JsonData.materiaux_forestiers.nombre_de_colis,
+          trait_type: "quantité_totale_de_colis",
+          value: DF2JsonData.detailsProduit.detailsPlantes.quantite,
         },
         {
-          trait_type: "Certificat_maitre_json",
-          value: `ipfs://${CM1JsonCid}`,
+          trait_type: "cidSFT1",
+          value: `xxx`,
         },
 
         {
           trait_type: "Document du fournisseur 1",
-          value: `ipfs://${DF1JsonCid}`,
+          value: `ipfs://${DF2JsonCid}`,
         },
       ],
     };

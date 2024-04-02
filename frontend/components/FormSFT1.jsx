@@ -25,6 +25,7 @@ import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 
 const FormSFT1 = () => {
   // ******************* States *******************
@@ -39,6 +40,7 @@ const FormSFT1 = () => {
   const [DF1PdfCid, setDF1PdfCid] = useState("");
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
+  const [PrepaIsUploading, setPrepaIsUploading] = useState(false);
   const CM1JsonInputRef = useRef(null);
   const CM1PdfInputRef = useRef(null);
   const DF1JsonInputRef = useRef(null);
@@ -145,6 +147,7 @@ const FormSFT1 = () => {
 
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
+    setPrepaIsUploading(true);
     setTokenId(calculateNextTokenId());
     const CM1JsonData = await fetchJsonData(CM1JsonCid);
     const DF1JsonData = await fetchJsonData(DF1JsonCid);
@@ -271,6 +274,8 @@ const FormSFT1 = () => {
       const data = await response.json();
       console.log("Metadata uploaded to IPFS:", data.ipfsHash);
       setMetadataCid(data.ipfsHash);
+      // Mettre à jour l'état de chargement
+      setPrepaIsUploading(false);
       // Appeler onUploadSuccess ou toute autre action de suivi ici, si nécessaire
     } catch (error) {
       console.error("Erreur lors de l'upload des métadonnées sur IPFS:", error);
@@ -406,6 +411,7 @@ const FormSFT1 = () => {
             <Box mt="2rem">
               <Button
                 onClick={createAndUploadMetadataObject}
+                variant="solid"
                 disabled={
                   !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
                 }
@@ -419,17 +425,28 @@ const FormSFT1 = () => {
                     ? "not-allowed"
                     : "pointer"
                 }
-                color="white"
+                color={metadataCid ? "#2E4039" : "white"}
                 _hover={{
                   bg:
                     !DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
                       ? "#1E2E2B"
                       : "#2E4039",
                 }}
+                isLoading={PrepaIsUploading} // Désactive le bouton pendant le chargement
+                loadingText="Chargement..." // Texte affiché pendant le chargement
                 width="full"
+                rightIcon={
+                  PrepaIsUploading ? (
+                    <Spinner size="sm" speed="0.65s" />
+                  ) : metadataCid ? (
+                    <CheckCircleIcon />
+                  ) : (
+                    ""
+                  )
+                }
               >
                 {!DF1JsonCid || !DF1PdfCid || !CM1JsonCid || !CM1PdfCid
-                  ? "Charger tous les documents pour pouvoir préparer les metadonnées"
+                  ? "Charger les documents pour pouvoir préparer les metadonnées"
                   : "Préparer les metadonnées"}
               </Button>
             </Box>

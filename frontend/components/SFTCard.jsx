@@ -16,6 +16,23 @@ const SFTCard = ({ sft }) => {
   const bgHover = useColorModeValue("gray.100", "gray.900");
   const titleColor = useColorModeValue("black", "white");
 
+  // Fonction pour choisir l'image en fonction du type de SFT
+  const getImageUrl = (type) => {
+    switch (type) {
+      case "SFT1":
+        return "http://localhost:3000/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
+      case "SFT2":
+        return "http://localhost:3000/assets/plant.jpeg"; // Exemple d'URL pour SFT2
+      // case "NFT3":
+      //   return "http://localhost:3000/assets/nft3Picture.jpeg"; // Exemple d'URL pour NFT3
+      // default:
+      //   return "http://localhost:3000/assets/defaultPicture.jpeg"; // Image par défaut si le type ne correspond à aucun des cas
+    }
+  };
+
+  // Appel de la fonction getImageUrl pour obtenir l'URL de l'image en fonction du type de SFT
+  const imageUrl = getImageUrl(sft.type);
+
   const renderInfos = () => {
     // Exemple basique, adapte en fonction de la logique nécessaire pour ton application
     switch (sft.type) {
@@ -37,11 +54,12 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"blue"}>SFT2</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Acteur SFT2 : {sft.someActor.slice(0, 6)}...
-              {sft.someActor.slice(-4)}
+              Pépiniériste : {sft.operator.slice(0, 6)}...
+              {sft.operator.slice(-4)}
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Autre info SFT2 : {sft.anotherDetail}
+              Exploitant forestier : {sft.to.slice(0, 6)}...
+              {sft.to.slice(-4)}
             </Text>
           </>
         );
@@ -77,10 +95,18 @@ const SFTCard = ({ sft }) => {
         );
       case "SFT2":
         return (
-          <Text fontSize="sm">
-            DF2Hash : {sft.df2Hash?.substring(0, 6)}...
-            {sft.df2Hash?.substring(sft.df2Hash.length - 3)}
-          </Text>
+          <>
+            <Text fontSize="sm">
+              SFT1 TokenId :{" "}
+              <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
+                #{sft.sft1TokenId}
+              </Link>
+            </Text>
+            <Text fontSize="sm">
+              DF2Hash : {sft.df2Hash?.substring(0, 6)}...
+              {sft.df2Hash?.substring(sft.df2Hash.length - 3)}
+            </Text>
+          </>
         );
       case "NFT3":
         // Adapte cette partie selon les données spécifiques à NFT3
@@ -101,8 +127,9 @@ const SFTCard = ({ sft }) => {
         _hover={{ bg: bgHover }}
       >
         <Image
-          src="http://localhost:3000/assets/seedPicture.jpeg"
+          src={imageUrl}
           alt={`Image of ${sft.id}`}
+          maxH={"180px"}
           h={"60%"}
           w={"100%"}
           objectFit="cover"

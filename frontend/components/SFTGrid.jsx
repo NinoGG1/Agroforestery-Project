@@ -1,23 +1,21 @@
-"use client";
-
-import { Box, Grid, GridItem } from "@chakra-ui/react";
+import React from "react";
+import { Box, Flex } from "@chakra-ui/react";
 import SFTCard from "./SFTCard";
 
 const SFTGrid = ({ sfts, filterType }) => {
-  // Filtrer les SFTs en fonction du type, si un filterType est fourni
   const filteredSFTs = filterType
     ? sfts.filter((sft) => sft.type === filterType)
-    : sfts; // Si aucun filtre n'est spécifié, utiliser tous les SFTs
+    : sfts;
 
   return (
-    <Box maxWidth="100vw" margin="auto" overflow="hidden">
-      <Grid templateColumns="repeat(auto-fit, minmax(240px, 350px))" gap={6}>
-        {filteredSFTs.map((sft) => (
-          <GridItem key={crypto.randomUUID()}>
+    <Box overflow="hidden" px={4} pl={0}>
+      <Flex wrap="wrap" gap="20px">
+        {filteredSFTs.map((sft, index) => (
+          <Box key={index} minW="300px" maxW="350px" flex="1">
             <SFTCard sft={sft} />
-          </GridItem>
+          </Box>
         ))}
-      </Grid>
+      </Flex>
     </Box>
   );
 };

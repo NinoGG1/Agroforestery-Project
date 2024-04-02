@@ -1,0 +1,38 @@
+{
+  "name": "Plants de Chêne sessile #1",
+  "description": "Plants de Chêne sessile, catégorie identifiée, origine France.",
+  "numero_certificat_maitre": "FR27-20 R 047",
+  "idSFT1": 2,
+  "pdfDf2": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ",
+  "quantité_de_colis_echangé": 1,
+  "attributes": [
+    {
+      "trait_type": "nom_botanique",
+      "value": "Quercus petraea"
+    },
+    {
+      "trait_type": "nature_du_materiel_reproducteur",
+      "value": "graines"
+    },
+    {
+      "trait_type": "categorie_du_materiel_reproducteur",
+      "value": "selectionnée"
+    },
+    {
+      "trait_type": "latitude_pépiniériste",
+      "value": "47.000"
+    },
+    {
+      "trait_type": "longitude_pépiniériste",
+      "value": "5.000"
+    },
+    {
+      "trait_type": "cidSFT1",
+      "value": "QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ"
+    },
+    {
+      "trait_type": "Document du fournisseur 2",
+      "value": "ipfs://QmcPyrUV381YYNyksX4poJ83JgFy2VwF3pcaayRnwgXMKZ"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "InformationDocument": {
+    "NumeroDocument": "",
+    "NumeroFichierSuivi": "",
+    "NumeroCertificatMaitre": "",
+    "DateExpedition": "",
+    "Fournisseur": {
+      "Nom": "",
+      "SIRET_SIREN": ""
+    },
+    "Destinataire": {
+      "Nom": "",
+      "SIRET_SIREN": ""
+    },
+    "DetailsProduit": {
+      "NomCommun": "",
+      "NomBotanique": "",
+      "QualitesGenetiques": {
+        "CategoriesUE": {
+          "Testee": false,
+          "Qualifiee": false,
+          "Selectionnee": false,
+          "Identifiee": false
+        },
+        "ReferenceRegistre": "",
+        "RegionProvenance": "",
+        "AdmissionProvisoire": false
+      },
+      "OrigineMateriel": {
+        "Autochtone_Indigene": false,
+        "NonAutochtone_NonIndigene": false,
+        "OrigineInconnue": false,
+        "DetailsOrigineNonAutochtoneNonIndigene": ""
+      },
+      "TypeMaterielBase": {
+        "SourceGraines": false,
+        "Peuplement": false,
+        "VergerGraines": false,
+        "VergerPolycross": false,
+        "ParentsFamilles": false,
+        "Clone": false,
+        "MelangeClones": false
+      },
+      "MaterielOGM": false,
+      "MultiplicationVegetative": {
+        "IssueGraines": false
+      },
+      "ButUtilisation": {
+        "Forestieres": false,
+        "ExperimentalesConservationGenetique": false
+      },
+      "TypeMateriel": {
+        "PartiePlante": false,
+        "RacinesNues": false,
+        "Godet": {
+          "VolumeGodet_cm3": ""
+        }
+      },
+      "DetailsPlantes": {
+        "Age": "",
+        "Quantite": {
+          "PlantesParties": "",
+          "NombreBottes": "",
+          "NombreCaissesPourGodets": "",
+          "NombreGodetsParCaisse": ""
+        },
+        "CategorieHauteur_cm": "",
+        "DiametreMinimum_mm": "",
+        "NumeroClassificationCommunautairePlancons": ""
+      },
+      "Observations": ""
+    },
+    "AutresInformations": {
+      "PaysProduction": "",
+      "SIRET_SIRENProducteurDerniereSaison": "",
+      "PourcentageHybridesLotGrainesLarix": ""
+    }
+  }
+}

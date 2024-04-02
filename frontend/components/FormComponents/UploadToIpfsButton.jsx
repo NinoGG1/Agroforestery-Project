@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Spinner } from "@chakra-ui/react";
-import { CheckIcon, DownloadIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
 import PdfViewer from "./PdfViewer";
 
 const UploadToIpfsButton = ({ label, accept, onFileProcessed }) => {
@@ -46,17 +46,6 @@ const UploadToIpfsButton = ({ label, accept, onFileProcessed }) => {
     setIsUploading(false);
   };
 
-  // useEffect pour réinitialiser ipfsHash et les boutons après 5 secondes
-  useEffect(() => {
-    if (ipfsHash) {
-      const timer = setTimeout(() => {
-        setIpfsHash(""); // Réinitialise l'état après 5 secondes
-      }, 5000);
-
-      return () => clearTimeout(timer); // Nettoie le timer en cas de démontage du composant
-    }
-  }, [ipfsHash]);
-
   return (
     <>
       <Input
@@ -72,12 +61,13 @@ const UploadToIpfsButton = ({ label, accept, onFileProcessed }) => {
         variant="solid"
         pb={"0.75rem"}
         pt={"0.75rem"}
-        bgColor={ipfsHash ? "green.500" : "#2E4039"}
+        bgColor={ipfsHash ? "#E0F2E9" : "#2E4039"}
+        color={ipfsHash ? "#2E4039" : "white"}
         leftIcon={
           isUploading ? (
             <Spinner size="sm" speed="0.65s" />
           ) : ipfsHash ? (
-            <CheckIcon />
+            <CheckCircleIcon />
           ) : (
             <DownloadIcon />
           )

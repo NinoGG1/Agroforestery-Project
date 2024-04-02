@@ -84,9 +84,11 @@ const Dashboard = () => {
 
           <TabPanels>
             <TabPanel p={"0"}>
+              {/* Toutes les transactions */}
               <AllTransactions sfts={sfts} />
             </TabPanel>
             <TabPanel p={"0"}>
+              {/* Echange 1 */}
               <FormSFT1 />
               <Heading
                 textAlign={"left"}
@@ -101,6 +103,7 @@ const Dashboard = () => {
               <SFTGrid sfts={sfts} filterType="SFT1" />
             </TabPanel>
             <TabPanel p={"0"}>
+              {/* Echange 2 */}
               <FormSFT2 />
               <Heading
                 textAlign={"left"}
@@ -112,6 +115,7 @@ const Dashboard = () => {
                 Echanges de type 2 réalisés : Pépiniériste <ChevronRightIcon />{" "}
                 Exploitant forestier
               </Heading>
+              <SFTGrid sfts={sfts} filterType="SFT2" />
             </TabPanel>
             <TabPanel p={"0"}>
               <Heading
