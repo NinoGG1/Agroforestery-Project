@@ -1,0 +1,52 @@
+{
+  "etat_membre": "FRANCE",
+  "numero_certificat_ce": "FR27-20 R 047",
+  "materiaux_forestiers": {
+    "nom_botanique": "Quercus petraea",
+    "nom_commun": "Chêne sessile",
+    "nature_du_materiel_reproducteur": {
+      "graines": true,
+      "parties_de_plantes": false,
+      "plants": false
+    },
+    "categorie_du_materiel_reproducteur": {
+      "identifie": false,
+      "selectionnée": true,
+      "testée": false
+    },
+    "type_de_materiel_de_base": {
+      "source_de_graines": false,
+      "population": true
+    },
+    "fins": "1-Forestières",
+    "reference_du_materiel_de_base_dans_le_registre_national": "QPE205-006",
+    "origine": {
+      "indigène": true,
+      "non_indigène": false,
+      "inconnu": false
+    },
+    "origine_du_materiel_de_base": "FRANCE - QPE205-Vallée de la Saône",
+    "pays_et_region_de_provenance_du_materiel_de_base": "FRANCE",
+    "altitude_ou_zone_altimetrique_du_site_du_materiel_de_base": "225 mètres",
+    "latitude_du_site_de_prélèvement_du_materiel_de_base": "47.000",
+    "longitude_du_site_de_prélèvement_du_materiel_de_base": "5.000",
+    "annee_de_maturite_pour_les_graines": "2020",
+    "quantite_de_materiel_reproducteur": {
+      "en_lettres": "Vingt six hectolitres et soixante huit litres",
+      "en_chiffres": "2668 HL"
+    },
+
+    "nature_de_la_graine": {
+      "graines_recoltees_brutes": false,
+      "graines_nettoyees_et_triees": true
+    },
+    "modification_genetique": {
+      "oui": false,
+      "non": true
+    },
+    "nombre_de_colis": "90",
+    "autres_informations_utiles": "Enlèvement du 5/11/2020",
+    "nom_et_adresse_du_collecteur": "ONF DT Bourgogne-Franche-Comté (Secherie de la Joux) 39300 Supt",
+    "le_cas_echeant_au_nom_de": "ONF DT Bourgogne-Franche-Comté (Secherie de la Joux) 39300 Supt"
+  }
+}

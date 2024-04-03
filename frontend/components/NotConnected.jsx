@@ -1,6 +1,6 @@
 "use client";
 import ReadFunctionsContext from "@/context/ReadFunctions";
-import { EmailIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, EmailIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertIcon,
@@ -9,6 +9,9 @@ import {
   Flex,
   Heading,
   Image,
+  List,
+  ListIcon,
+  ListItem,
   Text,
 } from "@chakra-ui/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -21,25 +24,44 @@ const NotConnected = () => {
         direction="column"
         justifyContent="center"
         alignItems="center"
-        background="ActiveBorder"
+        bg={"#1B2B28"}
         height="586px"
         borderRadius="0.2rem"
-        mt="3rem"
       >
-        <Image borderRadius="full" boxSize="10rem" bg="white" src="" alt="" />
-        <Heading size="md" mt="2rem">
-          Please, connect your wallet
-        </Heading>
-        <Text mt="0.5rem" mb="2rem">
-          Please connect your wallet to regsiter proposals, vote and see the
-          results.
-        </Text>
-        <ConnectButton
-          accountStatus="avatar"
-          chainStatus="name"
-          showBalance={true}
-          label="Connect wallet"
+        <Image
+          boxSize="10rem"
+          src="http://localhost:3000/assets/Logo.png"
+          alt=""
         />
+        <Heading size="xl" display={"flex"} alignItems="center" mt={"1rem"}>
+          Tree Tracker
+        </Heading>
+
+        <Heading size="md" mt="2rem" mb={"1rem"} textAlign={"center"}>
+          Connectez-vous pour accéder à l'ensemble des fonctionnalités de Tree
+          Tracker :
+        </Heading>
+        <List spacing={3} pl={"2rem"} mb={"2rem"}>
+          <ListItem>
+            <ListIcon as={CheckCircleIcon} color="green.500" />
+            Suivre la traçabilité des arbres de la graine à la plantation
+          </ListItem>
+          <ListItem>
+            <ListIcon as={CheckCircleIcon} color="green.500" />
+            Minter un token représentant l'échange de graines entre le marchand
+            grainier et le pépiniériste
+          </ListItem>
+          <ListItem>
+            <ListIcon as={CheckCircleIcon} color="green.500" />
+            Minter un token représentant l'échange de plants entre le
+            pépiniériste et le planteur
+          </ListItem>
+          <ListItem>
+            <ListIcon as={CheckCircleIcon} color="green.500" />
+            Minter un token représentant individuellement chaque arbre planté
+          </ListItem>
+        </List>
+        <ConnectButton label="Connectez votre wallet" />
       </Flex>
 
       {/* <Alert status="warning">

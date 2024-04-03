@@ -4,7 +4,12 @@ import { CheckCircleIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
 import PdfViewer from "./PdfViewer";
 import EventsContext from "@/context/Events";
 
-const UploadToIpfsButton = ({ label, accept, onFileProcessed }) => {
+const UploadToIpfsButton = ({
+  label,
+  accept,
+  onFileProcessed,
+  resetCounter,
+}) => {
   const inputRef = useRef(null);
   // État pour stocker si le fichier a été chargé avec succès et son hash IPFS
   const [ipfsHash, setIpfsHash] = useState("");

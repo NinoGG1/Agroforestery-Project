@@ -1,0 +1,36 @@
+{
+    "numéro_de_document": "1",
+    "numéro_du_certificat_maître": "FR27-20 R 047",
+    "fournisseur": {
+        "numéro_SIRET_SIREN": "N/A",
+        "espèce_variété_clone": "Quercus petraea",
+        "nom_commun": "Chêne sessile",
+        "nom_botanique": "Quercus petraea"
+    },
+    "qualités_génétiques": {
+        "catégories_UE_ou_équivalents": {
+            "testé": false,
+            "qualifié": false,
+            "sélectionné": true,
+            "identifié": false,
+            "admission_provisoire": false
+        },
+        "référence_du_registre": "QPE205-006",
+        "région_de_provenance": "Vallée de la Saône",
+        "origine_du_matériel_non_autochtone_ou_non_indigène": "Indigène"
+    },
+    "caractères_de_qualité_extérieure": {
+        "poids_de_1000_graines_pures_kg": "N/A",
+        "pourcentage_de_pureté": "N/A",
+        "nombre_de_graines_germinables_par_kg_ou_l": "N/A",
+        "pourcentage_de_germination_des_graines_pures": "N/A",
+        "pourcentage_de_viabilité": "N/A"
+    },
+    "autres_informations": {
+        "année_de_mûrissement_début": "2020",
+        "quantité_livrée_kg_ou_l": "2668 HL",
+        "nombre_de_colis_echange": "30",
+        "conservation_au_froid": "N/A",
+        "date_d'expédition": "5/11/2020"
+    }
+}

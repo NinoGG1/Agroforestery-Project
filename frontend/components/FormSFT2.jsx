@@ -11,6 +11,13 @@ import {
   VStack,
   HStack,
   Spinner,
+  AlertTitle,
+  AlertDescription,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionIcon,
+  AccordionPanel,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -39,6 +46,7 @@ const FormSFT2 = () => {
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
   const [PrepaIsUploading, setPrepaIsUploading] = useState(false);
+  const [key, setKey] = useState(Date.now());
 
   const DF2JsonInputRef = useRef(null);
   const DF2PdfInputRef = useRef(null);
@@ -61,8 +69,11 @@ const FormSFT2 = () => {
     if (DF2PdfInputRef.current) DF2PdfInputRef.current.value = "";
   };
 
+  const RefreshComponents = () => {
+    setKey(Date.now());
+  };
+
   // ******************* Hooks *******************
-  const toast = useToast();
   const { address, isConnected } = useAccount();
   const {
     getSft2DataEvent,
@@ -245,10 +256,6 @@ const FormSFT2 = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("Metadata updated:", metadata);
-  }, [metadata]);
-
   // ******************* Communication avec le smart contract *******************
   // Write contract pour mint le SFT2
   const {
@@ -259,23 +266,10 @@ const FormSFT2 = () => {
   } = useWriteContract({
     mutation: {
       onSuccess: () => {
-        toast({
-          title: "Le SFT2 a été minté avec succès",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
         getTransferSingleSft2Event();
         getSft2DataEvent();
+        RefreshComponents();
         resetForm();
-      },
-      onError: (error) => {
-        toast({
-          title: error.message,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
       },
     },
   });
@@ -337,6 +331,7 @@ const FormSFT2 = () => {
               </Heading>
               <HStack spacing={"1rem"}>
                 <HashAndUploadButton
+                  key={`hash-and-upload-df2-json-${key}`}
                   label="Document du Fournisseur 2.json"
                   inputRef={DF2JsonInputRef}
                   accept=".json"
@@ -344,6 +339,7 @@ const FormSFT2 = () => {
                   isRequired
                 />
                 <UploadToIpfsButton
+                  key={`upload-df2-pdf-${key}`}
                   label="Document du Fournisseur 2.pdf"
                   inputRef={DF2PdfInputRef}
                   accept=".pdf"
@@ -435,7 +431,7 @@ const FormSFT2 = () => {
               />
 
               {ownerAddress && (
-                <Box mt="2rem">
+                <Box>
                   <Button
                     onClick={mintSeedSFT2}
                     variant={"solid"}
@@ -473,29 +469,57 @@ const FormSFT2 = () => {
         {/**************** Alerts ****************/}
         <Flex direction="column">
           {hash && (
-            <Alert status="success" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Hash de la dernière transaction : {hash.substring(0, 6)}...
-              {hash.substring(hash.length - 4)}
+            <Alert
+              status="success"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="full"
+              borderRadius="md"
+              mt={"2rem"}
+            >
+              <Flex alignItems="center">
+                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                <AlertTitle mr={2}>Transaction réussie</AlertTitle>
+                <AlertDescription>
+                  Hash de la dernière transaction : {hash.substring(0, 6)}...
+                  {hash.substring(hash.length - 4)}
+                </AlertDescription>
+              </Flex>
             </Alert>
           )}
-          {isConfirming && (
-            <Alert status="success" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Waiting for confirmation...
-            </Alert>
-          )}
-          {isConfirmed && (
-            <Alert status="success" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Transaction confirmed.
-            </Alert>
-          )}
+
           {mintSeedSFT2Error && (
-            <Alert status="error" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Error:{" "}
-              {mintSeedSFT2Error.shortMessage || mintSeedSFT2Error.message}
+            <Alert
+              status="error"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="full"
+              borderRadius="md"
+              mt={"2rem"}
+            >
+              <Flex alignItems="center">
+                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                <AlertTitle alignSelf={"center"}>Erreur : </AlertTitle>
+                <AlertDescription>
+                  {mintSeedSFT2Error.shortMessage || mintSeedSFT2Error.message}
+                </AlertDescription>
+              </Flex>
+              {mintSeedSFT2Error.shortMessage && (
+                <Accordion allowToggle mt={"1rem"} width={"100%"}>
+                  <AccordionItem>
+                    <AccordionButton border={"none"}>
+                      <Box as="span" flex="1" textAlign="left">
+                        En savoir plus
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+
+                    <AccordionPanel textAlign="left">
+                      {mintSeedSFT2Error.message}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
             </Alert>
           )}
         </Flex>

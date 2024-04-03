@@ -2,7 +2,6 @@
 import {
   Box,
   Button,
-  useToast,
   Flex,
   Alert,
   AlertIcon,
@@ -11,6 +10,13 @@ import {
   VStack,
   HStack,
   Spinner,
+  AlertTitle,
+  AlertDescription,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionIcon,
+  AccordionPanel,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -26,6 +32,7 @@ import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
 import { ArrowForwardIcon, CheckCircleIcon } from "@chakra-ui/icons";
+import AlertManager from "./AlertManager";
 
 const FormSFT1 = () => {
   // ******************* States *******************
@@ -41,6 +48,8 @@ const FormSFT1 = () => {
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
   const [PrepaIsUploading, setPrepaIsUploading] = useState(false);
+  const [key, setKey] = useState(Date.now());
+
   const CM1JsonInputRef = useRef(null);
   const CM1PdfInputRef = useRef(null);
   const DF1JsonInputRef = useRef(null);
@@ -68,8 +77,11 @@ const FormSFT1 = () => {
     if (DF1PdfInputRef.current) DF1PdfInputRef.current.value = "";
   };
 
+  const RefreshComponents = () => {
+    setKey(Date.now());
+  };
+
   // ******************* Hooks *******************
-  const toast = useToast();
   const { address, isConnected } = useAccount();
   const {
     getTransferSingleSft1Event,
@@ -297,23 +309,10 @@ const FormSFT1 = () => {
   } = useWriteContract({
     mutation: {
       onSuccess: () => {
-        toast({
-          title: "Le SFT1 a été minté avec succès",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
         getTransferSingleSft1Event();
         getSft1DataEvent();
+        RefreshComponents();
         resetForm();
-      },
-      onError: (error) => {
-        toast({
-          title: error.message,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
       },
     },
   });
@@ -343,7 +342,13 @@ const FormSFT1 = () => {
   // ******************* Render *******************
   return (
     <div>
-      <Box p={"2rem"} bg={"gray.900"} borderRadius={"10px"} mt={"2rem"}>
+      <Box
+        p={"2rem"}
+        bg={"gray.900"}
+        borderRadius={"10px"}
+        mt={"2rem"}
+        position={"relative"}
+      >
         <Flex
           direction={{ base: "column", md: "row" }}
           justifyContent="space-between"
@@ -367,6 +372,7 @@ const FormSFT1 = () => {
               </Heading>
               <HStack spacing={"1rem"}>
                 <HashAndUploadButton
+                  key={`hash-and-upload-cm1-json-${key}`}
                   label="Certificat maître.json"
                   inputRef={CM1JsonInputRef}
                   accept=".json"
@@ -375,6 +381,7 @@ const FormSFT1 = () => {
                   transactionConfirmed={isConfirmed}
                 />
                 <UploadToIpfsButton
+                  key={`upload-cm1-pdf-${key}`}
                   label="Certificat maître.pdf"
                   inputRef={CM1PdfInputRef}
                   accept=".pdf"
@@ -391,6 +398,7 @@ const FormSFT1 = () => {
               </Heading>
               <HStack spacing={"1rem"}>
                 <HashAndUploadButton
+                  key={`hash-and-upload-df1-json-${key}`}
                   label="Document du Fournisseur 1.json"
                   inputRef={DF1JsonInputRef}
                   accept=".json"
@@ -398,6 +406,7 @@ const FormSFT1 = () => {
                   isRequired
                 />
                 <UploadToIpfsButton
+                  key={`upload-df1-pdf-${key}`}
                   label="Document du Fournisseur 1.pdf"
                   inputRef={DF1PdfInputRef}
                   accept=".pdf"
@@ -498,7 +507,7 @@ const FormSFT1 = () => {
               />
 
               {ownerAddress && (
-                <Box mt="2rem">
+                <Box>
                   <Button
                     onClick={mintSeedSFT1}
                     variant={"solid"}
@@ -536,29 +545,57 @@ const FormSFT1 = () => {
         {/**************** Alerts ****************/}
         <Flex direction="column">
           {hash && (
-            <Alert status="success" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Hash de la dernière transaction : {hash.substring(0, 6)}...
-              {hash.substring(hash.length - 4)}
+            <Alert
+              status="success"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="full"
+              borderRadius="md"
+              mt={"2rem"}
+            >
+              <Flex alignItems="center">
+                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                <AlertTitle mr={2}>Transaction réussie</AlertTitle>
+                <AlertDescription>
+                  Hash de la dernière transaction : {hash.substring(0, 6)}...
+                  {hash.substring(hash.length - 4)}
+                </AlertDescription>
+              </Flex>
             </Alert>
           )}
-          {isConfirming && (
-            <Alert status="success" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Waiting for confirmation...
-            </Alert>
-          )}
-          {isConfirmed && (
-            <Alert status="success" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Transaction confirmed.
-            </Alert>
-          )}
+
           {mintSeedSFT1Error && (
-            <Alert status="error" mt="1rem" mb="1rem">
-              <AlertIcon />
-              Error:{" "}
-              {mintSeedSFT1Error.shortMessage || mintSeedSFT1Error.message}
+            <Alert
+              status="error"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="full"
+              borderRadius="md"
+              mt={"2rem"}
+            >
+              <Flex alignItems="center">
+                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                <AlertTitle alignSelf={"center"}>Erreur : </AlertTitle>
+                <AlertDescription>
+                  {mintSeedSFT1Error.shortMessage || mintSeedSFT1Error.message}
+                </AlertDescription>
+              </Flex>
+              {mintSeedSFT1Error.shortMessage && (
+                <Accordion allowToggle mt={"1rem"} width={"100%"}>
+                  <AccordionItem>
+                    <AccordionButton border={"none"}>
+                      <Box as="span" flex="1" textAlign="left">
+                        En savoir plus
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+
+                    <AccordionPanel textAlign="left">
+                      {mintSeedSFT1Error.message}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
             </Alert>
           )}
         </Flex>

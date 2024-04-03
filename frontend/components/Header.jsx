@@ -8,6 +8,7 @@ import {
   Flex,
   Heading,
   Image,
+  Link,
   Tab,
   TabList,
   TabPanel,
@@ -17,7 +18,9 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import NextLink from "next/link";
+
+import { ArrowBackIcon, EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ReadFunctionsContext from "@/context/ReadFunctions";
 import { useAccount } from "wagmi";
@@ -28,10 +31,15 @@ const Header = () => {
   const { address, isConnected } = useAccount();
   const { ownerAddress } = useContext(ReadFunctionsContext);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [onUserManagerPage, setOnUserManagerPage] = useState(false);
   const bgColor = useColorModeValue(
     isScrolled ? "#D6EADF" : "#E0F2E9",
     isScrolled ? "#1B2B28" : "#2E4039"
   );
+
+  useEffect(() => {
+    setOnUserManagerPage(window.location.pathname === "/user_manager");
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,21 +66,22 @@ const Header = () => {
       borderRadius={"0px 0px 20px 20px"}
       transition="background-color 0.3s"
     >
-      <Heading size="lg" display={"flex"} alignItems="center">
-        <Image
-          src="http://localhost:3000/assets/Logo.png"
-          h={"3rem"}
-          mr={"1rem"}
-        />
-        Tree Tracker
-      </Heading>
+      <NextLink href="/">
+        <Heading size="lg" display={"flex"} alignItems="center">
+          <Image
+            src="http://localhost:3000/assets/Logo.png"
+            h={"3rem"}
+            mr={"1rem"}
+          />
+          Tree Tracker
+        </Heading>
+      </NextLink>
 
       <Flex align-items="center">
         <ConnectButton
-          accountStatus="avatar"
-          chainStatus="name"
-          showBalance={true}
-          label="Connect wallet"
+          label="Connectez votre wallet"
+          chainStatus="icon"
+          showBalance="none"
         />
         <Button
           onClick={toggleColorMode}
@@ -82,6 +91,14 @@ const Header = () => {
         >
           {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
         </Button>
+
+        {address === ownerAddress && (
+          <NextLink href="/user_manager">
+            <Button ml="0.5rem">
+              <EditIcon />
+            </Button>
+          </NextLink>
+        )}
       </Flex>
     </Flex>
   );

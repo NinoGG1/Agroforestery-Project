@@ -3,6 +3,7 @@ import { useAccount } from "wagmi";
 import { useReadFunctions } from "@/context/ReadFunctions";
 
 import NotConnected from "@/components/NotConnected";
+import NotRegistered from "@/components/NotRegistered";
 import Dashboard from "@/components/Dashboard";
 
 export default function Home() {
@@ -16,6 +17,10 @@ export default function Home() {
       {(address === ownerAddress) & isConnected ? (
         <>
           <Dashboard />
+        </>
+      ) : isConnected ? (
+        <>
+          <NotRegistered />
         </>
       ) : (
         <>

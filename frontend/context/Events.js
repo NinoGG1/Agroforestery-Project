@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { SFT1Address, SFT2Address } from "@/constants";
+import { SFT1Address, SFT2Address, UseManagerAddress } from "@/constants";
 
 const EventsContext = createContext();
 
@@ -197,6 +197,48 @@ export const EventsProvider = ({ children }) => {
     setMergedSft2Events(mergeSft2Events());
   }, [sft2DataEvent]);
 
+  // :::::::::::::::::::::: UserManager Events :::::::::::::::::::::: //
+
+  // Fonction pour récupérer les événements du Smart Contract SFT2
+  const fetchUserManagerEvents = async (eventSignature) => {
+    return await publicClient.getLogs({
+      address: UseManagerAddress,
+      event: parseAbiItem(eventSignature),
+      fromBlock: 0n,
+      toBlock: "latest",
+      account: address,
+    });
+  };
+
+  // RoleGranted Event
+  const [roleGrantedEvent, setRoleGrantedEvent] = useState([]);
+  const getRoleGrantedEvent = async () => {
+    const roleGrantedEvent = await fetchUserManagerEvents(
+      "event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)"
+    );
+    console.log("RoleGrantedEvent Response:", roleGrantedEvent);
+
+    setRoleGrantedEvent(
+      roleGrantedEvent.map((log) => ({
+        role: log.args.role,
+        account: log.args.account,
+        sender: log.args.sender,
+      }))
+    );
+  };
+
+  // Récupération des events à la connexion
+  useEffect(() => {
+    const getAllUserManagerEvents = async () => {
+      if (address !== undefined) {
+        await getRoleGrantedEvent();
+      }
+    };
+    getAllUserManagerEvents();
+  }, [address]);
+
+  // :::::::::::::::::::::: FIN :::::::::::::::::::::: //
+
   return (
     <EventsContext.Provider
       value={{
@@ -212,6 +254,8 @@ export const EventsProvider = ({ children }) => {
         getTransferSingleSft2Event,
         getSft2DataEvent,
         mergeSft2Events,
+        roleGrantedEvent,
+        getRoleGrantedEvent,
       }}
     >
       {children}
