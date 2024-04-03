@@ -1,6 +1,7 @@
 "use client";
 import {
   Box,
+  Link,
   Button,
   Flex,
   Alert,
@@ -31,7 +32,11 @@ import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
-import { ArrowForwardIcon, CheckCircleIcon } from "@chakra-ui/icons";
+import {
+  ArrowForwardIcon,
+  CheckCircleIcon,
+  ExternalLinkIcon,
+} from "@chakra-ui/icons";
 import AlertManager from "./AlertManager";
 
 const FormSFT1 = () => {
@@ -303,19 +308,10 @@ const FormSFT1 = () => {
   // Write contract pour mint le SFT1
   const {
     data: hash,
+    isLoading: mintSeedSFT1Pending,
     error: mintSeedSFT1Error,
-    isPending: mintSeedSFT1Pending,
     writeContract,
-  } = useWriteContract({
-    mutation: {
-      onSuccess: () => {
-        getTransferSingleSft1Event();
-        getSft1DataEvent();
-        RefreshComponents();
-        resetForm();
-      },
-    },
-  });
+  } = useWriteContract({});
 
   // Fonction pour mint le SFT1
   const mintSeedSFT1 = async () => {
@@ -337,7 +333,16 @@ const FormSFT1 = () => {
 
   // Hook pour attendre la confirmation de la transaction
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt(hash);
+    useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      getTransferSingleSft1Event();
+      getSft1DataEvent();
+      RefreshComponents();
+      resetForm();
+    }
+  }, [isConfirmed]);
 
   // ******************* Render *******************
   return (
@@ -543,8 +548,29 @@ const FormSFT1 = () => {
         </Flex>
 
         {/**************** Alerts ****************/}
+        {/* Afficher un toast pendant que la transaction est en cours */}
         <Flex direction="column">
-          {hash && (
+          {isConfirming && (
+            <Alert
+              status="info"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="full"
+              borderRadius="md"
+              mt={"2rem"}
+            >
+              <Flex alignItems="center">
+                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                <AlertTitle mr={2}>Transaction en cours</AlertTitle>
+                <AlertDescription>
+                  Veuillez patienter pendant que la transaction est en cours...
+                </AlertDescription>
+              </Flex>
+            </Alert>
+          )}
+
+          {/* Afficher un toast si le SFT1 est minté avec succès */}
+          {isConfirmed && (
             <Alert
               status="success"
               flexDirection="column"
@@ -557,8 +583,15 @@ const FormSFT1 = () => {
                 <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
                 <AlertTitle mr={2}>Transaction réussie</AlertTitle>
                 <AlertDescription>
-                  Hash de la dernière transaction : {hash.substring(0, 6)}...
-                  {hash.substring(hash.length - 4)}
+                  Hash de la dernière transaction :{" "}
+                  <Link
+                    isExternal
+                    href={`https://sepolia.etherscan.io/tx/${hash}`}
+                  >
+                    {hash.substring(0, 6)}...
+                    {hash.substring(hash.length - 4)}
+                    <ExternalLinkIcon ml={"0.5rem"} />
+                  </Link>
                 </AlertDescription>
               </Flex>
             </Alert>

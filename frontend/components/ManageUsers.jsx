@@ -11,6 +11,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Link,
   Select,
   Tab,
   Table,
@@ -32,6 +33,7 @@ import EventsContext from "@/context/Events";
 import { ethers } from "ethers";
 import { stringToHex } from "viem";
 import { keccak256 } from "viem";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const UserManagementForm = () => {
   const [walletAddress, setWalletAddress] = useState("");
@@ -50,18 +52,10 @@ const UserManagementForm = () => {
   // ::::::::::::::: Communication avec le SC UserManager.sol :::::::::::::::
   const {
     data: hash,
-    error: assignRoleError,
+    error,
     isPending: assignRolePending,
     writeContract,
-  } = useWriteContract({
-    mutation: {
-      onSuccess: () => {
-        setWalletAddress("");
-        setRole("");
-        getRoleGrantedEvent();
-      },
-    },
-  });
+  } = useWriteContract({});
 
   const assignRole = async () => {
     // Convertissez le nom du rôle en bytes32
@@ -76,21 +70,16 @@ const UserManagementForm = () => {
     });
   };
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt(hash);
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    error: confirmationError,
+  } = useWaitForTransactionReceipt({ hash });
 
   useEffect(() => {
     if (isConfirmed) {
-      toast({
-        title: "Transaction réussie",
-        description: `Hash de la dernière transaction : ${hash.substring(
-          0,
-          6
-        )}...${hash.substring(hash.length - 4)}`,
-        status: "success",
-        duration: 9000,
-        isClosable: true,
-      });
+      setWalletAddress("");
+      setRole("");
       getRoleGrantedEvent();
     }
   }, [isConfirmed]);
@@ -134,64 +123,74 @@ const UserManagementForm = () => {
             </Button>
           </form>
 
+          {/**************** Alerts ****************/}
           {/* Afficher un toast pendant que la transaction est en cours */}
-          {isConfirming && (
-            <Alert
-              status="info"
-              flexDirection="column"
-              alignItems="flex-start"
-              width="full"
-              borderRadius="md"
-              mt={"2rem"}
-            >
-              <Flex alignItems="center">
-                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
-                <AlertTitle mr={2}>Transaction en cours</AlertTitle>
-                <AlertDescription>
-                  Veuillez patienter pendant que la transaction est en cours...
-                </AlertDescription>
-              </Flex>
-            </Alert>
-          )}
+          <Flex direction={"column"}>
+            {isConfirming && (
+              <Alert
+                status="info"
+                flexDirection="column"
+                alignItems="flex-start"
+                width="full"
+                borderRadius="md"
+              >
+                <Flex alignItems="center">
+                  <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                  <AlertTitle mr={2}>Transaction en cours</AlertTitle>
+                  <AlertDescription>
+                    Veuillez patienter pendant que la transaction est en
+                    cours...
+                  </AlertDescription>
+                </Flex>
+              </Alert>
+            )}
 
-          {/* Afficher un toast si l'utilisateur est ajouté avec succès */}
-          {hash && (
-            <Alert
-              status="success"
-              flexDirection="column"
-              alignItems="flex-start"
-              width="full"
-              borderRadius="md"
-              mt={"2rem"}
-            >
-              <Flex alignItems="center">
-                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
-                <AlertTitle mr={2}>Transaction réussie</AlertTitle>
-                <AlertDescription>
-                  Hash de la dernière transaction : {hash.substring(0, 6)}...
-                  {hash.substring(hash.length - 4)}
-                </AlertDescription>
-              </Flex>
-            </Alert>
-          )}
+            {/* Afficher un toast si l'utilisateur est ajouté avec succès */}
+            {isConfirmed && (
+              <Alert
+                status="success"
+                flexDirection="column"
+                alignItems="flex-start"
+                width="full"
+                borderRadius="md"
+              >
+                <Flex alignItems="center">
+                  <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                  <AlertTitle mr={2}>Transaction réussie</AlertTitle>
+                  <AlertDescription>
+                    Hash de la dernière transaction :{" "}
+                    <Link
+                      isExternal
+                      href={`https://sepolia.etherscan.io/tx/${hash}`}
+                    >
+                      {hash.substring(0, 6)}...
+                      {hash.substring(hash.length - 4)}
+                      <ExternalLinkIcon ml={"0.5rem"} />
+                    </Link>
+                  </AlertDescription>
+                </Flex>
+              </Alert>
+            )}
 
-          {/* Afficher un toast si une erreur se produit */}
-          {assignRoleError && (
-            <Alert
-              status="error"
-              flexDirection="column"
-              alignItems="flex-start"
-              width="full"
-              borderRadius="md"
-              mt={"2rem"}
-            >
-              <Flex alignItems="center">
-                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
-                <AlertTitle mr={2}>Erreur</AlertTitle>
-                <AlertDescription>{assignRoleError.message}</AlertDescription>
-              </Flex>
-            </Alert>
-          )}
+            {/* Afficher un toast si une erreur se produit */}
+            {confirmationError && (
+              <Alert
+                status="error"
+                flexDirection="column"
+                alignItems="flex-start"
+                width="full"
+                borderRadius="md"
+              >
+                <Flex alignItems="center">
+                  <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                  <AlertTitle mr={2}>Erreur</AlertTitle>
+                  <AlertDescription>
+                    {confirmationError.message}
+                  </AlertDescription>
+                </Flex>
+              </Alert>
+            )}
+          </Flex>
         </Flex>
       </Box>
 
