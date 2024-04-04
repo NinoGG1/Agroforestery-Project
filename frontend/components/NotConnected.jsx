@@ -30,8 +30,8 @@ const NotConnected = () => {
       >
         <Image
           boxSize="10rem"
-          src="http://localhost:3000/assets/Logo.png"
-          alt=""
+          src="@/public/assets/logo.png"
+          alt="logo Tree Tracker"
         />
         <Heading size="xl" display={"flex"} alignItems="center" mt={"1rem"}>
           Tree Tracker

@@ -20,9 +20,9 @@ const SFTCard = ({ sft }) => {
   const getImageUrl = (type) => {
     switch (type) {
       case "SFT1":
-        return "http://localhost:3000/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
+        return "@/public/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
       case "SFT2":
-        return "http://localhost:3000/assets/plant.jpeg"; // Exemple d'URL pour SFT2
+        return "@/public/assets/plant.jpeg"; // Exemple d'URL pour SFT2
       // case "NFT3":
       //   return "http://localhost:3000/assets/nft3Picture.jpeg"; // Exemple d'URL pour NFT3
       // default:

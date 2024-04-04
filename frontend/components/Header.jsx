@@ -69,7 +69,8 @@ const Header = () => {
       <NextLink href="/">
         <Heading size="lg" display={"flex"} alignItems="center">
           <Image
-            src="http://localhost:3000/assets/Logo.png"
+            src="@/public/assets/logo.png"
+            alt="logo Tree Tracker"
             h={"3rem"}
             mr={"1rem"}
           />
