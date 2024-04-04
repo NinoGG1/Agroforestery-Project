@@ -1,13 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "1mb", // Exemple de configuration
-    },
-  },
-};
-
 export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
