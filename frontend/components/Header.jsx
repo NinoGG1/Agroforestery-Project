@@ -7,6 +7,7 @@ import {
   CardHeader,
   Flex,
   Heading,
+  Image,
   Link,
   Tab,
   TabList,
@@ -18,7 +19,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import Image from "next/image";
 
 import { ArrowBackIcon, EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
