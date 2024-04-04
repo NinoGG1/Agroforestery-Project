@@ -3,13 +3,21 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { SFT1Address, SFT1Abi } from "@/constants";
+import {
+  SFT1Address,
+  SFT1Abi,
+  UseManagerAddress,
+  UseManagerAbi,
+} from "@/constants";
 
 const ReadFunctionsContext = createContext();
 
 export const ReadFunctionsProvider = ({ children }) => {
   const { address } = useAccount();
   const [tokenId, setTokenId] = useState(null);
+
+  const AdminRole =
+    "0xdf8b4c520ffe197c5343c6f5aec59570151ef9a492f2c624fd45ddde6135ec42";
 
   // Read the owner of the contract
   const { data: ownerAddress } = useReadContract({
@@ -31,6 +39,19 @@ export const ReadFunctionsProvider = ({ children }) => {
     args: [tokenId],
   });
 
+  // Read the role of the current user
+  const {
+    data: isAdmin,
+    error: getIsAdminError,
+    isPending: isAdminPending,
+    refetch: refetchIsAdmin,
+  } = useReadContract({
+    address: UseManagerAddress,
+    abi: UseManagerAbi,
+    functionName: "hasRole",
+    args: [AdminRole, address],
+  });
+
   return (
     <ReadFunctionsContext.Provider
       value={{
@@ -38,6 +59,8 @@ export const ReadFunctionsProvider = ({ children }) => {
         sft1Data,
         refetchSft1Data: (newTokenId) =>
           refetchSft1Data({ args: [newTokenId] }),
+        isAdmin,
+        refetchIsAdmin,
       }}
     >
       {children}

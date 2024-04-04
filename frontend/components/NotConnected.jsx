@@ -19,7 +19,7 @@ import { useContext, useEffect, useState } from "react";
 
 const NotConnected = () => {
   return (
-    <Flex direction="column" width="100%" pl="5rem" pr="5rem">
+    <Flex direction="column" width="100%" pl="5rem" pr="5rem" mt={"3rem"}>
       <Flex
         direction="column"
         justifyContent="center"
@@ -27,12 +27,10 @@ const NotConnected = () => {
         bg={"#1B2B28"}
         height="586px"
         borderRadius="0.2rem"
+        pb={"4rem"}
+        pt={"4rem"}
       >
-        <Image
-          boxSize="10rem"
-          src="@/public/assets/logo.png"
-          alt="logo Tree Tracker"
-        />
+        <Image boxSize="10rem" src="/assets/logo.png" alt="logo Tree Tracker" />
         <Heading size="xl" display={"flex"} alignItems="center" mt={"1rem"}>
           Tree Tracker
         </Heading>
