@@ -1,8 +1,8 @@
 "use client";
 import {
   Box,
+  Link,
   Button,
-  useToast,
   Flex,
   Alert,
   AlertIcon,
@@ -32,7 +32,11 @@ import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
 import UploadToIpfsButton from "./FormComponents/UploadToIpfsButton";
 import DocumentStatusTable from "./FormComponents/DocumentStatusTable";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import {
+  ArrowForwardIcon,
+  CheckCircleIcon,
+  ExternalLinkIcon,
+} from "@chakra-ui/icons";
 
 const FormSFT2 = () => {
   // ******************* States *******************
@@ -97,8 +101,8 @@ const FormSFT2 = () => {
     console.log("Fichier traité :", file);
     console.log("Hash du fichier :", hash);
     console.log("Hash IPFS :", ipfsHash);
-    setDF2JsonHash(hash);
     setDF2JsonCid(ipfsHash);
+    setDF2JsonHash(hash);
   };
 
   // Obtenir le cid du fichier DF2 pdf
@@ -236,19 +240,19 @@ const FormSFT2 = () => {
     const jsonBlob = new Blob([JSON.stringify(newMetadata)], {
       type: "application/json",
     });
-    const formData = new FormData();
-    formData.append("file", jsonBlob, "metadata.json");
 
     // Uploader le Blob sur IPFS
     try {
-      const response = await fetch("http://localhost:3001/uploadToIPFS", {
+      const formData = new FormData();
+      formData.append("file", jsonBlob);
+      const response = await fetch("api/ipfs", {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) throw new Error("Erreur lors de l'upload sur IPFS");
-      const data = await response.json();
-      console.log("Metadata uploaded to IPFS:", data.ipfsHash);
-      setMetadataCid(data.ipfsHash);
+      const responseData = await response.json();
+      const cid = responseData.IpfsHash;
+      console.log(cid);
+      setMetadataCid(cid);
       setPrepaIsUploading(false);
     } catch (error) {
       console.error("Erreur lors de l'upload des métadonnées sur IPFS:", error);
@@ -263,16 +267,7 @@ const FormSFT2 = () => {
     error: mintSeedSFT2Error,
     isPending: mintSeedSFT2Pending,
     writeContract,
-  } = useWriteContract({
-    mutation: {
-      onSuccess: () => {
-        getTransferSingleSft2Event();
-        getSft2DataEvent();
-        RefreshComponents();
-        resetForm();
-      },
-    },
-  });
+  } = useWriteContract({});
 
   // Fonction pour mint le SFT2
   const mintSeedSFT2 = async () => {
@@ -294,7 +289,16 @@ const FormSFT2 = () => {
 
   // Hook pour attendre la confirmation de la transaction
   const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt(hash);
+    useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      getTransferSingleSft2Event();
+      getSft2DataEvent();
+      RefreshComponents();
+      resetForm();
+    }
+  }, [isConfirmed]);
 
   // ******************* Render *******************
   return (
@@ -467,8 +471,29 @@ const FormSFT2 = () => {
         </Flex>
 
         {/**************** Alerts ****************/}
+        {/* Afficher un toast pendant que la transaction est en cours */}
         <Flex direction="column">
-          {hash && (
+          {isConfirming && (
+            <Alert
+              status="info"
+              flexDirection="column"
+              alignItems="flex-start"
+              width="full"
+              borderRadius="md"
+              mt={"2rem"}
+            >
+              <Flex alignItems="center">
+                <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
+                <AlertTitle mr={2}>Transaction en cours</AlertTitle>
+                <AlertDescription>
+                  Veuillez patienter pendant que la transaction est en cours...
+                </AlertDescription>
+              </Flex>
+            </Alert>
+          )}
+
+          {/* Afficher un toast si le SFT2 est minté avec succès */}
+          {isConfirmed && (
             <Alert
               status="success"
               flexDirection="column"
@@ -481,8 +506,15 @@ const FormSFT2 = () => {
                 <AlertIcon p={0} size={"xs"} m={0} mr={"0.5rem"} />
                 <AlertTitle mr={2}>Transaction réussie</AlertTitle>
                 <AlertDescription>
-                  Hash de la dernière transaction : {hash.substring(0, 6)}...
-                  {hash.substring(hash.length - 4)}
+                  Hash de la dernière transaction :{" "}
+                  <Link
+                    isExternal
+                    href={`https://sepolia.etherscan.io/tx/${hash}`}
+                  >
+                    {hash.substring(0, 6)}...
+                    {hash.substring(hash.length - 4)}
+                    <ExternalLinkIcon ml={"0.5rem"} />
+                  </Link>
                 </AlertDescription>
               </Flex>
             </Alert>

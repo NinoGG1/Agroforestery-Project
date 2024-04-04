@@ -15,7 +15,6 @@ import {
   ListItem,
   Text,
 } from "@chakra-ui/react";
-import NextLink from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useContext, useEffect, useState } from "react";
 

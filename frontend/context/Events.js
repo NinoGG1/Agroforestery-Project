@@ -6,6 +6,7 @@ import { publicClient } from "../utils/client";
 import { SFT1Address, SFT2Address, UseManagerAddress } from "@/constants";
 
 const EventsContext = createContext();
+const fromBlock = 5621587n;
 
 export const EventsProvider = ({ children }) => {
   const { address } = useAccount();
@@ -18,7 +19,7 @@ export const EventsProvider = ({ children }) => {
     return await publicClient.getLogs({
       address: SFT1Address,
       event: parseAbiItem(eventSignature),
-      fromBlock: 0n,
+      fromBlock: fromBlock,
       toBlock: "latest",
       account: address,
     });
@@ -112,7 +113,7 @@ export const EventsProvider = ({ children }) => {
     return await publicClient.getLogs({
       address: SFT2Address,
       event: parseAbiItem(eventSignature),
-      fromBlock: 0n,
+      fromBlock: fromBlock,
       toBlock: "latest",
       account: address,
     });
@@ -204,7 +205,7 @@ export const EventsProvider = ({ children }) => {
     return await publicClient.getLogs({
       address: UseManagerAddress,
       event: parseAbiItem(eventSignature),
-      fromBlock: 0n,
+      fromBlock: fromBlock,
       toBlock: "latest",
       account: address,
     });

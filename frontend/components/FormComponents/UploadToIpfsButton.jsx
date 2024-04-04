@@ -26,31 +26,29 @@ const UploadToIpfsButton = ({
   };
 
   const uploadFileToIPFS = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await fetch("http://localhost:3001/uploadToIPFS", {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) throw new Error("Erreur lors de l'upload sur IPFS");
-    return (await response.json()).ipfsHash;
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/ipfs", {
+        method: "POST",
+        body: formData,
+      });
+      const responseData = await response.json(); // Parse the response as JSON
+      const ipfsHash = responseData.IpfsHash; // Assuming the JSON has an "IpfsHash" field
+      console.log(ipfsHash);
+      setIpfsHash(ipfsHash);
+      setIsUploading(false);
+      onFileProcessed({ file, ipfsHash });
+    } catch (error) {
+      console.error("Erreur lors du traitement du fichier :", error);
+      setIsUploading(false);
+      alert("Trouble uploading file");
+    }
   };
 
   const handleUploadFileSelection = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      const ipfsHash = await uploadFileToIPFS(file);
-      console.log("Fichier traité : ", { ipfsHash });
-      setIpfsHash(ipfsHash); // Stocker l'hash IPFS sur succès
-      onFileProcessed({ file, ipfsHash }); // Callback si nécessaire
-    } catch (error) {
-      console.error("Erreur lors du traitement du fichier :", error);
-      // Gérer l'erreur, informer l'utilisateur
-    }
-    setIsUploading(false);
+    uploadFileToIPFS(event.target.files[0]);
   };
 
   useEffect(() => {
@@ -86,8 +84,8 @@ const UploadToIpfsButton = ({
         }
         width="full"
         cursor="pointer"
-        isLoading={isUploading} // Désactive le bouton pendant le chargement
-        loadingText="Chargement..." // Texte affiché pendant le chargement
+        isLoading={isUploading}
+        loadingText="Chargement..."
         sx={{
           whiteSpace: "normal",
           height: "auto",
