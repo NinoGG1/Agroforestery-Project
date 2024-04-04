@@ -4,13 +4,13 @@ import customTheme from "./customTheme";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
-import { hardhat, sepolia, polygon } from "wagmi/chains";
+import { sepolia } from "@/utils/sepolia";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 const config = getDefaultConfig({
   appName: "My RainbowKit App",
-  projectId: "2cd5dacffa0beae06e9eee64fafe8bb1",
-  chains: [hardhat, sepolia],
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT,
+  chains: [sepolia],
   ssr: true,
 });
 

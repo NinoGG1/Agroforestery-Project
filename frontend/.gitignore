@@ -1,38 +1,48 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dépendances
 /node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
 
-# testing
+# Tests
 /coverage
 
-# next.js
+# Next.js
 /.next/
 /out/
-
-# production
 /build
 
-# misc
+# Fichiers système
 .DS_Store
 *.pem
 
-# debug
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# Fichiers d'Environnement
 .env*.local
+.env
 
-# vercel
+# Vercel
 .vercel
 
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
-
 jsconfig.json
+
+# IDEs et Éditeurs
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Fichiers Temporaires
+*.bak
+*.swp
+*~
+
+# Docker (ajoutez uniquement si vous avez décidé de ne pas partager ces fichiers)
+/docker-compose.yml
+/Dockerfile

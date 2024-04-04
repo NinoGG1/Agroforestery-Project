@@ -5,13 +5,11 @@ import EventsContext from "@/context/Events";
 
 const HashAndUploadButton = ({ label, accept, onFileProcessed }) => {
   const inputRef = useRef(null);
-  // État pour stocker si le fichier a été chargé avec succès et son hash IPFS
   const [ipfsHash, setIpfsHash] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const { mergedSft1Events, mergedSft2Events } = useContext(EventsContext);
 
   const triggerFileInput = () => {
-    // Si le fichier est déjà chargé, ne rien faire (ou ouvrir le lien IPFS dans une nouvelle fenêtre)
     if (ipfsHash) {
       window.open(`https://ipfs.io/ipfs/${ipfsHash}`, "_blank");
       return;
@@ -22,45 +20,44 @@ const HashAndUploadButton = ({ label, accept, onFileProcessed }) => {
   const hashFileContent = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
-    // Convertir directement en chaîne hexadécimale préfixée par "0x"
-    const hashHex =
+    return (
       "0x" +
       Array.from(new Uint8Array(hashBuffer))
         .map((byte) => byte.toString(16).padStart(2, "0"))
-        .join("");
-    return hashHex;
+        .join("")
+    );
   };
 
   const uploadFileToIPFS = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await fetch("http://localhost:3001/uploadToIPFS", {
+    const response = await fetch("/api/ipfs", {
       method: "POST",
       body: formData,
     });
-    if (!response.ok) throw new Error("Erreur lors de l'upload sur IPFS");
-    return (await response.json()).ipfsHash;
+    return response.json(); // Directly return the parsed JSON
   };
 
   const handleHashUploadFileSelection = async (event) => {
     const file = event.target.files[0];
-    if (!file) return;
-
     setIsUploading(true);
     try {
       const hashHex = await hashFileContent(file);
-      const ipfsHash = await uploadFileToIPFS(file);
-      console.log("Fichier traité : ", { hashHex, ipfsHash });
-      setIpfsHash(ipfsHash); // Stocker l'hash IPFS sur succès
+      const responseData = await uploadFileToIPFS(file);
+      const ipfsHash = responseData.IpfsHash;
+
+      setIpfsHash(ipfsHash);
       onFileProcessed({ file, hash: hashHex, ipfsHash });
+      console.log("Fichier traité : ", { hashHex, ipfsHash });
     } catch (error) {
       console.error("Erreur lors du traitement du fichier :", error);
-      // Gérer l'erreur, informer l'utilisateur
+      alert("Trouble uploading file");
     }
     setIsUploading(false);
   };
 
   useEffect(() => {
+    // Réinitialise l'état lors des changements dans les événements fusionnés
     setIpfsHash("");
     setIsUploading(false);
   }, [mergedSft1Events, mergedSft2Events]);

@@ -4,7 +4,7 @@ import { Box, Divider, Flex } from "@chakra-ui/react";
 
 const Layout = ({ children }) => {
   return (
-    <Flex direction="column">
+    <Flex direction="column" minH={"100vh"}>
       <Box position="sticky" top="0" zIndex="banner" width="100%">
         <Header />
       </Box>

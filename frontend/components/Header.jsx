@@ -66,27 +66,23 @@ const Header = () => {
       borderRadius={"0px 0px 20px 20px"}
       transition="background-color 0.3s"
     >
-      <NextLink href="/" passHref>
-        <Link>
-          <Heading size="lg" display={"flex"} alignItems="center">
-            <Image
-              src="http://localhost:3000/assets/Logo.png"
-              h={"3rem"}
-              mr={"1rem"}
-            />
-            Tree Tracker
-          </Heading>
-        </Link>
+      <NextLink href="/">
+        <Heading size="lg" display={"flex"} alignItems="center">
+          <Image
+            src="http://localhost:3000/assets/Logo.png"
+            h={"3rem"}
+            mr={"1rem"}
+          />
+          Tree Tracker
+        </Heading>
       </NextLink>
 
       <Flex align-items="center">
-        <Box scrollBehavior={"revert"}>
-          <ConnectButton
-            label="Connectez votre wallet"
-            chainStatus="icon"
-            showBalance="none"
-          />
-        </Box>
+        <ConnectButton
+          label="Connectez votre wallet"
+          chainStatus="icon"
+          showBalance="none"
+        />
         <Button
           onClick={toggleColorMode}
           alignSelf="center"

@@ -1,4 +1,5 @@
 "use client";
+import { useContext, useEffect, useState } from "react";
 import ReadFunctionsContext from "@/context/ReadFunctions";
 import { CheckCircleIcon, EmailIcon } from "@chakra-ui/icons";
 import {
@@ -13,11 +14,11 @@ import {
   List,
   ListIcon,
   ListItem,
+  Link,
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useContext, useEffect, useState } from "react";
 
 const NotConnected = () => {
   return (
@@ -33,7 +34,7 @@ const NotConnected = () => {
         <Image
           boxSize="10rem"
           src="http://localhost:3000/assets/Logo.png"
-          alt=""
+          alt="Logo"
         />
         <Heading size="xl" display={"flex"} alignItems="center" mt={"1rem"}>
           Tree Tracker
@@ -42,10 +43,12 @@ const NotConnected = () => {
         <Heading size="md" mt="2rem" mb={"1rem"} textAlign={"center"}>
           Page réservée aux administrateurs, votre statut est :
         </Heading>
-        <NextLink href="/">
-          <Button colorScheme="green" size="lg" mt="2rem" href="/">
-            Retour à l'accueil
-          </Button>
+        <NextLink href="/" passHref>
+          <Link>
+            <Button as="a" colorScheme="green" size="lg" mt="2rem">
+              Retour à l'accueil
+            </Button>
+          </Link>
         </NextLink>
       </Flex>
     </Flex>

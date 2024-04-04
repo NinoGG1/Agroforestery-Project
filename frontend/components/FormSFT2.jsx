@@ -101,8 +101,8 @@ const FormSFT2 = () => {
     console.log("Fichier traité :", file);
     console.log("Hash du fichier :", hash);
     console.log("Hash IPFS :", ipfsHash);
-    setDF2JsonHash(hash);
     setDF2JsonCid(ipfsHash);
+    setDF2JsonHash(hash);
   };
 
   // Obtenir le cid du fichier DF2 pdf
@@ -240,19 +240,19 @@ const FormSFT2 = () => {
     const jsonBlob = new Blob([JSON.stringify(newMetadata)], {
       type: "application/json",
     });
-    const formData = new FormData();
-    formData.append("file", jsonBlob, "metadata.json");
 
     // Uploader le Blob sur IPFS
     try {
-      const response = await fetch("http://localhost:3001/uploadToIPFS", {
+      const formData = new FormData();
+      formData.append("file", jsonBlob);
+      const response = await fetch("api/ipfs", {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) throw new Error("Erreur lors de l'upload sur IPFS");
-      const data = await response.json();
-      console.log("Metadata uploaded to IPFS:", data.ipfsHash);
-      setMetadataCid(data.ipfsHash);
+      const responseData = await response.json();
+      const cid = responseData.IpfsHash;
+      console.log(cid);
+      setMetadataCid(cid);
       setPrepaIsUploading(false);
     } catch (error) {
       console.error("Erreur lors de l'upload des métadonnées sur IPFS:", error);
