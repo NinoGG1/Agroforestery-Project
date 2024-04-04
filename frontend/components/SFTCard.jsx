@@ -3,10 +3,10 @@
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Image,
   Text,
   VStack,
   Link,
+  Image,
   Button,
   useColorModeValue,
   Badge,
@@ -20,9 +20,9 @@ const SFTCard = ({ sft }) => {
   const getImageUrl = (type) => {
     switch (type) {
       case "SFT1":
-        return "@/public/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
+        return "/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
       case "SFT2":
-        return "@/public/assets/plant.jpeg"; // Exemple d'URL pour SFT2
+        return "/assets/plant.jpeg"; // Exemple d'URL pour SFT2
       // case "NFT3":
       //   return "http://localhost:3000/assets/nft3Picture.jpeg"; // Exemple d'URL pour NFT3
       // default:
@@ -134,6 +134,7 @@ const SFTCard = ({ sft }) => {
           w={"100%"}
           objectFit="cover"
         />
+
         <Box
           p="1rem"
           display="flex"

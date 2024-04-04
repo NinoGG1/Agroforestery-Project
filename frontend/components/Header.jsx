@@ -7,7 +7,6 @@ import {
   CardHeader,
   Flex,
   Heading,
-  Image,
   Link,
   Tab,
   TabList,
@@ -19,6 +18,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
+import Image from "next/image";
 
 import { ArrowBackIcon, EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -67,12 +67,12 @@ const Header = () => {
       transition="background-color 0.3s"
     >
       <NextLink href="/">
-        <Heading size="lg" display={"flex"} alignItems="center">
+        <Heading size="lg" display={"flex"} alignItems="center" gap={"1rem"}>
           <Image
-            src="@/public/assets/logo.png"
+            src="/assets/logo.png" // Modifié pour utiliser le chemin correct
             alt="logo Tree Tracker"
-            h={"3rem"}
-            mr={"1rem"}
+            width={50} // Spécifiez une largeur
+            height={50} // et une hauteur pour l'Image de next/image
           />
           Tree Tracker
         </Heading>

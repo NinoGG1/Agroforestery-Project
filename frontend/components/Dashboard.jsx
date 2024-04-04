@@ -10,7 +10,6 @@ import {
   Box,
   Heading,
   useColorMode,
-  Image,
 } from "@chakra-ui/react";
 import FormSFT1 from "./FormSFT1";
 import SFTGrid from "./SFTGrid";
@@ -20,6 +19,7 @@ import AllTransactions from "./AllTransactions";
 import { useAccount } from "wagmi";
 import MergeDataContext from "@/context/MergeData";
 import FormSFT2 from "./FormSFT2";
+import Image from "next/image";
 
 const Dashboard = () => {
   const { colorMode } = useColorMode();
@@ -27,22 +27,29 @@ const Dashboard = () => {
 
   return (
     <Box>
-      <Image
-        src="http://localhost:3000/assets/forest.jpeg"
-        alt="forest"
-        width="100%"
-        height="300px"
-        objectFit="cover"
+      <Box
+        position="relative"
+        width="100%" // ou une largeur spécifique
+        height="300px" // ou une hauteur spécifique
         borderRadius="10px"
         overflow="hidden"
         zIndex="1"
-        boxSizing="border-box"
-        shadow={"lg"}
-        mb={"2rem"}
+        boxShadow="lg"
+        mb="2rem"
         sx={{
-          filter: "grayscale(0.3)",
+          filter: "grayscale(0.3)", // Vous pouvez appliquer des styles Chakra directement ici
+          "& img": {
+            borderRadius: "10px", // Pour appliquer un borderRadius à l'image, mais c'est mieux de le faire sur le Box
+          },
         }}
-      />
+      >
+        <Image
+          src="/assets/forest.jpeg" // Assurez-vous que l'image est dans public/assets
+          alt="Forest"
+          layout="fill"
+          objectFit="cover"
+        />
+      </Box>
       <Tabs variant="soft-rounded" colorScheme="green" align="center">
         <TabList sx={{ justifyContent: "space-between" }} fontSize={"lg"}>
           {colorMode === "dark" ? (
