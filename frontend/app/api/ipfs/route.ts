@@ -2,7 +2,9 @@ import { NextResponse, NextRequest } from "next/server";
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: {
+      sizeLimit: "1mb", // Exemple de configuration
+    },
   },
 };
 
