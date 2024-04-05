@@ -16,3 +16,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
+          token: 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
