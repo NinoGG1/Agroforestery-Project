@@ -26,6 +26,12 @@ contract NFT3 is ERC721,ERC721URIStorage, Ownable {
 
     mapping(uint64 => uint64) public sft2TokenIdAssociated;
 
+    /**
+        * @dev Event emitted when a new NFT3 token is minted
+        * @param tokenId The ID of the token
+        * @param sft2TokenId The ID of the associated SFT2 token
+        * @param cid The CID of the token metadata stored on IPFS
+     */
     event NFT3Minted(uint64 indexed tokenId, uint64 indexed sft2TokenId, string cid);
 
     constructor(address _userManagerAddress, address _sft2Address) ERC721("TreeTrackerNFT3", "NFT3") Ownable(msg.sender) {
@@ -34,7 +40,9 @@ contract NFT3 is ERC721,ERC721URIStorage, Ownable {
     }
 
     // ::::::::::::::::::::: Modifier :::::::::::::::::::::
-
+    /**
+     * @dev Modifier to check if the caller is an ExploitantForestier
+     */ 
     modifier onlyExploitantForestier {
         bool isExploitantForestier = userManager.hasRole(keccak256("EXPLOITANT_FORESTIER"), msg.sender);
 
@@ -50,7 +58,7 @@ contract NFT3 is ERC721,ERC721URIStorage, Ownable {
      * @param cid The CID of the token metadata stored on IPFS
      * @param sft2TokenId The ID of the associated SFT2 token
      */
-    function mint(uint64 tokenId, string memory cid, uint64 sft2TokenId) public onlyExploitantForestier {
+    function mint(uint64 tokenId, string memory cid, uint64 sft2TokenId) external onlyExploitantForestier {
 
         // Vérifications
         if (sft2Contract.balanceOf(msg.sender, sft2TokenId) <= 0) {
@@ -67,7 +75,11 @@ contract NFT3 is ERC721,ERC721URIStorage, Ownable {
 
     }
 
-    // The following functions are overrides required by Solidity.
+    /**
+        * @dev Get the CID of the token metadata stored on IPFS
+        * @param tokenId The ID of the token
+        * @return URI of the token metadata stored on IPFS
+     */
     function tokenURI(uint256 tokenId)
         public
         view

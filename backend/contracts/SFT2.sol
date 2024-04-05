@@ -102,7 +102,7 @@ contract SFT2 is ERC1155, Ownable {
      * @param df2Hash The hash of the "Document fournisseur 2"
      * @notice Mint a new SFT2 token with the given CID and associate it with the given SFT1 token ID
      */
-    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, uint64 sft1TokenId, bytes32 df2Hash) public onlyPepinieriste() {
+    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, uint64 sft1TokenId, bytes32 df2Hash) external onlyPepinieriste() {
         // Vérifier si le pepinieriste est le propriétaire du token SFT1
         if (sft1Contract.balanceOf(msg.sender, sft1TokenId) <= 0) {
             revert SFT1DoesNotBelongToPepinieriste();
