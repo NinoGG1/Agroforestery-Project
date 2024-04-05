@@ -191,7 +191,7 @@ describe("Test NFT3 Contract", function () {
     });
   });
 
-  // ::::::::::::: Others ::::::::::::: //
+  // ::::::::::::: Others functions ::::::::::::: //
   describe("Others", function () {
     it("Should return tokenURI", async function () {
       await NFT3.connect(EXPLOITANT_FORESTIER).mint(tokenId, cid, sft2TokenId);
