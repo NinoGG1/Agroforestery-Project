@@ -18,6 +18,14 @@ async function main() {
     "0xac8e57f2656eb19dd9ea9f078327c1315838688a"
   );
   console.log("SFT2 deployed to:", sft2.target);
+
+  // // Déployer NFT3 avec les adresses de UserManager puis de SFT2
+  // const NFT3 = await ethers.getContractFactory("NFT3");
+  // const nft3 = await NFT3.deploy(
+  //   "0xac8e57f2656eb19dd9ea9f078327c1315838688a",
+  //   ""
+  // );
+  // console.log("NFT3 deployed to:", nft3.target);
 }
 
 main().catch((error) => {

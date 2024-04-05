@@ -50,7 +50,7 @@ const SFTGrid = ({ sfts, filterType }) => {
         left="-45px"
         top="50%"
         transform="translateY(-50%)"
-        zIndex="overlay"
+        zIndex={"auto"}
         opacity={isHovered ? 1 : 0}
         transition="opacity 0.3s"
         onClick={scrollLeft}
