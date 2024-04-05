@@ -1,0 +1,55 @@
+{
+  "name": "Plants de nom_botanique #x",
+  "description": "Plants de nom_botanique, catégorie x",
+  "image": "ipfs://...DF2PdfCid",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "SFT2"
+    },
+    {
+      "trait_type": "id_SFT1",
+      "value": 0
+    },
+    {
+      "trait_type": "cid_SFT1",
+      "value": "Qmc......wgXMKZ"
+    },
+    {
+      "trait_type": "nom_botanique",
+      "value": "xxx"
+    },
+    {
+      "trait_type": "nature_du_materiel_reproducteur",
+      "value": "xxx"
+    },
+    {
+      "trait_type": "categorie_du_materiel",
+      "value": "xxx"
+    },
+    {
+      "trait_type": "nombre_de_colis_echange",
+      "value": 0
+    },
+    {
+      "trait_type": "latitude_pepinieriste",
+      "value": "xx.xxx"
+    },
+    {
+      "trait_type": "longitude_pepinieriste",
+      "value": "x.xxx"
+    },
+    {
+      "trait_type": "numero_certificat_maitre",
+      "value": "FRxx-xx x xxx"
+    },
+    {
+      "trait_type": "document_du_fournisseur_2_pdf",
+      "value": "ipfs://...DF2PdfCid"
+    },
+    {
+      "trait_type": "document_du_fournisseur_2_json",
+      "value": "ipfs://...DF2JsonCid"
+    }
+  ]
+}

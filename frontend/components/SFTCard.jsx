@@ -16,26 +16,35 @@ const SFTCard = ({ sft }) => {
   const bgHover = useColorModeValue("gray.100", "gray.900");
   const titleColor = useColorModeValue("black", "white");
 
+  const type = sft.attributes?.find(
+    (attr) => attr.trait_type === "type"
+  )?.value;
+
+  // Récupérer l'image de l'objet NFT3
+  const nft3Image = sft.image;
+  const nft3ImageCid = nft3Image ? nft3Image.split("://")[1] : undefined;
+
   // Fonction pour choisir l'image en fonction du type de SFT
   const getImageUrl = (type) => {
     switch (type) {
       case "SFT1":
-        return "/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
+        return "/assets/seedPicture.jpeg";
       case "SFT2":
-        return "/assets/plant.jpeg"; // Exemple d'URL pour SFT2
-      // case "NFT3":
-      //   return "http://localhost:3000/assets/nft3Picture.jpeg"; // Exemple d'URL pour NFT3
-      // default:
-      //   return "http://localhost:3000/assets/defaultPicture.jpeg"; // Image par défaut si le type ne correspond à aucun des cas
+        return "/assets/plant.jpeg";
+      case "NFT3":
+        console.log(nft3ImageCid);
+        return nft3ImageCid
+          ? `https://ipfs.io/ipfs/${nft3ImageCid}`
+          : undefined;
     }
   };
 
   // Appel de la fonction getImageUrl pour obtenir l'URL de l'image en fonction du type de SFT
-  const imageUrl = getImageUrl(sft.type);
+  const imageUrl = getImageUrl(type);
 
   const renderInfos = () => {
     // Exemple basique, adapte en fonction de la logique nécessaire pour ton application
-    switch (sft.type) {
+    switch (type) {
       case "SFT1":
         return (
           <>
@@ -45,6 +54,9 @@ const SFTCard = ({ sft }) => {
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
               Pépiniériste : {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Quantité : {sft.value}
             </Text>
           </>
         );
@@ -61,6 +73,9 @@ const SFTCard = ({ sft }) => {
               Exploitant forestier : {sft.to.slice(0, 6)}...
               {sft.to.slice(-4)}
             </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Quantité : {sft.value}
+            </Text>
           </>
         );
       case "NFT3":
@@ -69,7 +84,10 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"red"}>NFT3</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Détail NFT3 : {sft.nft3Detail}
+              Propriétaire : {sft.to}
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              TokenId : {sft.id}
             </Text>
           </>
         );
@@ -79,7 +97,7 @@ const SFTCard = ({ sft }) => {
   };
 
   const renderHashInfo = () => {
-    switch (sft.type) {
+    switch (type) {
       case "SFT1":
         return (
           <>
@@ -109,8 +127,9 @@ const SFTCard = ({ sft }) => {
           </>
         );
       case "NFT3":
-        // Adapte cette partie selon les données spécifiques à NFT3
-        return <Text fontSize="sm">NFT3 spécifique Hash info</Text>;
+        return (
+          <Text fontSize="sm">Longitude : {sft.attributes.longitude}</Text>
+        );
       default:
         return null;
     }
@@ -148,9 +167,7 @@ const SFTCard = ({ sft }) => {
           </Text>
           <VStack mt={"0.5rem"} align="start" gap={"0.5rem"}>
             {renderInfos()}
-            <Text fontSize="sm" m={"0"} p={"0"}>
-              Quantité : {sft.quantité_de_colis_echangé}
-            </Text>
+
             {renderHashInfo()}
           </VStack>
           <Button

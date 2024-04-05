@@ -20,6 +20,7 @@ import { useAccount } from "wagmi";
 import MergeDataContext from "@/context/MergeData";
 import FormSFT2 from "./FormSFT2";
 import Image from "next/image";
+import FormNFT3 from "./FormNFT3";
 
 const Dashboard = () => {
   const { colorMode } = useColorMode();
@@ -124,6 +125,8 @@ const Dashboard = () => {
             <SFTGrid sfts={sfts} filterType="SFT2" />
           </TabPanel>
           <TabPanel p={"0"}>
+            {/* Plantation d'arbre */}
+            <FormNFT3 />
             <Heading
               textAlign={"left"}
               size={"lg"}
@@ -133,6 +136,7 @@ const Dashboard = () => {
             >
               Plantations d'arbres réalisées
             </Heading>
+            <SFTGrid sfts={sfts} filterType="NFT3" />
           </TabPanel>
         </TabPanels>
       </Tabs>

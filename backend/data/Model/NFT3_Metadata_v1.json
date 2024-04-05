@@ -1,0 +1,31 @@
+{
+  "name": "",
+  "description": "",
+  "image": "ipfs://QmT...abc",
+  "attributes": [
+    {
+      "trait_type": "id_SFT2",
+      "value": 0
+    },
+    {
+      "trait_type": "cid_SFT2",
+      "value": ""
+    },
+    {
+      "trait_type": "nom_botanique",
+      "value": "Quercus petraea"
+    },
+    {
+      "trait_type": "categorie_du_materiel_reproducteur",
+      "value": "selectionnée"
+    },
+    {
+      "trait_type": "latitude_plantation",
+      "value": "47.000"
+    },
+    {
+      "trait_type": "longitude_plantation",
+      "value": "5.000"
+    }
+  ]
+}

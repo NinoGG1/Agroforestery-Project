@@ -5,8 +5,15 @@ import SFTCard from "./SFTCard";
 
 const SFTGrid = ({ sfts, filterType }) => {
   const filteredSFTs = filterType
-    ? sfts.filter((sft) => sft.type === filterType)
+    ? sfts.filter(
+        (sft) =>
+          sft.attributes &&
+          sft.attributes.some(
+            (attr) => attr.trait_type === "type" && attr.value === filterType
+          )
+      )
     : sfts;
+
   const scrollContainerRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 

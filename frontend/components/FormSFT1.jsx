@@ -202,21 +202,19 @@ const FormSFT1 = () => {
           .identifie
           ? "identifié"
           : CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
-              .selectionnée
+              .selectionnee
           ? "sélectionné"
           : CM1JsonData.materiaux_forestiers.categorie_du_materiel_reproducteur
-              .testée
+              .testee
           ? "testé"
           : ""
       }`,
-      type: "SFT1",
-      numero_certificat_ce: CM1JsonData.numero_certificat_ce,
-      Certificat_maitre_pdf: `ipfs://${CM1PdfCid}`,
-      Document_du_fournisseur_1_pdf: `ipfs://${DF1PdfCid}`,
-
-      quantité_de_colis_echangé:
-        DF1JsonData.autres_informations.nombre_de_colis_echange,
+      image: `ipfs://${DF1PdfCid}`,
       attributes: [
+        {
+          trait_type: "type",
+          value: "SFT1",
+        },
         {
           trait_type: "nom_botanique",
           value: CM1JsonData.materiaux_forestiers.nom_botanique,
@@ -240,36 +238,47 @@ const FormSFT1 = () => {
             .categorie_du_materiel_reproducteur.identifie
             ? "identifié"
             : CM1JsonData.materiaux_forestiers
-                .categorie_du_materiel_reproducteur.selectionnée
+                .categorie_du_materiel_reproducteur.selectionnee
             ? "sélectionné"
             : CM1JsonData.materiaux_forestiers
-                .categorie_du_materiel_reproducteur.testée
+                .categorie_du_materiel_reproducteur.testee
             ? "testé"
             : "",
         },
         {
-          trait_type: "latitude_du_site_de_prélèvement_du_materiel_de_base",
+          trait_type: "nombre_de_colis_echange",
+          value: DF1JsonData.autres_informations.nombre_de_colis_echange,
+        },
+        {
+          trait_type: "latitude_du_site_de_prelevement_du_materiel_de_base",
           value:
             CM1JsonData.materiaux_forestiers
-              .latitude_du_site_de_prélèvement_du_materiel_de_base,
+              .latitude_du_site_de_prelevement_du_materiel_de_base,
         },
         {
-          trait_type: "longitude_du_site_de_prélèvement_du_materiel_de_base",
+          trait_type: "longitude_du_site_de_prelevement_du_materiel_de_base",
           value:
             CM1JsonData.materiaux_forestiers
-              .longitude_du_site_de_prélèvement_du_materiel_de_base,
+              .longitude_du_site_de_prelevement_du_materiel_de_base,
         },
         {
-          trait_type: "quantité_totale_de_colis_lors_du_prélèvement",
-          value: CM1JsonData.materiaux_forestiers.nombre_de_colis,
+          trait_type: "numero_certificat_maitre",
+          value: CM1JsonData.numero_du_certificat_maitre,
         },
         {
-          trait_type: "Certificat_maitre_json",
+          trait_type: "certificat_maitre_pdf",
+          value: `ipfs://${CM1PdfCid}`,
+        },
+        {
+          trait_type: "document_du_fournisseur_1_pdf",
+          value: `ipfs://${DF1PdfCid}`,
+        },
+        {
+          trait_type: "certificat_maitre_json",
           value: `ipfs://${CM1JsonCid}`,
         },
-
         {
-          trait_type: "Document du fournisseur 1",
+          trait_type: "document_du_fournisseur_1_json",
           value: `ipfs://${DF1JsonCid}`,
         },
       ],
@@ -480,7 +489,6 @@ const FormSFT1 = () => {
                   value={tokenQuantity}
                   onChange={(e) => setTokenQuantity(e.target.value)}
                   placeholder="Entrez une quantité"
-                  isRequired={true}
                   isReadOnly
                 />
               </HStack>

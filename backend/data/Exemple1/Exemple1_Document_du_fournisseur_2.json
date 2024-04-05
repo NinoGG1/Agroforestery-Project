@@ -1,0 +1,89 @@
+{
+  "numero_document": "1",
+  "numero_certificat_maitre": "FR27-20 R 047",
+  "fournisseur": {
+    "nom": "",
+    "siret_siren": "",
+    "latitude_pepinieriste": "47.000",
+    "longitude_pepinieriste": "2.000"
+  },
+  "destinataire": {
+    "nom": "",
+    "siret_siren": "",
+    "latitude_exploitant_forestier": "47.000",
+    "longitude_exploitant_forestier": "2.000"
+  },
+  "details_produit": {
+    "nom_botanique": "Quercus petraea",
+    "nom_commun": "Chêne sessile",
+    "categorie_du_materiel": {
+            "testee": 
+                { 
+                    "testee" : false,
+                    "reference_registre": "",
+                    "admission_provisoire": false
+                },
+            "qualifiee":              
+                { 
+                    "qualifiee" : false,
+                    "reference_registre": ""
+                },
+            "selectionnee":              
+                { 
+                    "selectionnee" : true,
+                    "region_provenance": "",
+                    "reference_registre": ""
+                },
+            "identifiee":              
+                { 
+                    "identifiee" : false,
+                    "region_provenance": ""
+                }
+    },
+    "origine": {
+      "indigene": true,
+      "non_indigene": false,
+      "inconnu": false
+    },
+    "type_de_materiel_de_base": {
+      "source_de_graines": false,
+      "peuplement": false,
+      "verger_a_graines": false,
+      "parents_de_familles": false,
+      "clone": false,
+      "melange_de_clones": false
+    },
+    "materiel_OGM": false,
+    "multiplication_vegetative": false,
+    "but_utilisation": {
+      "forestieres": false,
+      "experimentales_conservation_genetique": false
+    },
+    "type_de_materiel": {
+      "partie_de_plante": true,
+      "racines_nues": false,
+      "godet": {
+        "godet": false,
+        "volume_godet_cm3": ""
+      }
+    },
+    "details_plantes": {
+      "age": "",
+      "categorie_hauteur_cm": "",
+      "diametre_minimum_mm": "",
+      "numero_classification_communautaire_plançons": ""
+    }
+  },
+  "autres_informations": {
+    "date_expedition": "",
+    "nombre_de_colis_echange": 10,
+    "type_de_colis": {
+      "parties_de_plantes": true,
+      "bottes": false,
+      "caisses_pour_godets": false,
+      "godets_par_caisse": false
+    },
+    "pays_production": "",
+    "pourcentage_hybrides_lot_graines_larix": ""
+  }
+}
