@@ -62,11 +62,11 @@ const Dashboard = () => {
           )}
           {colorMode === "dark" ? (
             <Tab textColor={"#A5D6A7"} fontSize={"lg"}>
-              Echanges 1 : Marchand grenier <ChevronRightIcon /> Pépiniériste
+              Echanges 1 : Marchand grainier <ChevronRightIcon /> Pépiniériste
             </Tab>
           ) : (
             <Tab>
-              Echanges 1 : Marchand grenier <ChevronRightIcon /> Pépiniériste
+              Echanges 1 : Marchand grainier <ChevronRightIcon /> Pépiniériste
             </Tab>
           )}
           {colorMode === "dark" ? (
@@ -104,7 +104,7 @@ const Dashboard = () => {
               mt={"2.5rem"}
               mb={"2rem"}
             >
-              Echanges de type 1 réalisés : Marchand grenier{" "}
+              Echanges de type 1 réalisés : Marchand grainier{" "}
               <ChevronRightIcon /> Pépiniériste
             </Heading>
             <SFTGrid sfts={sfts} filterType="SFT1" />

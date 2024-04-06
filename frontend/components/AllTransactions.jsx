@@ -8,7 +8,7 @@ const AllTransactions = ({ sfts }) => {
   return (
     <div>
       <Heading textAlign={"left"} size={"lg"} p={"0"} mt={"2.5rem"} mb={"2rem"}>
-        Echanges de type 1 réalisés : Marchand grenier <ChevronRightIcon />{" "}
+        Echanges de type 1 réalisés : Marchand grainier <ChevronRightIcon />{" "}
         Pépiniériste
       </Heading>
       <SFTGrid sfts={sfts} filterType="SFT1" />
