@@ -100,7 +100,7 @@ contract SFT1 is ERC1155, Ownable {
      * @notice Mint a new SFT1 token with the URI constructed from the CID, and store the data in the sft1Data mapping, and emit the Sft1Data event
      * @notice Only the "Marchand Grainier", and the "Admin" can call this function
      */
-    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, bytes32 cmHash, bytes32 df1Hash) public onlyAdminOrMarchandGrainer {
+    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, bytes32 cmHash, bytes32 df1Hash) external onlyAdminOrMarchandGrainer {
 
         // Vérifications
         if (account == address(0)) revert InvalidAddress();

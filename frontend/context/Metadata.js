@@ -7,7 +7,7 @@ const MetadataContext = createContext();
 export const MetadataProvider = ({ children }) => {
   const [metadata, setMetadata] = useState([]);
 
-  // Fonction pour récupérer les métadonnées des Sft1 et Sft2
+  // Fonction pour récupérer les métadonnées des Sft1, Sft2 et Nft3
   const fetchMetadata = async (cids) => {
     if (!cids || cids.length === 0) {
       console.log("Aucun CID fourni pour la récupération des métadonnées.");

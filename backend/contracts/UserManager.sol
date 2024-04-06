@@ -30,7 +30,7 @@ contract UserManager is AccessControl {
         * @param role The role to assign
         * @notice Only admins can assign roles
     */
-    function assignRole(address user, bytes32 role) public onlyRole(ADMIN) {
+    function assignRole(address user, bytes32 role) external onlyRole(ADMIN) {
         _grantRole(role, user);
     }
 
@@ -41,7 +41,7 @@ contract UserManager is AccessControl {
         * @param role The role to revoke
         * @notice Only admins can revoke roles for other users
     */
-    function revokeUserRole(address user, bytes32 role) public onlyRole(ADMIN) {
+    function revokeUserRole(address user, bytes32 role) external onlyRole(ADMIN) {
         _revokeRole(role, user);
     }
 }

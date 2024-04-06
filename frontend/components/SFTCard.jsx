@@ -16,35 +16,82 @@ const SFTCard = ({ sft }) => {
   const bgHover = useColorModeValue("gray.100", "gray.900");
   const titleColor = useColorModeValue("black", "white");
 
+  const type = sft.attributes?.find(
+    (attr) => attr.trait_type === "type"
+  )?.value;
+  const cid_SFT1 = sft.attributes?.find(
+    (attr) => attr.trait_type === "cid_SFT1"
+  )?.value;
+  const cid_SFT2 = sft.attributes?.find(
+    (attr) => attr.trait_type === "cid_SFT2"
+  )?.value;
+  const longitude = sft.attributes?.find(
+    (attr) => attr.trait_type === "longitude_plantation"
+  )?.value;
+  const latitude = sft.attributes?.find(
+    (attr) => attr.trait_type === "latitude_plantation"
+  )?.value;
+
+  // Récupérer l'image de l'objet NFT3
+  const nft3Image = sft.image;
+  const nft3ImageCid = nft3Image ? nft3Image.split("://")[1] : undefined;
+
   // Fonction pour choisir l'image en fonction du type de SFT
   const getImageUrl = (type) => {
     switch (type) {
       case "SFT1":
-        return "/assets/seedPicture.jpeg"; // Exemple d'URL pour SFT1
+        return "/assets/seedPicture.jpeg";
       case "SFT2":
-        return "/assets/plant.jpeg"; // Exemple d'URL pour SFT2
-      // case "NFT3":
-      //   return "http://localhost:3000/assets/nft3Picture.jpeg"; // Exemple d'URL pour NFT3
-      // default:
-      //   return "http://localhost:3000/assets/defaultPicture.jpeg"; // Image par défaut si le type ne correspond à aucun des cas
+        return "/assets/plant.jpeg";
+      case "NFT3":
+        return nft3ImageCid
+          ? `https://ipfs.io/ipfs/${nft3ImageCid}`
+          : undefined;
     }
   };
 
   // Appel de la fonction getImageUrl pour obtenir l'URL de l'image en fonction du type de SFT
-  const imageUrl = getImageUrl(sft.type);
+  const imageUrl = getImageUrl(type);
 
   const renderInfos = () => {
     // Exemple basique, adapte en fonction de la logique nécessaire pour ton application
-    switch (sft.type) {
+    switch (type) {
       case "SFT1":
         return (
           <>
             <Badge colorScheme={"green"}>SFT1</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Grainier : {sft.operator.slice(0, 6)}...{sft.operator.slice(-4)}
+              Transaction :{" "}
+              <Link
+                href={`https://sepolia.etherscan.io/tx/${sft.transactionHash}`}
+                isExternal
+              >
+                {sft.transactionHash.slice(0, 6)}...
+                {sft.transactionHash.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Pépiniériste : {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
+              Grainier : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0xe9d1d106fc5f7a7ca37dff254fc0758ce7aa6e88?a=${sft.operator}`}
+                isExternal
+              >
+                {sft.operator.slice(0, 6)}...
+                {sft.operator.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Pépiniériste : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0xe9d1d106fc5f7a7ca37dff254fc0758ce7aa6e88?a=${sft.to}`}
+                isExternal
+              >
+                {sft.to.slice(0, 6)}...
+                {sft.to.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Quantité : {sft.value}
             </Text>
           </>
         );
@@ -54,12 +101,37 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"blue"}>SFT2</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Pépiniériste : {sft.operator.slice(0, 6)}...
-              {sft.operator.slice(-4)}
+              Transaction :{" "}
+              <Link
+                href={`https://sepolia.etherscan.io/tx/${sft.transactionHash}`}
+                isExternal
+              >
+                {sft.transactionHash.slice(0, 6)}...
+                {sft.transactionHash.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Exploitant forestier : {sft.to.slice(0, 6)}...
-              {sft.to.slice(-4)}
+              Pépiniériste : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0x9712641545adf54146b6992e7f9f72205cf6ddae?a=${sft.operator}`}
+                isExternal
+              >
+                {sft.operator.slice(0, 6)}...
+                {sft.operator.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Exploitant forestier : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0x9712641545adf54146b6992e7f9f72205cf6ddae?a=${sft.to}`}
+                isExternal
+              >
+                {sft.to.slice(0, 6)}...
+                {sft.to.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Quantité : {sft.value}
             </Text>
           </>
         );
@@ -69,7 +141,35 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"red"}>NFT3</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Détail NFT3 : {sft.nft3Detail}
+              Transaction :{" "}
+              <Link
+                href={`https://sepolia.etherscan.io/tx/${sft.transactionHash}`}
+                isExternal
+              >
+                {sft.transactionHash.slice(0, 6)}...
+                {sft.transactionHash.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Propriétaire : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0xd953e34cb7e86b307d8d661d8bd4f17ee7b8dbd6?a=${sft.to}`}
+                isExternal
+              >
+                {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              TokenId du NFT :{" "}
+              <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
+                #{sft.tokenId}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              TokenId du SFT2 associé :{" "}
+              <Link href={`https://ipfs.io/ipfs/${cid_SFT2}`} isExternal>
+                #{sft.sft2TokenId}
+              </Link>
             </Text>
           </>
         );
@@ -79,7 +179,7 @@ const SFTCard = ({ sft }) => {
   };
 
   const renderHashInfo = () => {
-    switch (sft.type) {
+    switch (type) {
       case "SFT1":
         return (
           <>
@@ -98,7 +198,7 @@ const SFTCard = ({ sft }) => {
           <>
             <Text fontSize="sm">
               SFT1 TokenId :{" "}
-              <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
+              <Link href={`https://ipfs.io/ipfs/${cid_SFT1}`} isExternal>
                 #{sft.sft1TokenId}
               </Link>
             </Text>
@@ -109,8 +209,13 @@ const SFTCard = ({ sft }) => {
           </>
         );
       case "NFT3":
-        // Adapte cette partie selon les données spécifiques à NFT3
-        return <Text fontSize="sm">NFT3 spécifique Hash info</Text>;
+        return (
+          <>
+            <Text fontSize="sm">
+              Coordonées : {latitude} | {longitude}
+            </Text>
+          </>
+        );
       default:
         return null;
     }
@@ -148,9 +253,7 @@ const SFTCard = ({ sft }) => {
           </Text>
           <VStack mt={"0.5rem"} align="start" gap={"0.5rem"}>
             {renderInfos()}
-            <Text fontSize="sm" m={"0"} p={"0"}>
-              Quantité : {sft.quantité_de_colis_echangé}
-            </Text>
+
             {renderHashInfo()}
           </VStack>
           <Button

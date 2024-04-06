@@ -30,7 +30,11 @@ const NotConnected = () => {
         pb={"4rem"}
         pt={"4rem"}
       >
-        <Image boxSize="10rem" src="/assets/logo.png" alt="logo Tree Tracker" />
+        <Image
+          boxSize="10rem"
+          src="https://ipfs.io/ipfs/QmT3ixo6JQJsb5gjk8XkpgJZjA2B7q38pQ5KPjyot6SUzt"
+          alt="logo Tree Tracker"
+        />
         <Heading size="xl" display={"flex"} alignItems="center" mt={"1rem"}>
           Tree Tracker
         </Heading>

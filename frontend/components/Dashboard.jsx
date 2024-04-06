@@ -20,6 +20,7 @@ import { useAccount } from "wagmi";
 import MergeDataContext from "@/context/MergeData";
 import FormSFT2 from "./FormSFT2";
 import Image from "next/image";
+import FormNFT3 from "./FormNFT3";
 
 const Dashboard = () => {
   const { colorMode } = useColorMode();
@@ -61,11 +62,11 @@ const Dashboard = () => {
           )}
           {colorMode === "dark" ? (
             <Tab textColor={"#A5D6A7"} fontSize={"lg"}>
-              Echanges 1 : Marchand grenier <ChevronRightIcon /> Pépiniériste
+              Echanges 1 : Marchand grainier <ChevronRightIcon /> Pépiniériste
             </Tab>
           ) : (
             <Tab>
-              Echanges 1 : Marchand grenier <ChevronRightIcon /> Pépiniériste
+              Echanges 1 : Marchand grainier <ChevronRightIcon /> Pépiniériste
             </Tab>
           )}
           {colorMode === "dark" ? (
@@ -103,7 +104,7 @@ const Dashboard = () => {
               mt={"2.5rem"}
               mb={"2rem"}
             >
-              Echanges de type 1 réalisés : Marchand grenier{" "}
+              Echanges de type 1 réalisés : Marchand grainier{" "}
               <ChevronRightIcon /> Pépiniériste
             </Heading>
             <SFTGrid sfts={sfts} filterType="SFT1" />
@@ -124,6 +125,8 @@ const Dashboard = () => {
             <SFTGrid sfts={sfts} filterType="SFT2" />
           </TabPanel>
           <TabPanel p={"0"}>
+            {/* Plantation d'arbre */}
+            <FormNFT3 />
             <Heading
               textAlign={"left"}
               size={"lg"}
@@ -133,6 +136,7 @@ const Dashboard = () => {
             >
               Plantations d'arbres réalisées
             </Heading>
+            <SFTGrid sfts={sfts} filterType="NFT3" />
           </TabPanel>
         </TabPanels>
       </Tabs>

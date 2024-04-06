@@ -1,0 +1,76 @@
+{
+    "numero_de_document": "1",
+    "numero_du_certificat_maitre": "FR27-20 R 047",
+    "fournisseur": {
+        "nom": "",
+        "siret_siren": "",
+        "latitude_marchand_grainier": "47.000",
+        "longitude_marchand_grainier": "2.000"
+    },
+    "destinataire": {
+        "nom": "",
+        "siret_siren": "",
+        "latitude_pepinieriste": "47.000",
+        "longitude_pepinieriste": "2.000"
+    },
+    "details_produits": {
+        "nom_botanique": "Quercus petraea",
+        "nom_commun": "Chêne sessile",
+        "categorie_du_materiel_reproducteur": {
+            "testee": 
+                { 
+                    "testee" : false,
+                    "reference_registre": "",
+                    "admission_provisoire": false
+                },
+            "qualifiee":              
+                { 
+                    "qualifiee" : false,
+                    "reference_registre": ""
+                },
+            "selectionnee":              
+                { 
+                    "selectionnee" : true,
+                    "region_provenance": "Vallée de la Saône",
+                    "reference_registre": "QPE205-006"
+                },
+            "identifiee":              
+                { 
+                    "identifiee" : false,
+                    "region_provenance": ""
+                }
+        },   
+        "origine": {
+            "indigene": true,
+            "non_indigene": false,
+            "inconnu": false
+        },
+        "type_de_materiel_de_base": {
+            "source_de_graines": false,
+            "peuplement": false,
+            "verger_a_graines": false,
+            "parents_de_familles": false,
+            "clone": false,
+            "melange_de_clones": false
+        },
+        "materiel_OGM": false,
+        "multiplication_vegetative": false,
+        "but_utilisation": {
+            "forestieres": false,
+            "experimentales_conservation_genetique": false
+        },
+        "caracteres_de_qualite_exterieure": {
+            "poids_de_1000_graines_pures_kg": "N/A",
+            "pourcentage_de_purete": "N/A",
+            "nombre_de_graines_viables_par_kg_ou_l": "N/A",
+            "pourcentage_de_viabilite": "N/A"
+        }
+    },
+    "autres_informations": {
+        "annee_de_maturite": "2020",
+        "quantite_livree_kg_ou_l": "2668 HL",
+        "nombre_de_colis_echange": "30",
+        "conservation_chambre_froide": "N/A",
+        "date_d_expedition": "5/11/2020"
+    }
+}

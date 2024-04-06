@@ -1,0 +1,55 @@
+{
+  "name": "Graines de nom_botanique #x",
+  "description": "Graines de nom_botanique de catégorie x",
+  "image": "ipfs://...DF1PdfCid",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "SFT1"
+    },
+    {
+      "trait_type": "nom_botanique",
+      "value": "xxx"
+    },
+    {
+      "trait_type": "nature_du_materiel_reproducteur",
+      "value": "xxx"
+    },
+    {
+      "trait_type": "categorie_du_materiel_reproducteur",
+      "value": "xxx"
+    },
+    {
+      "trait_type": "nombre_de_colis_echange",
+      "value": 0
+    },
+    {
+      "trait_type": "latitude_du_site_de_prélèvement_du_materiel_de_base",
+      "value": "xx.xxx"
+    },
+    {
+      "trait_type": "longitude_du_site_de_prélèvement_du_materiel_de_base",
+      "value": "x.xxx"
+    },
+    {
+      "trait_type": "numero_certificat_maitre",
+      "value": "FRxx-xx x xxx"
+    },
+    {
+      "trait_type": "certificat_maitre_pdf",
+      "value": "ipfs://...CM1PdfCid"
+    },
+    {
+      "trait_type": "document_du_fournisseur_1_pdf",
+      "value": "ipfs://...DF1PdfCid"
+    },
+    {
+      "trait_type": "certificat_maitre_json",
+      "value": "ipfs://...CM1JsonCid"
+    },
+    {
+      "trait_type": "document_du_fournisseur_1_json",
+      "value": "ipfs://...DF1JsonCid"
+    }
+  ]
+}

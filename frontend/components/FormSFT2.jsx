@@ -27,6 +27,7 @@ import {
 } from "wagmi";
 import { SFT2Address, SFT2Abi } from "@/constants";
 import EventsContext from "@/context/Events";
+import MergeDataContext from "@/context/MergeData";
 import TextInput from "./FormComponents/TextInput";
 import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
@@ -44,6 +45,7 @@ const FormSFT2 = () => {
   const [tokenId, setTokenId] = useState("");
   const [tokenQuantity, setTokenQuantity] = useState("");
   const [sft1TokenId, setSft1TokenId] = useState("");
+  const [sft1Cid, setSft1Cid] = useState("");
   const [DF2JsonHash, setDF2JsonHash] = useState("");
   const [DF2JsonCid, setDF2JsonCid] = useState("");
   const [DF2PdfCid, setDF2PdfCid] = useState("");
@@ -85,6 +87,7 @@ const FormSFT2 = () => {
     mergedSft2Events,
     mergeSft2Events,
   } = useContext(EventsContext);
+  const { sfts } = useContext(MergeDataContext);
 
   // ******************* Gestion des fichiers *******************
   // Documents concernant l'échange 2
@@ -131,6 +134,30 @@ const FormSFT2 = () => {
     return data;
   };
 
+  // Récupérer les données SFT1 à partir de l'IPFS
+  useEffect(() => {
+    if (!sft1TokenId || !sfts) {
+      setSft1Cid("");
+      return;
+    }
+
+    const sft1 = sfts.find((sft) =>
+      sft.attributes?.some(
+        (attr) =>
+          attr.trait_type === "type" &&
+          attr.value === "SFT1" &&
+          sft.id.toString() === sft1TokenId.toString()
+      )
+    );
+
+    if (sft1) {
+      const cidMetadata = sft1.cid;
+      setSft1Cid(cidMetadata);
+    } else {
+      setSft1Cid("");
+    }
+  }, [sft1TokenId]);
+
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
     setPrepaIsUploading(true);
@@ -142,99 +169,100 @@ const FormSFT2 = () => {
     const newMetadata = {
       // Nom du token
       name: `${
-        DF2JsonData.detailsProduit.typeDeMateriel.partieDePlante
+        DF2JsonData.details_produit.type_de_materiel.partie_de_plante
           ? "Parties de plantes de "
-          : DF2JsonData.detailsProduit.typeDeMateriel.racinesNues
+          : DF2JsonData.details_produit.type_de_materiel.racines_nues
           ? "Racine nues de "
-          : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
-          ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3} de `
+          : DF2JsonData.details_produit.type_de_materiel.godet.godet
+          ? `Godets de ${DF2JsonData.details_produit.type_de_materiel.godet.volume_godet_cm3} de `
           : ""
-      }${DF2JsonData.detailsProduit.nomBotanique} #${nextTokenId}`,
+      }${DF2JsonData.details_produit.nom_botanique} #${nextTokenId}`,
 
       // Description du token
       description: `${
-        DF2JsonData.detailsProduit.typeDeMateriel.partieDePlante
+        DF2JsonData.details_produit.type_de_materiel.partie_de_plante
           ? "Parties de plantes de "
-          : DF2JsonData.detailsProduit.typeDeMateriel.racinesNues
+          : DF2JsonData.details_produit.type_de_materiel.racines_nues
           ? "Racine nues de "
-          : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
-          ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3} de`
+          : DF2JsonData.details_produit.type_de_materiel.godet.godet
+          ? `Godets de ${DF2JsonData.details_produit.type_de_materiel.godet.volume_godet_cm3} de`
           : ""
-      }${DF2JsonData.detailsProduit.nomBotanique} #${tokenId} de catégorie ${
-        DF2JsonData.detailsProduit.categorieDuMaterielReproducteur.testee
+      }${DF2JsonData.details_produit.nom_botanique} #${tokenId} de catégorie ${
+        DF2JsonData.details_produit.categorie_du_materiel.testee
           ? "testée"
-          : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur.qualifiee
+          : DF2JsonData.details_produit.categorie_du_materiel.qualifiee
           ? "qualifiée"
-          : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
-              .selectionnee
+          : DF2JsonData.details_produit.categorie_du_materiel.selectionnee
           ? "selectionnée"
-          : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur.identifie
+          : DF2JsonData.details_produit.categorie_du_materiel.identifie
           ? "identifiée"
           : ""
       }`,
-      type: "SFT2",
-      numeroCertificatMaitre: DF2JsonData.numeroCertificatMaitre,
-      idSFT1: `${sft1TokenId}`,
-      Document_du_fournisseur_2_pdf: `ipfs://${DF2PdfCid}`,
-      quantité_de_colis_echangé:
-        DF2JsonData.detailsProduit.detailsPlantes.quantite,
+      image: `ipfs://${DF2PdfCid}`,
       attributes: [
         {
-          trait_type: "nomBotanique",
-          value: DF2JsonData.detailsProduit.nomBotanique,
+          trait_type: "type",
+          value: "SFT2",
+        },
+        {
+          trait_type: "id_SFT1",
+          value: sft1TokenId,
+        },
+        {
+          trait_type: "cid_SFT1",
+          value: sft1Cid,
+        },
+        {
+          trait_type: "nom_botanique",
+          value: DF2JsonData.details_produit.nom_botanique,
         },
         {
           trait_type: "nature_du_materiel_reproducteur",
-          value: DF2JsonData.detailsProduit.typeDeMateriel.partieDePlante
+          value: DF2JsonData.details_produit.type_de_materiel.partieDePlante
             ? "Parties de plantes"
-            : DF2JsonData.detailsProduit.typeDeMateriel.racinesNues
+            : DF2JsonData.details_produit.type_de_materiel.racinesNues
             ? "Racine nues"
-            : DF2JsonData.detailsProduit.typeDeMateriel.godet.godet
-            ? `Godets de ${DF2JsonData.detailsProduit.typeDeMateriel.godet.volumeGodetCm3}`
+            : DF2JsonData.details_produit.type_de_materiel.godet.godet
+            ? `Godets de ${DF2JsonData.details_produit.type_de_materiel.godet.volumeGodetCm3}`
             : "",
         },
         {
-          trait_type: "categorieDuMaterielReproducteur",
-          value: DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
-            .testee
+          trait_type: "categorie_du_materiel",
+          value: DF2JsonData.details_produit.categorie_du_materiel.testee
             ? "testée"
-            : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
-                .qualifiee
+            : DF2JsonData.details_produit.categorie_du_materiel.qualifiee
             ? "qualifiée"
-            : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
-                .selectionnee
+            : DF2JsonData.details_produit.categorie_du_materiel.selectionnee
             ? "selectionnée"
-            : DF2JsonData.detailsProduit.categorieDuMaterielReproducteur
-                .identifie
+            : DF2JsonData.details_produit.categorie_du_materiel.identifie
             ? "identifiée"
             : "",
         },
         {
-          trait_type: "latitude_pépiniériste",
-          value: DF2JsonData.fournisseur.latitude_pépiniériste,
+          trait_type: "nombre_de_colis_echange",
+          value: DF2JsonData.autres_informations.nombre_de_colis_echange,
         },
         {
-          trait_type: "longitude_pépiniériste",
-          value: DF2JsonData.fournisseur.longitude_pépiniériste,
+          trait_type: "latitude_pepinieriste",
+          value: DF2JsonData.fournisseur.latitude_pepinieriste,
         },
         {
-          trait_type: "quantité_totale_de_colis",
-          value: DF2JsonData.detailsProduit.detailsPlantes.quantite,
+          trait_type: "longitude_pepinieriste",
+          value: DF2JsonData.fournisseur.longitude_pepinieriste,
         },
         {
-          trait_type: "cidSFT1",
-          value: `xxx`,
+          trait_type: "document_du_fournisseur_2_pdf",
+          value: `ipfs://${DF2PdfCid}`,
         },
-
         {
-          trait_type: "Document du fournisseur 1",
+          trait_type: "document_du_fournisseur_2_json",
           value: `ipfs://${DF2JsonCid}`,
         },
       ],
     };
 
     setMetadata(newMetadata);
-    setTokenQuantity(DF2JsonData.detailsProduit.detailsPlantes.quantite);
+    setTokenQuantity(DF2JsonData.autres_informations.nombre_de_colis_echange);
 
     // Convertir l'objet metadata en Blob JSON pour l'upload
     const jsonBlob = new Blob([JSON.stringify(newMetadata)], {
@@ -322,13 +350,22 @@ const FormSFT2 = () => {
                 Etape 1 : Upload des fichiers et préparation des metadonnées
               </Heading>
 
-              <TextInput
-                label="ID du SFT1 associé"
-                value={sft1TokenId}
-                onChange={(e) => setSft1TokenId(e.target.value)}
-                placeholder="Ajouter l'ID du SFT1 associé"
-                isRequired
-              />
+              <HStack spacing={"1rem"}>
+                <TextInput
+                  label="ID du SFT1 associé"
+                  value={sft1TokenId}
+                  onChange={(e) => setSft1TokenId(e.target.value)}
+                  placeholder="Ajouter l'ID du SFT1 associé"
+                  isRequired
+                />
+                <TextInput
+                  label="CID du SFT1 associé"
+                  value={sft1Cid}
+                  onChange={(e) => setSft1Cid(e.target.value)}
+                  placeholder="Le CID du SFT1 associé va apparaître ici"
+                  isReadOnly
+                />
+              </HStack>
 
               <Heading size="sm" textAlign={"left"}>
                 Document du Fournisseur 2

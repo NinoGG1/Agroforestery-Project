@@ -5,8 +5,27 @@ import SFTCard from "./SFTCard";
 
 const SFTGrid = ({ sfts, filterType }) => {
   const filteredSFTs = filterType
-    ? sfts.filter((sft) => sft.type === filterType)
+    ? sfts.filter(
+        (sft) =>
+          sft.attributes &&
+          sft.attributes.some(
+            (attr) => attr.trait_type === "type" && attr.value === filterType
+          )
+      )
     : sfts;
+
+  filteredSFTs.sort((a, b) => {
+    // Vérifier si 'id' est disponible, sinon utiliser 'tokenId'
+    let idA = a.id ? a.id : a.tokenId;
+    let idB = b.id ? b.id : b.tokenId;
+
+    // Convertir en nombres si ce sont des chaînes
+    idA = typeof idA === "string" ? parseInt(idA, 10) : idA;
+    idB = typeof idB === "string" ? parseInt(idB, 10) : idB;
+
+    return idB - idA;
+  });
+
   const scrollContainerRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -50,7 +69,7 @@ const SFTGrid = ({ sfts, filterType }) => {
         left="-45px"
         top="50%"
         transform="translateY(-50%)"
-        zIndex="overlay"
+        zIndex={"auto"}
         opacity={isHovered ? 1 : 0}
         transition="opacity 0.3s"
         onClick={scrollLeft}

@@ -22,20 +22,24 @@ import NextLink from "next/link";
 
 import { ArrowBackIcon, EditIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import ReadFunctionsContext from "@/context/ReadFunctions";
+import { useReadFunctions } from "@/context/ReadFunctions";
 import { useAccount } from "wagmi";
 import { useContext, useEffect, useState } from "react";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { address, isConnected } = useAccount();
-  const { ownerAddress } = useContext(ReadFunctionsContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [onUserManagerPage, setOnUserManagerPage] = useState(false);
+  const { ownerAddress, isAdmin, refetchIsAdmin } = useReadFunctions();
   const bgColor = useColorModeValue(
     isScrolled ? "#D6EADF" : "#E0F2E9",
     isScrolled ? "#1B2B28" : "#2E4039"
   );
+
+  useEffect(() => {
+    refetchIsAdmin();
+  }, [address]);
 
   useEffect(() => {
     setOnUserManagerPage(window.location.pathname === "/user_manager");
@@ -69,7 +73,7 @@ const Header = () => {
       <NextLink href="/">
         <Heading size="lg" display={"flex"} alignItems="center" gap={"1rem"}>
           <Image
-            src="/assets/logo.png" // Modifié pour utiliser le chemin correct
+            src="https://ipfs.io/ipfs/QmT3ixo6JQJsb5gjk8XkpgJZjA2B7q38pQ5KPjyot6SUzt" // Modifié pour utiliser le chemin correct
             alt="logo Tree Tracker"
             width={50} // Spécifiez une largeur
             height={50} // et une hauteur pour l'Image de next/image
@@ -93,7 +97,7 @@ const Header = () => {
           {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
         </Button>
 
-        {address === ownerAddress && (
+        {isAdmin && (
           <NextLink href="/user_manager">
             <Button ml="0.5rem">
               <EditIcon />

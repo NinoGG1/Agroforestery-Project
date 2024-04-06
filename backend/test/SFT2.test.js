@@ -4,7 +4,12 @@ const { expect, assert } = require("chai");
 describe("Test SFT2 Contract", function () {
   let SFT1;
   let SFT2;
-  let owner, ADMIN, PEPINIERISTE, PEPINIERISTE2, EXPLOITANT_FORESTIER;
+  let owner,
+    ADMIN,
+    MARCHAND_GRAINIER,
+    PEPINIERISTE,
+    PEPINIERISTE2,
+    EXPLOITANT_FORESTIER;
 
   const tokenId = 1;
   const amount = 100;
@@ -18,8 +23,14 @@ describe("Test SFT2 Contract", function () {
     "0x0000000000000000000000000000000000000000000000000000000000000000"; // Hash vide pour bytes32
 
   beforeEach(async function () {
-    [owner, ADMIN, PEPINIERISTE, PEPINIERISTE2, EXPLOITANT_FORESTIER] =
-      await ethers.getSigners();
+    [
+      owner,
+      ADMIN,
+      MARCHAND_GRAINIER,
+      PEPINIERISTE,
+      PEPINIERISTE2,
+      EXPLOITANT_FORESTIER,
+    ] = await ethers.getSigners();
 
     // Déploiement du contrat UserManager
     const userManagerContract = await ethers.getContractFactory("UserManager");
@@ -27,6 +38,10 @@ describe("Test SFT2 Contract", function () {
 
     // Assignation des rôles après le déploiement
     await userManager.assignRole(ADMIN.address, await userManager.ADMIN());
+    await userManager.assignRole(
+      MARCHAND_GRAINIER.address,
+      await userManager.MARCHAND_GRAINIER()
+    );
     await userManager.assignRole(
       PEPINIERISTE.address,
       await userManager.PEPINIERISTE()
@@ -147,7 +162,35 @@ describe("Test SFT2 Contract", function () {
 
   // ::::::::::::: MINT ::::::::::::: //
   describe("mint", function () {
-    it("Should not authorize a non Admin or non Pépiniériste to mint an SFT", async function () {
+    it("Should not authorize a MARCHAND_GRAINIER to mint an SFT2", async function () {
+      // Mint du token avec l'adresse MARCHAND_GRAINIER, ce qui devrait échouer
+      await expect(
+        SFT2.connect(MARCHAND_GRAINIER).mint(
+          EXPLOITANT_FORESTIER.address,
+          tokenId,
+          amount,
+          cid,
+          sft1TokenId,
+          df2Hash
+        )
+      ).to.be.revertedWithCustomError(SFT2, "UnauthorizedAccess");
+    });
+
+    it("Should not authorize an ADMIN to mint an SFT", async function () {
+      // Mint du token avec l'adresse ADMIN, ce qui devrait échouer
+      await expect(
+        SFT2.connect(ADMIN).mint(
+          EXPLOITANT_FORESTIER.address,
+          tokenId,
+          amount,
+          cid,
+          sft1TokenId,
+          df2Hash
+        )
+      ).to.be.revertedWithCustomError(SFT2, "UnauthorizedAccess");
+    });
+
+    it("Should not authorize a EXPLOITANT_FORESTIER to mint an SFT", async function () {
       // Mint du token avec l'adresse EXPLOITANT_FORESTIER, ce qui devrait échouer
       await expect(
         SFT2.connect(EXPLOITANT_FORESTIER).mint(
@@ -275,21 +318,6 @@ describe("Test SFT2 Contract", function () {
     it("Should mint an SFT2 by addres with role PEPINIERISTE", async function () {
       await expect(
         SFT2.connect(PEPINIERISTE).mint(
-          EXPLOITANT_FORESTIER.address,
-          tokenId,
-          amount,
-          cid,
-          sft1TokenId,
-          df2Hash
-        )
-      )
-        .to.emit(SFT2, "Sft2Data")
-        .withArgs(tokenId, cid, sft1TokenId, df2Hash);
-    });
-
-    it("Should mint an SFT2 by addres with role ADMIN", async function () {
-      await expect(
-        SFT2.connect(ADMIN).mint(
           EXPLOITANT_FORESTIER.address,
           tokenId,
           amount,

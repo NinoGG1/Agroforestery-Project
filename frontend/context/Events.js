@@ -3,7 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { parseAbiItem } from "viem";
 import { publicClient } from "../utils/client";
-import { SFT1Address, SFT2Address, UseManagerAddress } from "@/constants";
+import {
+  SFT1Address,
+  SFT2Address,
+  UseManagerAddress,
+  NFT3Address,
+} from "@/constants";
 
 const EventsContext = createContext();
 const fromBlock = 5621587n;
@@ -58,6 +63,7 @@ export const EventsProvider = ({ children }) => {
         cid: log.args.cid.toString(),
         cmHash: log.args.cmHash.toString(),
         df1Hash: log.args.df1Hash.toString(),
+        transactionHash: log.transactionHash,
       }))
     );
   };
@@ -72,13 +78,14 @@ export const EventsProvider = ({ children }) => {
     });
 
     sft1DataEvent.forEach((event) => {
-      const { tokenId, cid, cmHash, df1Hash } = event;
+      const { tokenId, cid, cmHash, df1Hash, transactionHash } = event;
       if (sft1EventsById[tokenId]) {
         sft1EventsById[tokenId] = {
           ...sft1EventsById[tokenId],
           cid,
           cmHash,
           df1Hash,
+          transactionHash,
         };
       } else {
         sft1EventsById[tokenId] = { id: tokenId, cid, cmHash, df1Hash };
@@ -152,6 +159,7 @@ export const EventsProvider = ({ children }) => {
         cid: log.args.cid.toString(),
         sft1TokenId: log.args.sft1TokenId.toString(),
         df2Hash: log.args.df2Hash.toString(),
+        transactionHash: log.transactionHash,
       }))
     );
   };
@@ -165,13 +173,14 @@ export const EventsProvider = ({ children }) => {
       sft2EventsById[id] = { ...(sft2EventsById[id] || {}), ...rest, id };
     });
     sft2DataEvent.forEach((event) => {
-      const { tokenId, cid, sft1TokenId, df2Hash } = event;
+      const { tokenId, cid, sft1TokenId, df2Hash, transactionHash } = event;
       if (sft2EventsById[tokenId]) {
         sft2EventsById[tokenId] = {
           ...sft2EventsById[tokenId],
           cid,
           sft1TokenId,
           df2Hash,
+          transactionHash,
         };
       } else {
         sft2EventsById[tokenId] = { id: tokenId, cid, sft1TokenId, df2Hash };
@@ -196,7 +205,101 @@ export const EventsProvider = ({ children }) => {
 
   useEffect(() => {
     setMergedSft2Events(mergeSft2Events());
-  }, [sft2DataEvent]);
+  }, [sft2DataEvent, transferSingleSft2Event]);
+
+  // :::::::::::::::::::::: NFT3 Events :::::::::::::::::::::: //
+  const [mergedNft3Events, setMergedNft3Events] = useState([]);
+
+  // Fonction pour récupérer les événements du Smart Contract NFT3
+  const fetchNft3Events = async (eventSignature) => {
+    return await publicClient.getLogs({
+      address: NFT3Address,
+      event: parseAbiItem(eventSignature),
+      fromBlock: fromBlock,
+      toBlock: "latest",
+      account: address,
+    });
+  };
+
+  // TransferNft3Event
+  const [transferNft3Event, setTransferNft3Event] = useState([]);
+
+  const getTransferNft3Event = async () => {
+    const transferNft3Event = await fetchNft3Events(
+      "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
+    );
+    console.log("TransferNft3Event Response:", transferNft3Event);
+
+    setTransferNft3Event(
+      transferNft3Event.map((log) => ({
+        from: log.args.from,
+        to: log.args.to,
+        tokenId: log.args.tokenId.toString(),
+      }))
+    );
+  };
+
+  // NFT3MintedEvent
+  const [nft3MintedEvent, setNft3MintedEvent] = useState([]);
+  const getNft3MintedEvent = async () => {
+    const nft3MintedEvent = await fetchNft3Events(
+      "event NFT3Minted(uint64 indexed tokenId, uint64 indexed sft2TokenId, string cid)"
+    );
+    console.log("NFT3MintedEvent Response:", nft3MintedEvent);
+
+    setNft3MintedEvent(
+      nft3MintedEvent.map((log) => ({
+        tokenId: log.args.tokenId.toString(),
+        sft2TokenId: log.args.sft2TokenId.toString(),
+        cid: log.args.cid.toString(),
+        transactionHash: log.transactionHash,
+      }))
+    );
+  };
+
+  // MergeNft3Events
+  const mergeNft3Events = () => {
+    const nft3EventsById = {};
+
+    transferNft3Event.forEach((event) => {
+      const { tokenId, ...rest } = event;
+      nft3EventsById[tokenId] = { ...(nft3EventsById[tokenId] || {}), ...rest };
+    });
+
+    nft3MintedEvent.forEach((event) => {
+      const { tokenId, sft2TokenId, cid, transactionHash } = event;
+      if (nft3EventsById[tokenId]) {
+        nft3EventsById[tokenId] = {
+          ...nft3EventsById[tokenId],
+          tokenId,
+          sft2TokenId,
+          cid,
+          transactionHash,
+        };
+      } else {
+        nft3EventsById[tokenId] = { tokenId, sft2TokenId, cid };
+      }
+    });
+
+    const mergedEvents = Object.values(nft3EventsById);
+    console.log("Merged NFT3 Events:", mergedEvents);
+    return mergedEvents;
+  };
+
+  // Récupération des events à la connexion
+  useEffect(() => {
+    const getAllNft3Events = async () => {
+      if (address !== undefined) {
+        await getTransferNft3Event();
+        await getNft3MintedEvent();
+      }
+    };
+    getAllNft3Events();
+  }, [address]);
+
+  useEffect(() => {
+    setMergedNft3Events(mergeNft3Events());
+  }, [nft3MintedEvent]);
 
   // :::::::::::::::::::::: UserManager Events :::::::::::::::::::::: //
 
@@ -257,6 +360,12 @@ export const EventsProvider = ({ children }) => {
         mergeSft2Events,
         roleGrantedEvent,
         getRoleGrantedEvent,
+        transferNft3Event,
+        nft3MintedEvent,
+        mergedNft3Events,
+        getTransferNft3Event,
+        getNft3MintedEvent,
+        mergeNft3Events,
       }}
     >
       {children}

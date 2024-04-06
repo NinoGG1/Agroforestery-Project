@@ -19,13 +19,9 @@ export default function Home() {
 
   return (
     <>
-      {isAdmin ? (
+      {isConnected ? (
         <>
           <Dashboard />
-        </>
-      ) : isConnected ? (
-        <>
-          <NotRegistered />
         </>
       ) : (
         <>

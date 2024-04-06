@@ -57,12 +57,11 @@ contract SFT2 is ERC1155, Ownable {
 
     // ::::::::::::::::::::: Modifier :::::::::::::::::::::
 
-    modifier onlyAdminOrPepinieriste {
-        bool isAdmin = userManager.hasRole(keccak256("ADMIN"), msg.sender);
+    modifier onlyPepinieriste {
         bool isPepinieriste = userManager.hasRole(keccak256("PEPINIERISTE"), msg.sender);
 
-        if (!isAdmin && !isPepinieriste) {
-            revert UnauthorizedAccess("Only admin or pepninieriste can perform this action");
+        if (!isPepinieriste) {
+            revert UnauthorizedAccess("Only pepninieriste can perform this action");
         }
         _;
     }
@@ -103,9 +102,9 @@ contract SFT2 is ERC1155, Ownable {
      * @param df2Hash The hash of the "Document fournisseur 2"
      * @notice Mint a new SFT2 token with the given CID and associate it with the given SFT1 token ID
      */
-    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, uint64 sft1TokenId, bytes32 df2Hash) public onlyAdminOrPepinieriste {
-        // Si l'adresse appelante est un pépiniériste et essaie de minter un SFT2, vérifiez qu'elle possède le SFT1 correspondant
-        if (userManager.hasRole(keccak256("PEPINIERISTE"), msg.sender) && sft1Contract.balanceOf(msg.sender, sft1TokenId) <= 0) {
+    function mint(address account, uint64 tokenId, uint32 amount, string memory cid, uint64 sft1TokenId, bytes32 df2Hash) external onlyPepinieriste() {
+        // Vérifier si le pepinieriste est le propriétaire du token SFT1
+        if (sft1Contract.balanceOf(msg.sender, sft1TokenId) <= 0) {
             revert SFT1DoesNotBelongToPepinieriste();
         }
 
