@@ -19,6 +19,18 @@ const SFTCard = ({ sft }) => {
   const type = sft.attributes?.find(
     (attr) => attr.trait_type === "type"
   )?.value;
+  const cid_SFT1 = sft.attributes?.find(
+    (attr) => attr.trait_type === "cid_SFT1"
+  )?.value;
+  const cid_SFT2 = sft.attributes?.find(
+    (attr) => attr.trait_type === "cid_SFT2"
+  )?.value;
+  const longitude = sft.attributes?.find(
+    (attr) => attr.trait_type === "longitude_plantation"
+  )?.value;
+  const latitude = sft.attributes?.find(
+    (attr) => attr.trait_type === "latitude_plantation"
+  )?.value;
 
   // Récupérer l'image de l'objet NFT3
   const nft3Image = sft.image;
@@ -32,7 +44,6 @@ const SFTCard = ({ sft }) => {
       case "SFT2":
         return "/assets/plant.jpeg";
       case "NFT3":
-        console.log(nft3ImageCid);
         return nft3ImageCid
           ? `https://ipfs.io/ipfs/${nft3ImageCid}`
           : undefined;
@@ -50,10 +61,34 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"green"}>SFT1</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Grainier : {sft.operator.slice(0, 6)}...{sft.operator.slice(-4)}
+              Transaction :{" "}
+              <Link
+                href={`https://sepolia.etherscan.io/tx/${sft.transactionHash}`}
+                isExternal
+              >
+                {sft.transactionHash.slice(0, 6)}...
+                {sft.transactionHash.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Pépiniériste : {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
+              Grainier : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0xe9d1d106fc5f7a7ca37dff254fc0758ce7aa6e88?a=${sft.operator}`}
+                isExternal
+              >
+                {sft.operator.slice(0, 6)}...
+                {sft.operator.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Pépiniériste : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0xe9d1d106fc5f7a7ca37dff254fc0758ce7aa6e88?a=${sft.to}`}
+                isExternal
+              >
+                {sft.to.slice(0, 6)}...
+                {sft.to.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
               Quantité : {sft.value}
@@ -66,12 +101,34 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"blue"}>SFT2</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Pépiniériste : {sft.operator.slice(0, 6)}...
-              {sft.operator.slice(-4)}
+              Transaction :{" "}
+              <Link
+                href={`https://sepolia.etherscan.io/tx/${sft.transactionHash}`}
+                isExternal
+              >
+                {sft.transactionHash.slice(0, 6)}...
+                {sft.transactionHash.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Exploitant forestier : {sft.to.slice(0, 6)}...
-              {sft.to.slice(-4)}
+              Pépiniériste : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0x9712641545adf54146b6992e7f9f72205cf6ddae?a=${sft.operator}`}
+                isExternal
+              >
+                {sft.operator.slice(0, 6)}...
+                {sft.operator.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              Exploitant forestier : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0x9712641545adf54146b6992e7f9f72205cf6ddae?a=${sft.to}`}
+                isExternal
+              >
+                {sft.to.slice(0, 6)}...
+                {sft.to.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
               Quantité : {sft.value}
@@ -84,10 +141,35 @@ const SFTCard = ({ sft }) => {
           <>
             <Badge colorScheme={"red"}>NFT3</Badge>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              Propriétaire : {sft.to}
+              Transaction :{" "}
+              <Link
+                href={`https://sepolia.etherscan.io/tx/${sft.transactionHash}`}
+                isExternal
+              >
+                {sft.transactionHash.slice(0, 6)}...
+                {sft.transactionHash.slice(-4)}
+              </Link>
             </Text>
             <Text fontSize="sm" m={"0"} p={"0"}>
-              TokenId : {sft.id}
+              Propriétaire : {""}
+              <Link
+                href={`https://sepolia.etherscan.io/token/0xd953e34cb7e86b307d8d661d8bd4f17ee7b8dbd6?a=${sft.to}`}
+                isExternal
+              >
+                {sft.to.slice(0, 6)}...{sft.to.slice(-4)}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              TokenId du NFT :{" "}
+              <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
+                #{sft.tokenId}
+              </Link>
+            </Text>
+            <Text fontSize="sm" m={"0"} p={"0"}>
+              TokenId du SFT2 associé :{" "}
+              <Link href={`https://ipfs.io/ipfs/${cid_SFT2}`} isExternal>
+                #{sft.sft2TokenId}
+              </Link>
             </Text>
           </>
         );
@@ -116,7 +198,7 @@ const SFTCard = ({ sft }) => {
           <>
             <Text fontSize="sm">
               SFT1 TokenId :{" "}
-              <Link href={`https://ipfs.io/ipfs/${sft.cid}`} isExternal>
+              <Link href={`https://ipfs.io/ipfs/${cid_SFT1}`} isExternal>
                 #{sft.sft1TokenId}
               </Link>
             </Text>
@@ -128,7 +210,11 @@ const SFTCard = ({ sft }) => {
         );
       case "NFT3":
         return (
-          <Text fontSize="sm">Longitude : {sft.attributes.longitude}</Text>
+          <>
+            <Text fontSize="sm">
+              Coordonées : {latitude} | {longitude}
+            </Text>
+          </>
         );
       default:
         return null;

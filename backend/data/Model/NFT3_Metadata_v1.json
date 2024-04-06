@@ -4,6 +4,10 @@
   "image": "ipfs://QmT...abc",
   "attributes": [
     {
+      "trait_type": "type",
+      "value": "NFT3"
+    },
+    {
       "trait_type": "id_SFT2",
       "value": 0
     },

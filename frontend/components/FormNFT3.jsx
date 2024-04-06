@@ -101,6 +101,7 @@ const FormNFT3 = () => {
     }
   };
 
+  // Récupérer les données SFT2 à partir de l'IPFS
   useEffect(() => {
     if (!sft2TokenId || !sfts) {
       setSft2Cid("");
@@ -120,11 +121,12 @@ const FormNFT3 = () => {
     const documentJsonAttr = sft2?.attributes?.find(
       (attr) => attr.trait_type === "document_du_fournisseur_2_json"
     );
+    const cidMetadata = sft2.cid;
 
     if (documentJsonAttr) {
-      const cid = documentJsonAttr.value.split("://")[1];
-      setSft2Cid(cid);
-      fetchJsonData(cid)
+      const cidJson = documentJsonAttr.value.split("://")[1];
+      setSft2Cid(cidMetadata);
+      fetchJsonData(cidJson)
         .then((data) => {
           setSft2Data(data);
           console.log("Données SFT2 récupérées :", data);
@@ -179,6 +181,10 @@ const FormNFT3 = () => {
       description: `Arbre ${nomBotanique} #${tokenId} de catégorie ${categorieDuMateriel}`,
       image: `ipfs://${IMGCid}`,
       attributes: [
+        {
+          trait_type: "type",
+          value: "NFT3",
+        },
         {
           trait_type: "id_SFT2",
           value: sft2TokenId,

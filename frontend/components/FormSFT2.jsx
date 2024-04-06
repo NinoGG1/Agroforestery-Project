@@ -27,6 +27,7 @@ import {
 } from "wagmi";
 import { SFT2Address, SFT2Abi } from "@/constants";
 import EventsContext from "@/context/Events";
+import MergeDataContext from "@/context/MergeData";
 import TextInput from "./FormComponents/TextInput";
 import NumberInput from "./FormComponents/NumberInput";
 import HashAndUploadButton from "./FormComponents/HashAndUploadButton";
@@ -86,6 +87,7 @@ const FormSFT2 = () => {
     mergedSft2Events,
     mergeSft2Events,
   } = useContext(EventsContext);
+  const { sfts } = useContext(MergeDataContext);
 
   // ******************* Gestion des fichiers *******************
   // Documents concernant l'échange 2
@@ -131,6 +133,30 @@ const FormSFT2 = () => {
     const data = await response.json();
     return data;
   };
+
+  // Récupérer les données SFT1 à partir de l'IPFS
+  useEffect(() => {
+    if (!sft1TokenId || !sfts) {
+      setSft1Cid("");
+      return;
+    }
+
+    const sft1 = sfts.find((sft) =>
+      sft.attributes?.some(
+        (attr) =>
+          attr.trait_type === "type" &&
+          attr.value === "SFT1" &&
+          sft.id.toString() === sft1TokenId.toString()
+      )
+    );
+
+    if (sft1) {
+      const cidMetadata = sft1.cid;
+      setSft1Cid(cidMetadata);
+    } else {
+      setSft1Cid("");
+    }
+  }, [sft1TokenId]);
 
   // Créer et uploader l'objet metadata sur ipfs
   const createAndUploadMetadataObject = async () => {
@@ -184,7 +210,7 @@ const FormSFT2 = () => {
         },
         {
           trait_type: "cid_SFT1",
-          value: "",
+          value: sft1Cid,
         },
         {
           trait_type: "nom_botanique",
@@ -324,13 +350,22 @@ const FormSFT2 = () => {
                 Etape 1 : Upload des fichiers et préparation des metadonnées
               </Heading>
 
-              <TextInput
-                label="ID du SFT1 associé"
-                value={sft1TokenId}
-                onChange={(e) => setSft1TokenId(e.target.value)}
-                placeholder="Ajouter l'ID du SFT1 associé"
-                isRequired
-              />
+              <HStack spacing={"1rem"}>
+                <TextInput
+                  label="ID du SFT1 associé"
+                  value={sft1TokenId}
+                  onChange={(e) => setSft1TokenId(e.target.value)}
+                  placeholder="Ajouter l'ID du SFT1 associé"
+                  isRequired
+                />
+                <TextInput
+                  label="CID du SFT1 associé"
+                  value={sft1Cid}
+                  onChange={(e) => setSft1Cid(e.target.value)}
+                  placeholder="Le CID du SFT1 associé va apparaître ici"
+                  isReadOnly
+                />
+              </HStack>
 
               <Heading size="sm" textAlign={"left"}>
                 Document du Fournisseur 2

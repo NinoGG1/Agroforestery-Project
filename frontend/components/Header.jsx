@@ -73,7 +73,7 @@ const Header = () => {
       <NextLink href="/">
         <Heading size="lg" display={"flex"} alignItems="center" gap={"1rem"}>
           <Image
-            src="/assets/logo.png" // Modifié pour utiliser le chemin correct
+            src="https://ipfs.io/ipfs/QmT3ixo6JQJsb5gjk8XkpgJZjA2B7q38pQ5KPjyot6SUzt" // Modifié pour utiliser le chemin correct
             alt="logo Tree Tracker"
             width={50} // Spécifiez une largeur
             height={50} // et une hauteur pour l'Image de next/image
