@@ -15,6 +15,9 @@ import {
 const SFTCard = ({ sft }) => {
   const bgHover = useColorModeValue("gray.100", "gray.900");
   const titleColor = useColorModeValue("black", "white");
+  const bg = useColorModeValue("#f2fdf3", "#202820");
+  const transform = "translateY(-3px)";
+  const shadowH = "0px 12px 20px rgba(0, 0, 0, 0.2)";
 
   const type = sft.attributes?.find(
     (attr) => attr.trait_type === "type"
@@ -212,13 +215,18 @@ const SFTCard = ({ sft }) => {
         return (
           <>
             <Text fontSize="sm">
-              Coordonées : {latitude} | {longitude}
+              Coordonnées : {latitude} | {longitude}
             </Text>
           </>
         );
       default:
         return null;
     }
+  };
+
+  const handleClickCard = () => {
+    //Rediriger vers e-le lien suivant : https://ipfs.io/ipfs/${sft.cid}
+    window.open(`https://ipfs.io/ipfs/${sft.cid}`, "_blank");
   };
 
   return (
@@ -229,7 +237,15 @@ const SFTCard = ({ sft }) => {
         borderRadius="lg"
         overflow="hidden"
         position="relative"
-        _hover={{ bg: bgHover }}
+        bg={bg}
+        _hover={{
+          bg: bgHover,
+          transform: transform,
+          boxShadow: shadowH,
+          cursor: "pointer",
+        }}
+        transition="transform 0.7s ease"
+        onClick={handleClickCard}
       >
         <Image
           src={imageUrl}

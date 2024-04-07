@@ -14,13 +14,19 @@ import {
 import FormSFT1 from "./FormSFT1";
 import SFTGrid from "./SFTGrid";
 import { useContext, useEffect, useState } from "react";
-import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon, Icon } from "@chakra-ui/icons";
 import AllTransactions from "./AllTransactions";
 import { useAccount } from "wagmi";
 import MergeDataContext from "@/context/MergeData";
 import FormSFT2 from "./FormSFT2";
 import Image from "next/image";
 import FormNFT3 from "./FormNFT3";
+import { MdOutlineHistory } from "react-icons/md";
+import {
+  TbCircleNumber1,
+  TbCircleNumber2,
+  TbCircleNumber3,
+} from "react-icons/tb";
 
 const Dashboard = () => {
   const { colorMode } = useColorMode();
@@ -54,38 +60,45 @@ const Dashboard = () => {
       <Tabs variant="soft-rounded" colorScheme="green" align="center">
         <TabList sx={{ justifyContent: "space-between" }} fontSize={"lg"}>
           {colorMode === "dark" ? (
-            <Tab textColor={"#A5D6A7"} fontSize={"lg"}>
+            <Tab textColor={"#A5D6A7"}>
+              <Icon as={MdOutlineHistory} mr={"0.5rem"} boxSize={"1.5rem"} />
               Toutes les transactions
             </Tab>
           ) : (
             <Tab>Toutes les transactions</Tab>
           )}
           {colorMode === "dark" ? (
-            <Tab textColor={"#A5D6A7"} fontSize={"lg"}>
-              Echanges 1 : Marchand grainier <ChevronRightIcon /> Pépiniériste
+            <Tab textColor={"#A5D6A7"}>
+              <Icon as={TbCircleNumber1} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Échange MARCHAND GRAINIER <ChevronRightIcon /> PÉPINIÉRISTE
             </Tab>
           ) : (
             <Tab>
-              Echanges 1 : Marchand grainier <ChevronRightIcon /> Pépiniériste
+              <Icon as={TbCircleNumber1} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Échange MARCHAND GRAINIER <ChevronRightIcon /> PÉPINIÉRISTE
             </Tab>
           )}
           {colorMode === "dark" ? (
-            <Tab textColor={"#A5D6A7"} fontSize={"lg"}>
-              Echanges 2 : Pépiniériste <ChevronRightIcon /> Exploitant
-              forestier
+            <Tab textColor={"#A5D6A7"}>
+              <Icon as={TbCircleNumber2} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Échange PÉPINIÉRISTE <ChevronRightIcon /> EXPLOITANT FORESTIER
             </Tab>
           ) : (
             <Tab>
-              Echanges 2 : Pépiniériste <ChevronRightIcon /> Exploitant
-              forestier
+              <Icon as={TbCircleNumber2} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Échange PÉPINIÉRISTE <ChevronRightIcon /> EXPLOITANT FORESTIER
             </Tab>
           )}
           {colorMode === "dark" ? (
-            <Tab textColor={"#A5D6A7"} fontSize={"lg"}>
-              Plantation de l'arbre
+            <Tab textColor={"#A5D6A7"}>
+              <Icon as={TbCircleNumber3} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Plantation des arbres par l'EXPLOITANT FORESTIER
             </Tab>
           ) : (
-            <Tab>Plantations d'arbres</Tab>
+            <Tab alignContent={"center"}>
+              <Icon as={TbCircleNumber3} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Plantation d'arbres par l'EXPLOITANT FORESTIER
+            </Tab>
           )}
         </TabList>
 
@@ -104,7 +117,7 @@ const Dashboard = () => {
               mt={"2.5rem"}
               mb={"2rem"}
             >
-              Echanges de type 1 réalisés : Marchand grainier{" "}
+              Historique étape 1 : Échange Marchand grainier{" "}
               <ChevronRightIcon /> Pépiniériste
             </Heading>
             <SFTGrid sfts={sfts} filterType="SFT1" />
@@ -119,7 +132,7 @@ const Dashboard = () => {
               mt={"2.5rem"}
               mb={"2rem"}
             >
-              Echanges de type 2 réalisés : Pépiniériste <ChevronRightIcon />{" "}
+              Historique étape 2 : Échange Pépiniériste <ChevronRightIcon />{" "}
               Exploitant forestier
             </Heading>
             <SFTGrid sfts={sfts} filterType="SFT2" />
@@ -134,7 +147,7 @@ const Dashboard = () => {
               mt={"2.5rem"}
               mb={"2rem"}
             >
-              Plantations d'arbres réalisées
+              Historique étape 3 : Plantation des arbres
             </Heading>
             <SFTGrid sfts={sfts} filterType="NFT3" />
           </TabPanel>
