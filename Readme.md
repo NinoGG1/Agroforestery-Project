@@ -1,5 +1,5 @@
 <h1 align="center">FORMATION ALYRA - PROJET FINAL POUR CERTIFICATION RS5000</h1>
-<h1 align="center">Tree Trcaker : Solution de traçabilité de la graine à la plantation de l'arbre</h1>
+<h1 align="center">Tree Tracker : Solution de traçabilité de la graine à la plantation de l'arbre</h1>
 <h2 align="center" style="color:#AEFAFA;">Nino GUÉGUEN - Promo Lovelace (2024)</h2>
 
 ![Alt text](frontend/public/assets/forest.jpeg)
