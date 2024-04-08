@@ -7,7 +7,7 @@
 
 ## Liens utiles
 
-- Lien vers l'application déployée : (https://agroforestery-project.vercel.app/)
+- Lien vers l'application déployée : [Tree Tracker : Solution de traçabilité de la graine à la plantation de l'arbre](https://agroforestery-project.vercel.app/)
 - Lien vidéo de démo : 
 - Lien Smart Contract [UserManager.sol](https://sepolia.etherscan.io/address/0xDa1A6F223da2389E470F6Da6f56B107CBaF9e2C1#code)
 - Lien Smart Contract [SFT1.sol](https://sepolia.etherscan.io/address/0xE9D1D106FC5F7a7Ca37DFF254fC0758cE7aA6e88#code)
