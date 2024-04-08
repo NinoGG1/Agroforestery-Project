@@ -245,7 +245,6 @@ const SFTCard = ({ sft }) => {
           cursor: "pointer",
         }}
         transition="transform 0.7s ease"
-        onClick={handleClickCard}
       >
         <Image
           src={imageUrl}
