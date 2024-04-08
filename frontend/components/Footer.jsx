@@ -3,13 +3,8 @@ import { Flex, Text } from "@chakra-ui/react";
 
 const Footer = () => {
   return (
-    <Flex
-      p="2rem"
-      justifyContent="center"
-      alignItems="center"
-      backgroundColor="color1"
-    >
-      <Text color="white">Tous droits réservés - Tree Tracker</Text>
+    <Flex p="2rem" justifyContent="center" alignItems="center">
+      <Text>Tous droits réservés - Tree Tracker</Text>
     </Flex>
   );
 };

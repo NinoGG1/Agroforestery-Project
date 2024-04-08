@@ -7,6 +7,7 @@ import {
   CardHeader,
   Flex,
   Heading,
+  Icon,
   Image,
   Link,
   Tab,
@@ -25,6 +26,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useReadFunctions } from "@/context/ReadFunctions";
 import { useAccount } from "wagmi";
 import { useContext, useEffect, useState } from "react";
+import { RiAdminLine } from "react-icons/ri";
+import { CiLight } from "react-icons/ci";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -88,6 +91,13 @@ const Header = () => {
           chainStatus="icon"
           showBalance="none"
         />
+        {isAdmin && (
+          <NextLink href="/user_manager">
+            <Button ml="0.5rem" borderRadius="0.7rem">
+              <Icon as={RiAdminLine} mr={"0.5rem"} /> Gestion des utilisateurs
+            </Button>
+          </NextLink>
+        )}
         <Button
           onClick={toggleColorMode}
           alignSelf="center"
@@ -96,14 +106,6 @@ const Header = () => {
         >
           {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
         </Button>
-
-        {isAdmin && (
-          <NextLink href="/user_manager">
-            <Button ml="0.5rem">
-              <EditIcon />
-            </Button>
-          </NextLink>
-        )}
       </Flex>
     </Flex>
   );

@@ -1,8 +1,10 @@
+"use client";
+
 import {
   FormControl,
   FormLabel,
   Input,
-  useBreakpointValue,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 const TextInput = ({
@@ -13,6 +15,7 @@ const TextInput = ({
   isRequired = false,
   isReadOnly = false,
 }) => {
+  const borderColor = useColorModeValue("gray.700", "gray.600");
   return (
     <FormControl isRequired={isRequired} isReadOnly={isReadOnly}>
       <FormLabel>{label}</FormLabel>
@@ -22,6 +25,7 @@ const TextInput = ({
         onChange={onChange}
         placeholder={placeholder}
         resize="vertical" // Permet à l'input de s'ajuster en hauteur si nécessaire
+        borderColor={borderColor}
       />
     </FormControl>
   );

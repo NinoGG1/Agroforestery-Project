@@ -18,6 +18,7 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -56,6 +57,9 @@ const FormSFT2 = () => {
 
   const DF2JsonInputRef = useRef(null);
   const DF2PdfInputRef = useRef(null);
+
+  const bg = useColorModeValue("#D6EADF", "gray.900");
+  const borderColor = useColorModeValue("gray.700", "gray.600");
 
   // Fonction de reset du formulaire
   const resetForm = () => {
@@ -331,7 +335,7 @@ const FormSFT2 = () => {
   // ******************* Render *******************
   return (
     <div>
-      <Box p={"2rem"} bg={"gray.900"} borderRadius={"10px"} mt={"2rem"}>
+      <Box p={"2rem"} bg={bg} borderRadius={"10px"} mt={"2rem"}>
         <Flex
           direction={{ base: "column", md: "row" }}
           justifyContent="space-between"
@@ -343,7 +347,7 @@ const FormSFT2 = () => {
             flex="1"
             pr={"2rem"}
             borderRight={{ md: "1px solid" }}
-            borderColor={{ md: "gray.200" }}
+            borderColor={borderColor}
           >
             <VStack spacing={"1rem"} align="stretch" flex="1" overflowY="auto">
               <Heading as="h3" size="md" mb="1rem">
@@ -362,7 +366,7 @@ const FormSFT2 = () => {
                   label="CID du SFT1 associé"
                   value={sft1Cid}
                   onChange={(e) => setSft1Cid(e.target.value)}
-                  placeholder="Le CID du SFT1 associé va apparaître ici"
+                  placeholder="Le CID du SFT1 associé apparaîtra ici"
                   isReadOnly
                 />
               </HStack>
@@ -389,7 +393,7 @@ const FormSFT2 = () => {
                 />
               </HStack>
 
-              <Divider mt={"0.5rem"} />
+              <Divider mt={"0.5rem"} borderColor={borderColor} />
 
               <Heading size="sm" textAlign={"left"}>
                 Suivi des documents
@@ -434,7 +438,7 @@ const FormSFT2 = () => {
                 label="Adresse de l'exploitant forestier"
                 value={ownerAddress}
                 onChange={(e) => setOwnerAddress(e.target.value)}
-                placeholder="Adresse de l'exploitant forestier"
+                placeholder="Ajouter l'adresse de l'exploitant forestier"
                 isRequired
               />
 
@@ -443,14 +447,14 @@ const FormSFT2 = () => {
                   label="ID du Token"
                   value={tokenId}
                   onChange={(e) => setTokenId(e.target.value)}
-                  placeholder="Ajouter l'ID du token"
+                  placeholder="L'ID du token apparaîtra ici"
                   isReadOnly
                 />
                 <NumberInput
                   label="Quantité"
                   value={tokenQuantity}
                   onChange={(e) => setTokenQuantity(e.target.value)}
-                  placeholder="Entrez une quantité"
+                  placeholder="La quantité de plants apparaîtra ici"
                   isReadOnly
                 />
               </HStack>

@@ -1,4 +1,9 @@
-import { FormControl, FormLabel, Input } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 const NumberInput = ({
   label,
@@ -8,6 +13,7 @@ const NumberInput = ({
   isRequired = false,
   min = 1,
 }) => {
+  const borderColor = useColorModeValue("gray.700", "gray.600");
   return (
     <FormControl isRequired={isRequired}>
       <FormLabel>{label}</FormLabel>
@@ -17,6 +23,7 @@ const NumberInput = ({
         onChange={onChange}
         placeholder={placeholder}
         min={min}
+        borderColor={borderColor}
       />
     </FormControl>
   );

@@ -18,6 +18,7 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
@@ -59,6 +60,9 @@ const FormSFT1 = () => {
   const CM1PdfInputRef = useRef(null);
   const DF1JsonInputRef = useRef(null);
   const DF1PdfInputRef = useRef(null);
+
+  const bg = useColorModeValue("#D6EADF", "gray.900");
+  const borderColor = useColorModeValue("gray.700", "gray.600");
 
   // Fonction de reset du formulaire
   const resetForm = () => {
@@ -356,7 +360,7 @@ const FormSFT1 = () => {
     <div>
       <Box
         p={"2rem"}
-        bg={"gray.900"}
+        bg={bg}
         borderRadius={"10px"}
         mt={"2rem"}
         position={"relative"}
@@ -372,7 +376,7 @@ const FormSFT1 = () => {
             flex="1"
             pr={"2rem"}
             borderRight={{ md: "1px solid" }}
-            borderColor={{ md: "gray.200" }}
+            borderColor={borderColor}
           >
             <VStack spacing={"1rem"} align="stretch" flex="1" overflowY="auto">
               <Heading as="h3" size="md" mb="1rem">
@@ -403,7 +407,7 @@ const FormSFT1 = () => {
                 />
               </HStack>
 
-              <Divider mt={"0.5rem"} />
+              <Divider mt={"0.5rem"} borderColor={borderColor} />
 
               <Heading size="sm" textAlign={"left"}>
                 Document du Fournisseur 1
@@ -427,7 +431,7 @@ const FormSFT1 = () => {
                 />
               </HStack>
 
-              <Divider mt={"0.5rem"} />
+              <Divider mt={"0.5rem"} borderColor={borderColor} />
 
               <Heading size="sm" textAlign={"left"}>
                 Suivi des documents
@@ -481,15 +485,17 @@ const FormSFT1 = () => {
                   label="ID du Token"
                   value={tokenId}
                   onChange={(e) => setTokenId(e.target.value)}
-                  placeholder="Ajouter l'ID du token"
+                  placeholder="L'ID du token apparaîtra ici"
                   isReadOnly
+                  cursor="not-allowed"
                 />
                 <NumberInput
                   label="Quantité"
                   value={tokenQuantity}
                   onChange={(e) => setTokenQuantity(e.target.value)}
-                  placeholder="Entrez une quantité"
+                  placeholder="La quantité de semences apparaîtra ici"
                   isReadOnly
+                  cursor="not-allowed"
                 />
               </HStack>
 

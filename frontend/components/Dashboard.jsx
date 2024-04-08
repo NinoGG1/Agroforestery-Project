@@ -65,7 +65,10 @@ const Dashboard = () => {
               Toutes les transactions
             </Tab>
           ) : (
-            <Tab>Toutes les transactions</Tab>
+            <Tab>
+              <Icon as={MdOutlineHistory} mr={"0.5rem"} boxSize={"1.5rem"} />
+              Toutes les transactions
+            </Tab>
           )}
           {colorMode === "dark" ? (
             <Tab textColor={"#A5D6A7"}>

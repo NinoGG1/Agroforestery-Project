@@ -13,9 +13,10 @@ import {
 } from "@chakra-ui/react";
 
 const SFTCard = ({ sft }) => {
-  const bgHover = useColorModeValue("gray.100", "gray.900");
+  const bgHover = useColorModeValue("#EFFCF7", "gray.900");
   const titleColor = useColorModeValue("black", "white");
-  const bg = useColorModeValue("#f2fdf3", "#202820");
+  const bg = useColorModeValue("#D6EADF", "#1C2B28");
+  // 33403B
   const transform = "translateY(-3px)";
   const shadowH = "0px 12px 20px rgba(0, 0, 0, 0.2)";
 
@@ -277,6 +278,7 @@ const SFTCard = ({ sft }) => {
             colorScheme="green"
             size="sm"
             mt={"1rem"}
+            onClick={handleClickCard}
           >
             Voir Plus
           </Button>

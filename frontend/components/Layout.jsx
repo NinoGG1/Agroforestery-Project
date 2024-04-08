@@ -1,6 +1,8 @@
+"use client";
+
 import Footer from "./Footer";
 import Header from "./Header";
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { Box, Divider, Flex, useColorMode } from "@chakra-ui/react";
 
 const Layout = ({ children }) => {
   return (
@@ -12,7 +14,7 @@ const Layout = ({ children }) => {
         {children}
       </Flex>
       <Divider mt={"4rem"} />
-      <Box height="100px">
+      <Box>
         <Footer />
       </Box>
     </Flex>

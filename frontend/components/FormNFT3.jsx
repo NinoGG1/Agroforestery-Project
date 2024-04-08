@@ -18,6 +18,7 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { CheckCircleIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -46,6 +47,9 @@ const FormNFT3 = () => {
   const [sft2Data, setSft2Data] = useState({});
   const [metadata, setMetadata] = useState({});
   const [metadataCid, setMetadataCid] = useState("");
+
+  const bg = useColorModeValue("#D6EADF", "gray.900");
+  const borderColor = useColorModeValue("gray.700", "gray.600");
 
   // ******************* Hooks *******************
   const { address, isConnected } = useAccount();
@@ -276,7 +280,7 @@ const FormNFT3 = () => {
 
   return (
     <div>
-      <Box p={"2rem"} bg={"gray.900"} borderRadius={"10px"} mt={"2rem"}>
+      <Box p={"2rem"} bg={bg} borderRadius={"10px"} mt={"2rem"}>
         <Flex
           direction={{ base: "column", md: "row" }}
           justifyContent="space-between"
@@ -288,7 +292,7 @@ const FormNFT3 = () => {
             flex="1"
             pr={"2rem"}
             borderRight={{ md: "1px solid" }}
-            borderColor={{ md: "gray.200" }}
+            borderColor={borderColor}
           >
             <VStack spacing={"1rem"} align="stretch" flex="1" overflowY="auto">
               <Heading as="h3" size="md" mb="1rem">
@@ -326,7 +330,7 @@ const FormNFT3 = () => {
                 />
               </HStack>
 
-              <Divider mt={"0.5rem"} />
+              <Divider mt={"0.5rem"} borderColor={borderColor} />
 
               <Heading size="sm" textAlign={"left"}>
                 Localisation de la plantation
