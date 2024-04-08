@@ -7,6 +7,7 @@
 
 ## Liens utiles
 
+- Lien vers l'application déployée : (https://agroforestery-project.vercel.app/)
 - Lien vidéo de démo : 
 - Lien Smart Contract [UserManager.sol](https://sepolia.etherscan.io/address/0xDa1A6F223da2389E470F6Da6f56B107CBaF9e2C1#code)
 - Lien Smart Contract [SFT1.sol](https://sepolia.etherscan.io/address/0xE9D1D106FC5F7a7Ca37DFF254fC0758cE7aA6e88#code)
@@ -63,9 +64,9 @@ Ce projet incarne notre engagement envers une gestion environnementale plus resp
 
 ## Technologies Utilisées
 
-- **Solidity** : Langage de programmation conçu pour le développement de smart contracts sur la blockchain Ethereum, essentiel pour établir une base sécurisée et transparente de traçabilité.
+- **Solidity** : Langage de programmation conçu pour le développement de smart contracts sur les blockchains liées à Ethereum, essentiel pour établir une base sécurisée et transparente de traçabilité.
 
-- **Hardhat** : Un environnement de développement Ethereum robuste qui facilite le test, le déploiement et la gestion des smart contracts, offrant une expérience de développement cohérente et efficace.
+- **Hardhat** : Un environnement de développement robuste qui facilite le test, le déploiement et la gestion des smart contracts, offrant une expérience de développement cohérente et efficace.
 
 - **React avec Next.js** : Un cadre de travail puissant pour la construction de l'interface utilisateur (UI) de notre application décentralisée (DApp), garantissant une interaction fluide et intuitive pour les utilisateurs.
 
@@ -73,21 +74,21 @@ Ce projet incarne notre engagement envers une gestion environnementale plus resp
 
 - **RainbowKit** : Solution intégrée pour la connexion aux wallets de cryptomonnaies, simplifiant les interactions des utilisateurs avec la blockchain depuis l'interface de la DApp.
 
-- **ethers.js** : Bibliothèque légère et complète pour interagir avec la blockchain Ethereum et les smart contracts, utilisée pour les communications entre notre application front-end et les contrats intelligents.
+- **ethers.js** : Bibliothèque légère et complète pour interagir avec la blockchain et les smart contracts, utilisée pour les communications entre notre application front-end et les contrats intelligents.
 
-- **Wagmi** : Un ensemble d'hooks React pour Ethereum, qui rend l'interaction avec la blockchain plus accessible et facile à gérer, en particulier pour le développement de composants front-end qui nécessitent une interaction avec la blockchain.
+- **Wagmi** : Un ensemble d'hooks React, qui rend l'interaction avec la blockchain plus accessible et facile à gérer, en particulier pour le développement de composants front-end qui nécessitent une interaction avec la blockchain (écriture et lecture des fonctions puis récupération des events (logs)).
 
 - **IPFS (InterPlanetary File System)** : Système de fichiers décentralisé utilisé pour le stockage et le partage de fichiers dans un environnement blockchain, garantissant que les documents et certificats liés aux échanges sont stockés de manière sécurisée et persistante.
 
-- **Alchemy** : Plateforme de développement blockchain qui fournit un accès fiable à la blockchain Ethereum, essentielle pour le déploiement efficace et la gestion des interactions avec nos smart contracts.
+- **Alchemy** : Plateforme de développement blockchain qui fournit un accès direct et fiable à la blockchain, essentielle pour le déploiement efficace et la gestion des interactions avec nos smart contracts.
 
 ## Structure du Projet
 
 ### Front-End
-Le Front-End de notre DApp est construit avec React et Next.js, offrant une expérience utilisateur fluide et réactive. L'interface utilisateur est conçue pour être intuitive, permettant aux utilisateurs de facilement naviguer à travers les différentes fonctionnalités telles que l'enregistrement des échanges de graines, le suivi des plants jusqu'à la plantation, et la consultation des données de traçabilité. ChakraUI est utilisé pour le design, assurant que l'application soit accessible et esthétiquement agréable, tandis que RainbowKit facilite l'intégration des wallets des utilisateurs, permettant une interaction sécurisée avec la blockchain. Wagmi est employé pour simplifier l'interaction avec Ethereum, rendant le développement plus efficace et convivial.
+Le Front-End de notre DApp est construit avec React et Next.js, offrant une expérience utilisateur fluide et réactive. L'interface utilisateur est conçue pour être intuitive, permettant aux utilisateurs de facilement naviguer à travers les différentes fonctionnalités telles que l'enregistrement des échanges de graines, le suivi des plants jusqu'à la plantation, et la consultation des données de traçabilité. ChakraUI est utilisé pour le design, assurant que l'application soit accessible et esthétiquement agréable, tandis que RainbowKit facilite l'intégration des wallets des utilisateurs, permettant une interaction sécurisée avec la blockchain. Wagmi est employé pour simplifier l'interaction avec la blockchain, rendant le développement plus efficace et convivial.
 
 ### Back-End
-Le Back-End se concentre sur la logique des smart contracts développés en Solidity et interagit avec la blockchain Ethereum. Hardhat est utilisé comme environnement de développement pour compiler, tester, et déployer les smart contracts. Ceux-ci incluent la logique pour la création et le suivi des tokens ERC-1155 pour les échanges de graines et de jeunes plants, ainsi que les tokens ERC-721 pour la plantation individuelle des arbres. Les smart contracts gèrent également les rôles et les permissions des différents acteurs impliqués dans le processus, garantissant que chaque transaction soit sécurisée et transparente.
+Le Back-End se concentre sur la logique des smart contracts développés en Solidity et interagit avec la blockchain sepolia (tesnet d'Ethereum). Hardhat est utilisé comme environnement de développement pour compiler, tester, et déployer les smart contracts. Ceux-ci incluent la logique pour la création et le suivi des tokens ERC-1155 pour les échanges de graines et de jeunes plants, ainsi que les tokens ERC-721 pour la plantation individuelle des arbres. Les smart contracts gèrent également les rôles et les permissions des différents acteurs impliqués dans le processus, garantissant que chaque transaction soit sécurisée et transparente.
 
 ### Smart Contracts
 Les smart contracts sont au cœur de notre solution, permettant la traçabilité inaltérable de la graine à la plantation. Ils sont conçus pour :
@@ -134,7 +135,7 @@ Les tests fonctionnels ont été réalisés en utilisant Hardhat et Chai pour s'
 
 ### C7: Déploiement
 
-Le déploiement a inclus la mise en place du Front-End sur Vercel et des smart contracts sur la blockchain Ethereum, utilisant Alchemy comme passerelle. Des scripts de déploiement spécifiques ont été conçus pour faciliter la mise en production, s'assurant que l'application est opérationnelle et accessible pour le jury et les utilisateurs finaux.
+Le déploiement a inclus la mise en place du Front-End sur Vercel et des smart contracts sur la blockchain Sepolia, utilisant Alchemy comme passerelle. Des scripts de déploiement spécifiques ont été conçus pour faciliter la mise en production, s'assurant que l'application est opérationnelle et accessible pour le jury et les utilisateurs finaux.
 
 ## Guide d'Installation et de Démarrage
 
