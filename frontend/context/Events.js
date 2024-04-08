@@ -11,7 +11,7 @@ import {
 } from "@/constants";
 
 const EventsContext = createContext();
-const fromBlock = 5621587n;
+const fromBlock = 0n;
 
 export const EventsProvider = ({ children }) => {
   const { address } = useAccount();

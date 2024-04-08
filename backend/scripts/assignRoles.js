@@ -21,26 +21,48 @@ async function main() {
     marchandGrainier1,
     await userManager.MARCHAND_GRAINIER()
   );
+  console.log(
+    "Rôle MARCHAND_GRAINIER attribué avec succès à l'adresse",
+    marchandGrainier1
+  );
   await userManager.assignRole(
     marchandGrainier2,
     await userManager.MARCHAND_GRAINIER()
   );
+  console.log(
+    "Rôle MARCHAND_GRAINIER attribué avec succès à l'adresse",
+    marchandGrainier2
+  );
 
   // Assigner le rôle PEPINIERISTE
   await userManager.assignRole(pepinieriste1, await userManager.PEPINIERISTE());
+  console.log(
+    "Rôle PEPINIERISTE attribué avec succès à l'adresse",
+    pepinieriste1
+  );
   await userManager.assignRole(pepinieriste2, await userManager.PEPINIERISTE());
+  console.log(
+    "Rôle PEPINIERISTE attribué avec succès à l'adresse",
+    pepinieriste2
+  );
 
   // Assigner le rôle EXPLOITANT_FORESTIER
   await userManager.assignRole(
     exploitantForestier1,
     await userManager.EXPLOITANT_FORESTIER()
   );
+  console.log(
+    "Rôle EXPLOITANT_FORESTIER attribué avec succès à l'adresse",
+    exploitantForestier1
+  );
   await userManager.assignRole(
     exploitantForestier2,
     await userManager.EXPLOITANT_FORESTIER()
   );
-
-  console.log("Rôles attribués avec succès");
+  console.log(
+    "Rôle EXPLOITANT_FORESTIER attribué avec succès à l'adresse",
+    exploitantForestier2
+  );
 }
 
 // Exécuter le script et gérer les erreurs

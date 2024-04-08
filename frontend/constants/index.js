@@ -1,8 +1,8 @@
 // Contract adress
-export const UseManagerAddress = "0xDa1A6F223da2389E470F6Da6f56B107CBaF9e2C1";
-export const SFT1Address = "0xE9D1D106FC5F7a7Ca37DFF254fC0758cE7aA6e88";
-export const SFT2Address = "0x9712641545adF54146b6992e7F9F72205cf6DdAE";
-export const NFT3Address = "0xd953E34cb7e86B307d8d661d8bd4f17eE7B8DBd6";
+export const UseManagerAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+export const SFT1Address = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+export const SFT2Address = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+export const NFT3Address = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
 
 // Contract abi
 export const UseManagerAbi = [
