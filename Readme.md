@@ -8,11 +8,11 @@
 ## Liens utiles
 
 - [Lien vers l'application déployée](https://agroforestery-project.vercel.app/)
-- [Lien vidéo de démo](https://www.loom.com/share/974d2a96518946ec9ffd75a6f8d54ce1?sid=c74a8001-34d3-485e-b313-3e655cce5872)
-- Lien Smart Contract [UserManager.sol](https://sepolia.etherscan.io/address/0xDa1A6F223da2389E470F6Da6f56B107CBaF9e2C1#code)
-- Lien Smart Contract [SFT1.sol](https://sepolia.etherscan.io/address/0xE9D1D106FC5F7a7Ca37DFF254fC0758cE7aA6e88#code)
-- Lien Smart Contract [SFT2.sol](https://sepolia.etherscan.io/address/0x9712641545adF54146b6992e7F9F72205cf6DdAE#code) 
-- Lien Smart Contract [NFT3.sol](https://sepolia.etherscan.io/address/0xd953E34cb7e86B307d8d661d8bd4f17eE7B8DBd6#code)
+- [Lien vers la vidéo de démonstration](https://www.loom.com/share/974d2a96518946ec9ffd75a6f8d54ce1?sid=c74a8001-34d3-485e-b313-3e655cce5872)
+- Lien vers le Smart Contract [UserManager.sol](https://sepolia.etherscan.io/address/0xDa1A6F223da2389E470F6Da6f56B107CBaF9e2C1#code)
+- Lien vers le Smart Contract [SFT1.sol](https://sepolia.etherscan.io/address/0xE9D1D106FC5F7a7Ca37DFF254fC0758cE7aA6e88#code)
+- Lien vers le Smart Contract [SFT2.sol](https://sepolia.etherscan.io/address/0x9712641545adF54146b6992e7F9F72205cf6DdAE#code) 
+- Lien vers le Smart Contract [NFT3.sol](https://sepolia.etherscan.io/address/0xd953E34cb7e86B307d8d661d8bd4f17eE7B8DBd6#code)
 
 ## Table des Matières
 
